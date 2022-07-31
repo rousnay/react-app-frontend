@@ -10,9 +10,10 @@ import { styled } from "@mui/material/styles";
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-import PublicHeader from "./template-parts/PublicHeader";
+import PublicHeader from "./layout-parts/PublicHeader";
 
 const Home = lazy(() => import("./pages/Home"));
+const Landing = lazy(() => import("./pages/Landing"));
 const Login = lazy(() => import("./pages/Login"));
 const Channel = lazy(() => import("./pages/Channel"));
 
@@ -54,6 +55,9 @@ function App() {
                 <Link to="/">Home</Link>
               </MenuItem>
               <MenuItem>
+                <Link to="/Landing">Landing</Link>
+              </MenuItem>
+              <MenuItem>
                 <Link to="/Login">Login</Link>
               </MenuItem>
               <MenuItem>
@@ -66,7 +70,8 @@ function App() {
         <Suspense fallback={<p>Loading...</p>}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="Login" element={<Login />} />
+            <Route path="/Landing" element={<Landing />} />
+            <Route path="/Login" element={<Login />} />
             <Route path="/Channel" element={<Channel />} />
           </Routes>
         </Suspense>

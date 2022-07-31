@@ -7,7 +7,7 @@ export default function Channel() {
       <Container>
         <Grid container spacing={2}>
           <Typography variant="h1" component="h2">
-            Channel
+            Channel page
           </Typography>
         </Grid>
       </Container>
