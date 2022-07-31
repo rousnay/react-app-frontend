@@ -6,12 +6,12 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Container, Grid } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
+import { AppTheme } from "./assets/AppTheme";
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import PublicHeader from "./layout-parts/PublicHeader";
-
 const Home = lazy(() => import("./pages/Home"));
 const Landing = lazy(() => import("./pages/Landing"));
 const Login = lazy(() => import("./pages/Login"));
@@ -42,40 +42,42 @@ const MenuItem = styled("li")`
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <CssBaseline />
-        <PublicHeader />
+      <ThemeProvider theme={AppTheme}>
+        <BrowserRouter>
+          <CssBaseline />
+          <PublicHeader />
 
-        {/* <TestNav /> */}
+          {/* <TestNav /> */}
 
-        <Container>
-          <Grid container>
-            <ul style={{ display: "flex", padding: 0 }}>
-              <MenuItem>
-                <Link to="/">Home</Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/Landing">Landing</Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/Login">Login</Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/Channel">Channel</Link>
-              </MenuItem>
-            </ul>
-          </Grid>
-        </Container>
+          <Container>
+            <Grid container>
+              <ul style={{ display: "flex", padding: 0 }}>
+                <MenuItem>
+                  <Link to="/">Home</Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link to="/Landing">Landing</Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link to="/Login">Login</Link>
+                </MenuItem>
+                <MenuItem>
+                  <Link to="/Channel">Channel</Link>
+                </MenuItem>
+              </ul>
+            </Grid>
+          </Container>
 
-        <Suspense fallback={<p>Loading...</p>}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Landing" element={<Landing />} />
-            <Route path="/Login" element={<Login />} />
-            <Route path="/Channel" element={<Channel />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+          <Suspense fallback={<p>Loading...</p>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/Landing" element={<Landing />} />
+              <Route path="/Login" element={<Login />} />
+              <Route path="/Channel" element={<Channel />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ThemeProvider>
     </>
   );
 }
