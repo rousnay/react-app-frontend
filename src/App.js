@@ -4,6 +4,11 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+
+import "./fonts/roboto/300.css";
+import "./fonts/Nexa-Regular.woff2";
+import "./fonts/TTNorms-Regular.woff2";
+
 import CssBaseline from "@mui/material/CssBaseline";
 import { Container, Grid } from "@mui/material";
 import { styled, ThemeProvider } from "@mui/material/styles";

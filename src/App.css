@@ -1,3 +1,25 @@
+@font-face {
+  font-family: 'NexaRegular';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/Nexa-Regular.woff2') format('woff2')
+}
+@font-face {
+  font-family: 'TTNormsRegular';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/TTNorms-Regular.otf')  format('OpenType'),
+  /* url('./fonts/TTNorms-Regular.woff2') format('woff2') */
+}
+
+
+p{
+  font-family: "TTNormsRegular", "Helvetica", "Arial", sans-serif;
+}
+
+
 .App {
   text-align: center;
 }

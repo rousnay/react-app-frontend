@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'NexaRegular';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./Nexa-Regular.otf')  format('OpenType'),
+  /* url('./Nexa-Regular.woff2') format('woff2') */
+}
+@font-face {
+  font-family: 'TTNormsRegular';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./TTNorms-Regular.otf')  format('OpenType'),
+  /* url('./TTNorms-Regular.woff2') format('woff2') */
+}
+

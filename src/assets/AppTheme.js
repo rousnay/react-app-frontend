@@ -1,6 +1,18 @@
 import { createTheme } from "@mui/material/styles";
+// import NexaRegular from "../fonts/Nexa-Regular.woff2";
 
 export const AppTheme = createTheme({
+  //   MuiCssBaseline: {
+  //     styleOverrides: `
+  //           @font-face {
+  //             font-family: 'Nexa';
+  //             font-style: normal;
+  //             font-display: swap;
+  //             font-weight: 400;
+  //             src: local('Nexa'), local('Nexa-Regular'), url(${NexaRegular}) format('woff2');
+  //           }
+  //         `,
+  //   },
   // breakpoints - style Custom
   breakpoints: {
     values: {

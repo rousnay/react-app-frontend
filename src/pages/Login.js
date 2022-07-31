@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Typography, Button } from "@mui/material";
+import { Container, Grid, Box, Typography, Button } from "@mui/material";
 
 export default function Login() {
   return (
@@ -24,6 +24,15 @@ export default function Login() {
           <Button variant="outlined" size="medium" color="logored">
             MUI Button outlineds
           </Button>
+          <Box
+            sx={{
+              fontFamily: "TTNormsRegular",
+            }}
+          >
+            Raleway
+          </Box>
+          <p>this is test text for font family check</p>
+          <b>this is test text for font family check</b>
         </Grid>
       </Container>
     </>
