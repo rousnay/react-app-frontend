@@ -14,14 +14,6 @@ const LandingContainer = styled("div")`
   background-repeat: no-repeat;
   background-size: cover;
 `;
-// const LandingContainer = styled(Container)`
-//   background-image: url(${LandingBgImage});
-//   height: 100%;
-//   width: 100%;
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   background-size: cover;
-// `;
 
 export default function Landing() {
   return (
@@ -65,9 +57,6 @@ export default function Landing() {
               <img
                 style={{
                   alignSelf: "flex-end",
-                  // position: "absolute",
-                  // bottom: 0,
-                  // right: "24px",
                 }}
                 src={AppPreview}
                 alt="App Preview"

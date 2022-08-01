@@ -17,7 +17,7 @@ const Landing = lazy(() => import("./pages/Landing"));
 const Channel = lazy(() => import("./pages/Channel"));
 const MetaTracks = lazy(() => import("./pages/MetaTracks"));
 const Tool = lazy(() => import("./pages/Tool"));
-const Guid = lazy(() => import("./pages/Guid"));
+const Guide = lazy(() => import("./pages/Guide"));
 const Support = lazy(() => import("./pages/Support"));
 const Login = lazy(() => import("./pages/Login"));
 
@@ -34,8 +34,12 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Landing" element={<Landing />} />
-              <Route path="/Login" element={<Login />} />
               <Route path="/Channel" element={<Channel />} />
+              <Route path="/MetaTracks" element={<MetaTracks />} />
+              <Route path="/Tool" element={<Tool />} />
+              <Route path="/Guide" element={<Guide />} />
+              <Route path="/Support" element={<Support />} />
+              <Route path="/Login" element={<Login />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

@@ -57,7 +57,7 @@ export default function PublicHeader() {
                 <Link to="/Tool">Tool</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/Guid">Guid</Link>
+                <Link to="/Guide">Guide</Link>
               </MenuItem>
               <MenuItem>
                 <Link to="/Support">Support</Link>
