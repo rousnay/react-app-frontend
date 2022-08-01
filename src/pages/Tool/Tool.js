@@ -14,16 +14,16 @@ export default function Tool() {
 
           <Grid item sm={12} md={6}>
             <Button variant="contained" color="logoblue">
-              MUI Button contained
+              Sample Button contained
             </Button>
             <Button variant="outlined" size="small" color="logoblue">
-              MUI Button outlineds
+              Sample Button outlined
             </Button>
             <Button variant="contained" size="medium" color="logored">
-              MUI Button outlineds
+              Sample Button contained
             </Button>
             <Button variant="outlined" size="medium" color="logored">
-              MUI Button outlineds
+              Sample Button outlined
             </Button>
           </Grid>
         </Grid>

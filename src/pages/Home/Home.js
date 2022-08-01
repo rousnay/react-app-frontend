@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Grid, Box } from "@mui/material";
-import logo from "../assets/logo.svg";
-import Colors from "../components/Colors";
+import logo from "../../assets/logo.svg";
+import Colors from "../../components/Colors";
 
 export default function Home() {
   return (

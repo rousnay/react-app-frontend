@@ -11,15 +11,16 @@ import { AppTheme } from "./assets/AppTheme";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import PublicHeader from "./layout-parts/PublicHeader";
-const Home = lazy(() => import("./pages/Home"));
-const Landing = lazy(() => import("./pages/Landing"));
-const Channel = lazy(() => import("./pages/Channel"));
-const MetaTracks = lazy(() => import("./pages/MetaTracks"));
-const Tool = lazy(() => import("./pages/Tool"));
-const Guide = lazy(() => import("./pages/Guide"));
-const Support = lazy(() => import("./pages/Support"));
-const Login = lazy(() => import("./pages/Login"));
+import PublicHeader from "./pages/Home/PublicHeader";
+
+const Home = lazy(() => import("./pages/Home/Home"));
+const Landing = lazy(() => import("./pages/Home/Landing"));
+const Channel = lazy(() => import("./pages/Channel/Channel"));
+const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
+const Tool = lazy(() => import("./pages/Tool/Tool"));
+const Guide = lazy(() => import("./pages/Guide/Guide"));
+const Support = lazy(() => import("./pages/Support/Support"));
+const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
 
 // import DatePicker from "./components/DatePicker";
 
@@ -39,7 +40,7 @@ function App() {
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />
               <Route path="/Support" element={<Support />} />
-              <Route path="/Login" element={<Login />} />
+              <Route path="/SignIn" element={<SignIn />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

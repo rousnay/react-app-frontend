@@ -7,9 +7,9 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import PostRequest from "../components/PostRequest";
+import PostRequest from "../../components/PostRequest";
 // import { styled } from "@mui/material/styles";
-import TreadmillBg from "../assets/treadmill-bg.svg";
+import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 // const LoginRightContainer = {
 //   backgroundImage: `url( ${TreadmillBg} )`,
@@ -29,22 +29,30 @@ import TreadmillBg from "../assets/treadmill-bg.svg";
 //   backgroundSize: "cover",
 // };
 
-export default function Login() {
+export default function SignIn() {
   return (
     <>
-      <Container>
+      <Container maxWidth="xl" sx={{}}>
         <Grid container>
           <Grid item sm={12} md={6}>
-            <Typography variant="h1" component="h2" color="logoblue">
+            <Typography variant="h2" color="logoblue">
               Login page
             </Typography>
 
-            <Box component="form" noValidate autoComplete="off">
+            <Box component="form" noValidate style={{ marginTop: "50px" }}>
               <div>
-                <TextField id="filled-basic" label="Filled" variant="filled" />
+                <TextField
+                  id="filled-basic"
+                  label="Your email"
+                  variant="filled"
+                />
               </div>
               <div>
-                <TextField id="filled-basic" label="Filled" variant="filled" />
+                <TextField
+                  id="filled-basic"
+                  label="Password"
+                  variant="filled"
+                />
               </div>
             </Box>
 
@@ -52,18 +60,8 @@ export default function Login() {
               SIGN IN
             </Button>
             <div style={{ marginTop: "50px" }}>
-              <Button variant="outlined" size="small" color="logoblue">
-                Sample Button
-              </Button>
-              <Button variant="contained" size="medium" color="logored">
-                Sample Button
-              </Button>
-              <Button variant="outlined" size="medium" color="logored">
-                Sample Button
-              </Button>
+              <PostRequest />
             </div>
-
-            <PostRequest />
           </Grid>
 
           <Grid
@@ -75,11 +73,13 @@ export default function Login() {
               height: "calc(100vh - 78px)",
               display: "flex",
               justifyContent: "center",
+              padding: "50px",
             }}
           >
             <img
               style={{
                 alignSelf: "center",
+                width: "100%",
               }}
               src={TreadmillBg}
               alt="App Preview"

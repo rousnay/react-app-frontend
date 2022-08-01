@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
 
 const MenuItem = styled("li")`
@@ -63,7 +63,7 @@ export default function PublicHeader() {
                 <Link to="/Support">Support</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/Login" style={SigninStyles}>
+                <Link to="/SignIn" style={SigninStyles}>
                   SIGN IN
                 </Link>
               </MenuItem>

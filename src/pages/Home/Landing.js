@@ -2,9 +2,9 @@ import React from "react";
 import { Container, Grid, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import LandingBgImage from "../assets/landing-bg-black.jpg";
-import LogoSquare from "../assets/logo-square.png";
-import AppPreview from "../assets/app-preview.png";
+import LandingBgImage from "../../assets/landing-bg-black.jpg";
+import LogoSquare from "../../assets/logo-square.png";
+import AppPreview from "../../assets/app-preview.png";
 
 const LandingContainer = styled("div")`
   background-image: url(${LandingBgImage});
@@ -37,7 +37,7 @@ export default function Landing() {
                   CREATOR
                 </span>
               </Typography>
-              <Link to="/Login">
+              <Link to="/SignIn">
                 <Button variant="contained" size="large" color="logoblue">
                   GET STARTED
                 </Button>
