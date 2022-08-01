@@ -21,7 +21,7 @@ const Tool = lazy(() => import("./pages/Tool/Tool"));
 const Guide = lazy(() => import("./pages/Guide/Guide"));
 const Support = lazy(() => import("./pages/Support/Support"));
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
-
+const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 // import DatePicker from "./components/DatePicker";
 
 function App() {
@@ -41,6 +41,8 @@ function App() {
               <Route path="/Guide" element={<Guide />} />
               <Route path="/Support" element={<Support />} />
               <Route path="/SignIn" element={<SignIn />} />
+
+              <Route path="/Dashboard" element={<Dashboard />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

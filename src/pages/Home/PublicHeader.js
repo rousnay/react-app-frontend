@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Typography } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
@@ -39,11 +39,9 @@ export default function PublicHeader() {
       <Container maxWidth="xl">
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h3" component="h3">
-              <Link to="/">
-                <img src={logo} alt="Logo" />
-              </Link>
-            </Typography>
+            <Link to="/">
+              <img src={logo} alt="Logo" />
+            </Link>
           </Grid>
           <Grid item xs={12} md={6}>
             <ul style={{ display: "flex", padding: 0 }}>

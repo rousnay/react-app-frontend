@@ -1,6 +1,13 @@
 import React from "react";
 import { Container, Grid, Typography, Button } from "@mui/material";
 
+// swal(
+//   <div>
+//     <h1>Hello world!</h1>
+//     <p>This is now rendered with JSX!</p>
+//   </div>
+// );
+
 export default function Tool() {
   return (
     <>
