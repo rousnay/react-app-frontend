@@ -1,16 +1,14 @@
 import React, { lazy, Suspense } from "react";
 import "./App.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import CssBaseline from "@mui/material/CssBaseline";
+import "@fontsource/montserrat/300.css";
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/700.css";
 // import { Container, Grid } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppTheme } from "./assets/AppTheme";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import PublicHeader from "./pages/Home/PublicHeader";
 
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -22,7 +20,6 @@ const Guide = lazy(() => import("./pages/Guide/Guide"));
 const Support = lazy(() => import("./pages/Support/Support"));
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
-// import DatePicker from "./components/DatePicker";
 
 function App() {
   return (
@@ -41,7 +38,6 @@ function App() {
               <Route path="/Guide" element={<Guide />} />
               <Route path="/Support" element={<Support />} />
               <Route path="/SignIn" element={<SignIn />} />
-
               <Route path="/Dashboard" element={<Dashboard />} />
             </Routes>
           </Suspense>

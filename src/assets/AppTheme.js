@@ -12,6 +12,10 @@ export const AppTheme = createTheme({
       xxl: 1536,
     },
   },
+  // typography - style Custom
+  typography: {
+    fontFamily: ['"Montserrat"', "sans-serif"].join(","),
+  },
   // palette - style Custom
   palette: {
     logored: {
