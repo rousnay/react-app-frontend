@@ -20,7 +20,8 @@ a{
   text-decoration: none;
 }
 .App-logo {
-  margin-top: 50px;
+
+  margin-top: 10vh;
   width: 100%;
   max-width: 500px;
   pointer-events: none;

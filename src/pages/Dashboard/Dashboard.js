@@ -18,13 +18,6 @@ import UserInfo from "./UserInfo";
 export default function Dashboard() {
   const userData = JSON.parse(localStorage.getItem("userData"));
 
-  const appBar = () => {
-    if (userData) {
-      return <PrivetHeader loginInfo={userData} />;
-    }
-    return <h1>Loginout</h1>;
-  };
-
   const userInfo = () => {
     if (userData) {
       return <UserInfo loginInfo={userData} />;

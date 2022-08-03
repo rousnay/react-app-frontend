@@ -21,7 +21,7 @@ export default function PrivetHeader(props) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
-    window.location.href = "/SignIn";
+    window.location.href = "/Landing";
   };
   const handleSignIn = () => {
     window.location.href = "/SignIn";
