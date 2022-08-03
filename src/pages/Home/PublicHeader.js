@@ -6,11 +6,11 @@ import { Link } from "react-router-dom";
 
 const MenuItem = styled("li")`
   list-style: none;
-  margin: 5px;
+  margin: 0 15px;
   & > a {
     font-weight: 700;
     font-size: 17px;
-    padding: 10px 15px;
+    padding: 5px;
     color: var(--themeblack);
     text-decoration: none;
     // &:hover {
@@ -44,10 +44,9 @@ export default function PublicHeader() {
             </Link>
           </Grid>
           <Grid item xs={12} md={6}>
-            <ul style={{ display: "flex", padding: 0 }}>
-              <MenuItem>
-                <Link to="/Landing">Landing</Link>
-              </MenuItem>
+            <ul
+              style={{ display: "flex", padding: 0, justifyContent: "right" }}
+            >
               <MenuItem>
                 <Link to="/MetaTracks">Meta Tracks</Link>
               </MenuItem>

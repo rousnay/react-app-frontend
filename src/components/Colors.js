@@ -4,10 +4,12 @@ import { styled } from "@mui/material/styles";
 
 const ColorPalette = styled("div")`
   display: flex;
+  justify-content: center;
   flex-flow: row wrap;
   & > div {
     color: white;
-    padding: 8px 10px;
+    padding: 7px;
+    font-size: 14px;
   }
 `;
 const LogoRed = styled(Box)`

@@ -27,13 +27,14 @@ export default function Landing() {
                 variant="h4"
                 sx={{
                   color: "white",
+                  fontWeight: 500,
                   padding: `50px`,
                   paddingLeft: `0px`,
                   lineHeight: "1.5em",
                 }}
               >
                 Anyone can create their own Path & become a <br />{" "}
-                <span style={{ color: `var(--logored)`, fontWeight: "bold" }}>
+                <span style={{ color: `var(--logored)`, fontWeight: 700 }}>
                   CREATOR
                 </span>
               </Typography>
