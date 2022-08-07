@@ -7,8 +7,8 @@ import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function loginUser(credentials) {
-  // console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/login", {
+  console.log(credentials);
+  return fetch("http://13.124.197.107:3000/user/verify/mobile", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,24 +17,25 @@ async function loginUser(credentials) {
   }).then((data) => data.json());
 }
 
-export default function SignIn() {
-  // const classes = useStyles();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  // const [deviceType, setDeviceType] = useState();
-  // const [deviceToken, setDeviceToken] = useState();
+export default function MobileVerification() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  const [countryCode, setCountryCode] = useState(userData.countryCode);
+  const [phoneNumber, setPhoneNumber] = useState(userData.phoneNumber);
+  const [otp, setOTP] = useState();
   const deviceType = "ios";
   const deviceToken = "string";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await loginUser({
-      email,
-      password,
+      countryCode,
+      phoneNumber,
+      otp,
       deviceType,
       deviceToken,
     });
-    console.log(response);
+
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
@@ -42,12 +43,10 @@ export default function SignIn() {
       }).then((value) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
-        window.location.href = "/Dashboard";
+        window.location.href = "/AddUserInformation";
       });
-    } else if (response.statusCode === 400) {
-      swal("Failed", response.message[0], "error");
     } else {
-      swal("Failed", response.message, "error");
+      swal("Failed", response.message[0], "error");
     }
   };
 
@@ -65,21 +64,35 @@ export default function SignIn() {
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
-                  name="email"
-                  label="Email Address"
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="countryCode"
+                  name="countryCode"
+                  label="Country Code"
+                  type="text"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
-                  id="password"
-                  name="password"
-                  label="Password"
-                  type="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  label="Mobile Number"
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="OPT"
+                  name="OTP"
+                  label="OTP"
+                  type="text"
+                  onChange={(e) => setOTP(e.target.value)}
                 />
                 <Button
                   type="submit"
@@ -88,7 +101,7 @@ export default function SignIn() {
                   color="logoblue"
                   className=""
                 >
-                  Sign In
+                  Verify
                 </Button>
               </form>
             </div>

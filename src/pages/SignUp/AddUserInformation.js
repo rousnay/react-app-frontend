@@ -2,52 +2,57 @@ import React from "react";
 import { useState } from "react";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-// import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
+// User data
+const userData = JSON.parse(localStorage.getItem("userData"));
+const userToken = userData.token;
+console.log(userToken);
+
 async function loginUser(credentials) {
-  // console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/login", {
+  console.log(credentials);
+
+  return fetch("http://13.124.197.107:3000/user", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      //   "Content-Type": "multipart/form-data",
+      Authorization: "Bearer " + userToken,
     },
-    body: JSON.stringify(credentials),
+    body: credentials,
   }).then((data) => data.json());
 }
 
-export default function SignIn() {
-  // const classes = useStyles();
+export default function AddUserInformation() {
+  const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  // const [deviceType, setDeviceType] = useState();
-  // const [deviceToken, setDeviceToken] = useState();
   const deviceType = "ios";
   const deviceToken = "string";
 
+  var formData = new FormData();
+  formData.append("username", username);
+  formData.append("email", email);
+  formData.append("password", password);
+  formData.append("deviceType", deviceType);
+  formData.append("deviceToken", deviceToken);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await loginUser({
-      email,
-      password,
-      deviceType,
-      deviceToken,
-    });
+    const response = await loginUser(formData);
+
     console.log(response);
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
         timer: 2000,
       }).then((value) => {
-        localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
         window.location.href = "/Dashboard";
       });
-    } else if (response.statusCode === 400) {
-      swal("Failed", response.message[0], "error");
     } else {
       swal("Failed", response.message, "error");
+      console.log(response);
     }
   };
 
@@ -60,6 +65,17 @@ export default function SignIn() {
 
             <div className="">
               <form className="" noValidate onSubmit={handleSubmit}>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="username"
+                  name="username"
+                  label="Username"
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -88,7 +104,7 @@ export default function SignIn() {
                   color="logoblue"
                   className=""
                 >
-                  Sign In
+                  Submit
                 </Button>
               </form>
             </div>

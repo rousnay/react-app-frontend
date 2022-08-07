@@ -1,29 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // import { useState } from "react";
 import { Container, Grid, Card, Box } from "@mui/material";
 // import { styled } from "@mui/material/styles";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 import PrivetHeader from "./PrivetHeader";
 import UserInfo from "./UserInfo";
-// async function loginUser(credentials) {
-//   return fetch("http://13.124.197.107:3000/user/info", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(credentials),
-//   }).then((data) => data.json());
-// }
+
+const userData = JSON.parse(localStorage.getItem("userData"));
+const userToken = localStorage.getItem("token");
 
 export default function Dashboard() {
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  const [userInformation, setInformation] = useState();
+  // Function to collect data
+  const getApiData = async () => {
+    const response = await fetch("http://13.124.197.107:3000/user/info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + userToken,
+      },
+    }).then((response) => response.json());
 
-  const userInfo = () => {
-    if (userData) {
-      return <UserInfo loginInfo={userData} />;
+    // update the state
+    if (response.message === "Success") {
+      setInformation(response);
+      localStorage.setItem("userData", JSON.stringify(response.data));
     }
-    return <h1>You are not logged in</h1>;
   };
+
+  useEffect(() => {
+    getApiData();
+  }, []);
+
+  console.log(userInformation);
 
   return (
     <>
@@ -37,8 +46,13 @@ export default function Dashboard() {
 
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <h2>Profile information </h2>
-
-            <Card className="">{userInfo()}</Card>
+            <Card className="">
+              {userData ? (
+                <UserInfo loginInfo={userData} />
+              ) : (
+                <h1>You are not logged in</h1>
+              )}
+            </Card>
           </Grid>
 
           <Grid

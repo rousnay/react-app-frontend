@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 
 export default function PrivetHeader(props) {
+  const userData = props.loginInfo;
+  let totalBalance = "$99,000";
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleMenu = (event) => {
@@ -27,23 +30,11 @@ export default function PrivetHeader(props) {
     window.location.href = "/SignIn";
   };
 
-  const userData = props.loginInfo;
-
-  let firstName;
-  let profilePic;
   let loginButton;
-  let totalBalance;
-
   if (userData) {
-    firstName = userData.username;
-    profilePic = userData.profilePhoto;
     loginButton = <MenuItem onClick={handleLogout}> Logout </MenuItem>;
-    totalBalance = "$99,000";
   } else {
-    firstName = "Guest";
-    profilePic = "";
     loginButton = <MenuItem onClick={handleSignIn}> Sign in </MenuItem>;
-    totalBalance = "$0,00";
   }
 
   return (
@@ -59,13 +50,13 @@ export default function PrivetHeader(props) {
           ></IconButton>
 
           <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-            Welcome, {firstName}
+            Welcome, {userData ? userData.username : "Guest"}
           </Typography>
 
           <div>
-            <span style={{}}>{totalBalance}</span>
+            <span style={{}}>{userData ? totalBalance : "$0,00"}</span>
             <IconButton onClick={handleMenu} color="inherit">
-              <Avatar src={profilePic} />
+              <Avatar src={userData ? userData.profilePhoto : ""} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -74,7 +65,6 @@ export default function PrivetHeader(props) {
               onClose={handleClose}
             >
               {loginButton}
-              {/* <MenuItem onClick={handleLogout}> Logout </MenuItem> */}
             </Menu>
           </div>
         </Toolbar>

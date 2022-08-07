@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const MenuItem = styled("li")`
   list-style: none;
-  margin: 0 15px;
+  margin: 0 10px;
   & > a {
     font-weight: 700;
     font-size: 17px;
@@ -47,6 +47,9 @@ export default function PublicHeader() {
             <ul
               style={{ display: "flex", padding: 0, justifyContent: "right" }}
             >
+              <MenuItem>
+                <Link to="/">Home</Link>
+              </MenuItem>
               <MenuItem>
                 <Link to="/MetaTracks">Meta Tracks</Link>
               </MenuItem>

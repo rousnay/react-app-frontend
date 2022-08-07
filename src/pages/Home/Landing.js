@@ -38,7 +38,7 @@ export default function Landing() {
                   CREATOR
                 </span>
               </Typography>
-              <Link to="/SignIn">
+              <Link to="/SignUp">
                 <Button variant="contained" size="large" color="logoblue">
                   GET STARTED
                 </Button>

@@ -8,7 +8,7 @@ import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function loginUser(credentials) {
   // console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/login", {
+  return fetch("http://13.124.197.107:3000/user/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,32 +17,29 @@ async function loginUser(credentials) {
   }).then((data) => data.json());
 }
 
-export default function SignIn() {
-  // const classes = useStyles();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  // const [deviceType, setDeviceType] = useState();
-  // const [deviceToken, setDeviceToken] = useState();
+export default function SignUp() {
+  const [countryCode, setCountryCode] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
   const deviceType = "ios";
   const deviceToken = "string";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await loginUser({
-      email,
-      password,
+      countryCode,
+      phoneNumber,
       deviceType,
       deviceToken,
     });
     console.log(response);
+
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
         timer: 2000,
       }).then((value) => {
-        localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
-        window.location.href = "/Dashboard";
+        window.location.href = "/MobileVerification";
       });
     } else if (response.statusCode === 400) {
       swal("Failed", response.message[0], "error");
@@ -65,21 +62,22 @@ export default function SignIn() {
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
-                  name="email"
-                  label="Email Address"
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="countryCode"
+                  name="countryCode"
+                  label="Country Code"
+                  type="text"
+                  onChange={(e) => setCountryCode(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
-                  id="password"
-                  name="password"
-                  label="Password"
-                  type="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  label="Mobile Number"
+                  type="text"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
                 <Button
                   type="submit"
@@ -88,7 +86,7 @@ export default function SignIn() {
                   color="logoblue"
                   className=""
                 >
-                  Sign In
+                  Get OTP
                 </Button>
               </form>
             </div>
