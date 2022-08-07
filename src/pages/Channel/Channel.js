@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Box, Card, Typography } from "@mui/material";
+import { Container, Grid, Box, Typography } from "@mui/material";
 import LogoSquare from "../../assets/logo-square.svg";
 
 export default function Channel() {
@@ -20,11 +20,11 @@ export default function Channel() {
             </Box>
           </Grid>
 
-          <Grid item sm={12} md={6}>
+          <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
             <img src={LogoSquare} alt="Logo" />
           </Grid>
 
-          <div className="">
+          {/* <div className="">
             <form className="" noValidate onSubmit={handleSubmit}>
               <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
                 <TextField
@@ -67,7 +67,7 @@ export default function Channel() {
                 </Button>
               </Grid>
             </form>
-          </div>
+          </div> */}
         </Grid>
       </Container>
     </>

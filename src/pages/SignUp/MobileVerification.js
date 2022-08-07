@@ -4,7 +4,7 @@ import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
-import TreadmillBg from "../../assets/treadmill-bg.svg";
+import OtpBg from "../../assets/otp-bg.svg";
 
 async function loginUser(credentials) {
   console.log(credentials);
@@ -124,7 +124,7 @@ export default function MobileVerification() {
                 alignSelf: "center",
                 width: "100%",
               }}
-              src={TreadmillBg}
+              src={OtpBg}
               alt="App Preview"
             />
           </Grid>
