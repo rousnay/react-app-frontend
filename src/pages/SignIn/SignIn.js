@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Container, Grid, Button, TextField } from "@mui/material";
+import { Link } from "react-router-dom";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
@@ -91,6 +92,12 @@ export default function SignIn() {
                   Sign In
                 </Button>
               </form>
+              <p>
+                Don’t have an account?{" "}
+                <Link to="/SignUp">
+                  <span style={{ color: "var(--logored)" }}>Sign Up</span>
+                </Link>
+              </p>
             </div>
           </Grid>
 

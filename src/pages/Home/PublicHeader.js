@@ -19,7 +19,7 @@ const MenuItem = styled("li")`
     // }
   }
   @media only screen and (max-width: 600px) {
-    background-color: lightblue;
+    // background-color: lightblue;
   }
 `;
 

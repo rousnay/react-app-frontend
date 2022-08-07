@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 
 const ListItem = styled("li")`
   list-style: none;
-  margin: 0 5px;
+  margin: 8px 4px;
   & > a {
     font-size: 14px;
     font-weight: 500;
@@ -22,7 +22,7 @@ const ListItem = styled("li")`
     }
   }
   @media only screen and (max-width: 600px) {
-    background-color: lightblue;
+    // background-color: lightblue;
   }
 `;
 
@@ -50,7 +50,7 @@ export default function Home() {
                   <Link to="/Landing">Landing</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/SignUp">SIGN UP</Link>
+                  <Link to="/SignUp">Sign Up</Link>
                 </ListItem>
                 <ListItem>
                   <Link to="/MobileVerification">OTP Verification</Link>
@@ -59,7 +59,10 @@ export default function Home() {
                   <Link to="/AddUserInformation">Add User Information</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/SignIn">SIGN IN</Link>
+                  <Link to="/SignIn">Sing In</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/Channel">Channel</Link>
                 </ListItem>
                 <ListItem>
                   <Link to="/Dashboard">Dashboard</Link>

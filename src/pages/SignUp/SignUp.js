@@ -4,7 +4,7 @@ import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
-import TreadmillBg from "../../assets/treadmill-bg.svg";
+import OtpBg from "../../assets/otp-bg.svg";
 
 async function loginUser(credentials) {
   // console.log(credentials);
@@ -54,7 +54,11 @@ export default function SignUp() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <img src={logo} alt="Logo" />
-
+            <h3>Verify your Identity</h3>
+            <p>
+              FINUTSS is receiving identity verification to prevent identity
+              theft and encourage transparent community operation.
+            </p>
             <div className="">
               <form className="" noValidate onSubmit={handleSubmit}>
                 <TextField
@@ -79,6 +83,12 @@ export default function SignUp() {
                   type="text"
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
+
+                <p style={{ fontStyle: "italic" }}>
+                  The verification code is valid upto 10 minutes. If the input
+                  time is exceeded, press resend to receive a new verification
+                  code.
+                </p>
                 <Button
                   type="submit"
                   fullWidth
@@ -86,7 +96,7 @@ export default function SignUp() {
                   color="logoblue"
                   className=""
                 >
-                  Get OTP
+                  Next
                 </Button>
               </form>
             </div>
@@ -109,7 +119,7 @@ export default function SignUp() {
                 alignSelf: "center",
                 width: "100%",
               }}
-              src={TreadmillBg}
+              src={OtpBg}
               alt="App Preview"
             />
           </Grid>

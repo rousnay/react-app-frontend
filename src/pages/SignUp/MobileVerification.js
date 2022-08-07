@@ -101,7 +101,7 @@ export default function MobileVerification() {
                   color="logoblue"
                   className=""
                 >
-                  Verify
+                  Next
                 </Button>
               </form>
             </div>

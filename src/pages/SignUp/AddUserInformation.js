@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
@@ -49,6 +50,15 @@ export default function AddUserInformation() {
       }).then((value) => {
         localStorage.setItem("userData", JSON.stringify(response.data));
         window.location.href = "/Dashboard";
+
+        swal("Success", response.message, "success", {
+          title: "Sweet!",
+          text: "Modal with a custom image.",
+          imageUrl: "https://unsplash.it/400/200",
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image",
+        });
       });
     } else {
       swal("Failed", response.message, "error");
@@ -108,6 +118,12 @@ export default function AddUserInformation() {
                 </Button>
               </form>
             </div>
+            <p>
+              Already have an account?{" "}
+              <Link to="/SignUp">
+                <span style={{ color: "var(--logored)" }}>Sign in</span>
+              </Link>
+            </p>
           </Grid>
 
           <Grid

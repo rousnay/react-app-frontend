@@ -40,11 +40,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Landing" element={<Landing />} />
-              <Route path="/Channel" element={<Channel />} />
-              <Route path="/MetaTracks" element={<MetaTracks />} />
-              <Route path="/Tool" element={<Tool />} />
-              <Route path="/Guide" element={<Guide />} />
-              <Route path="/Support" element={<Support />} />
               <Route path="/SignUp" element={<SignUp />} />
               <Route
                 path="/MobileVerification"
@@ -54,9 +49,13 @@ function App() {
                 path="/AddUserInformation"
                 element={<AddUserInformation />}
               />
-
               <Route path="/SignIn" element={<SignIn />} />
+              <Route path="/Channel" element={<Channel />} />
               <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/MetaTracks" element={<MetaTracks />} />
+              <Route path="/Tool" element={<Tool />} />
+              <Route path="/Guide" element={<Guide />} />
+              <Route path="/Support" element={<Support />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
