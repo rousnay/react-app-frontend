@@ -3,9 +3,12 @@ import React from "react";
 // Import React FilePond
 import { FilePond, registerPlugin } from "react-filepond";
 
+import * as MyFilePond from "filepond";
+import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
+
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
-
+import "filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css";
 // Import the Image EXIF Orientation and Image Preview plugins
 // Note: These need to be installed separately
 // `npm i filepond-plugin-image-preview filepond-plugin-image-exif-orientation --save`
@@ -14,7 +17,12 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
 // Register the plugins
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+registerPlugin(
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImagePreview,
+  FilePondPluginMediaPreview
+);
+MyFilePond.registerPlugin(FilePondPluginMediaPreview);
 
 const userToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
@@ -37,7 +45,7 @@ const setServer = {
     // file is the actual file object to send
     const formData = new FormData();
     console.log(file);
-    formData.append(fieldName, file, file.name);
+    formData.append("image", file);
 
     formData.append("id", "aaafb550-6ef9-45cf-a8a1-2cf853410577");
     formData.append("name", "Modified Channel");

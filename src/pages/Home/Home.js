@@ -44,6 +44,7 @@ export default function Home() {
                   display: "flex",
                   padding: 0,
                   justifyContent: "center",
+                  flexWrap: "wrap",
                 }}
               >
                 <ListItem>
@@ -62,10 +63,10 @@ export default function Home() {
                   <Link to="/SignIn">Sing In</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/Channel">Channel</Link>
+                  <Link to="/Dashboard">Dashboard</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/Dashboard">Dashboard</Link>
+                  <Link to="/Channel">Channel</Link>
                 </ListItem>
               </ul>
             </Grid>

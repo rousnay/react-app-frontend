@@ -2,7 +2,7 @@ import { React, useState, useEffect, useRef } from "react";
 import { Container, Grid, Typography, Button } from "@mui/material";
 import swal from "sweetalert";
 
-import Login from "../SignIn/Login";
+import Login from "../../components/Login";
 
 export default function Tool() {
   const textTitle = useRef();

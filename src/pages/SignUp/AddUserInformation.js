@@ -48,17 +48,9 @@ export default function AddUserInformation() {
         buttons: false,
         timer: 2000,
       }).then((value) => {
+        localStorage.removeItem("userData");
         localStorage.setItem("userData", JSON.stringify(response.data));
-        window.location.href = "/Dashboard";
-
-        swal("Success", response.message, "success", {
-          title: "Sweet!",
-          text: "Modal with a custom image.",
-          imageUrl: "https://unsplash.it/400/200",
-          imageWidth: 400,
-          imageHeight: 200,
-          imageAlt: "Custom image",
-        });
+        window.location.href = "/SignIn";
       });
     } else {
       swal("Failed", response.message, "error");

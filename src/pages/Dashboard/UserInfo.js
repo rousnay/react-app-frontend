@@ -1,6 +1,6 @@
 import React from "react";
-import { CardContent } from "@mui/material";
-
+import { CardContent, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 export default function UserInfo(props) {
   const userData = props.loginInfo;
   return (
@@ -41,6 +41,17 @@ export default function UserInfo(props) {
           <span style={{ fontWeight: "bold" }}>Account Type: </span>
           {userData.accountType}
         </p>
+        <Link to="/Channel">
+          {" "}
+          <Button
+            fullWidth
+            variant="contained"
+            color="themegreen"
+            className="channelSubmit"
+          >
+            Create Channel
+          </Button>
+        </Link>
       </CardContent>
     </>
   );

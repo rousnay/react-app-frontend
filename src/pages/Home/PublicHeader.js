@@ -38,14 +38,19 @@ export default function PublicHeader() {
     <>
       <Container maxWidth="xl">
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Link to="/">
               <img src={logo} alt="Logo" />
             </Link>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={8}>
             <ul
-              style={{ display: "flex", padding: 0, justifyContent: "right" }}
+              style={{
+                display: "flex",
+                padding: 0,
+                justifyContent: "right",
+                flexWrap: "wrap",
+              }}
             >
               <MenuItem>
                 <Link to="/">Home</Link>

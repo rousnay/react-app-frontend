@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import {
   Container,
   Grid,
@@ -9,27 +11,23 @@ import {
 } from "@mui/material";
 import LogoSquare from "../../assets/logo-square.svg";
 import swal from "sweetalert";
-import Process from "./Process";
-// import ReactDOM from "react-dom";
+// Import React FilePond
+import Uploader from "./uploader";
 
-// User data
-// const userData = JSON.parse(localStorage.getItem("userData"));
-// const userToken = userData.token;
 const userToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
 
-console.log(userToken);
+const baseURL = "http://13.124.197.107:3000";
 
-async function loginUser(credentials) {
-  console.log(credentials);
-
+async function loginUser(formData) {
+  console.log(formData);
   return fetch("http://13.124.197.107:3000/channel", {
     method: "PUT",
     headers: {
       //   "Content-Type": "multipart/form-data",
       Authorization: "Bearer " + userToken,
     },
-    body: credentials,
+    body: formData,
   }).then((data) => data.json());
 }
 
@@ -43,11 +41,12 @@ export default function Channel() {
   formData.append("id", "aaafb550-6ef9-45cf-a8a1-2cf853410577");
   formData.append("name", name);
   formData.append("description", description);
-  formData.append("image", image);
-  formData.append("bannerImage", bannerImage);
+  formData.append("image", image[0]);
+  formData.append("bannerImage", bannerImage[0]);
 
-  const handleSubmit = async (e) => {
+  const submitImages = async (e) => {
     e.preventDefault();
+
     const response = await loginUser(formData);
 
     console.log(response);
@@ -58,12 +57,34 @@ export default function Channel() {
       }).then((value) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
-        window.location.href = "/AddUserInformation";
+        // window.location.href = "/AddUserInformation";
       });
     } else {
       swal("Failed", response.message[0], "error");
     }
   };
+
+  function setImagedata(fileItems) {
+    const _imageFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+    console.log(_imageFileItem[0]);
+    setImage(_imageFileItem);
+  }
+  function setBannerImagedata(fileItems) {
+    const _BannerImageFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+
+    //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
+
+    console.log(_BannerImageFileItem[0]);
+    setImage(_BannerImageFileItem);
+  }
+
+  // useEffect(() => {
+  //   const uyrimg = myimg;
+  // });
 
   return (
     <>
@@ -85,7 +106,7 @@ export default function Channel() {
           <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
             <img src={LogoSquare} alt="Logo" />
           </Grid>
-          <form style={{ width: "100%" }} noValidate onSubmit={handleSubmit}>
+          <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
             <Grid container>
               <Grid item sm={12} md={6}>
                 <TextField
@@ -113,17 +134,27 @@ export default function Channel() {
 
               <Grid item sm={12} md={6}>
                 <div>
-                  <Process
+                  <Uploader
                     files={image}
-                    onupdatefiles={setImage}
-                    // server={setServer}
+                    acceptedFileTypes={["image/png"]}
+                    allowMultiple={false}
+                    allowMultiple={false}
+                    maxFiles={1}
+                    onupdatefiles={(fileItems) => setImagedata(fileItems)}
+                    // onupdatefiles={(fileItems) => setImage(fileItems.map(fileItem => fileItem.file)}
                     name="image"
+                    labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                   />
-                  <Process
+
+                  <Uploader
                     files={bannerImage}
-                    onupdatefiles={setBannerImage}
-                    // server={setServer}
+                    acceptedFileTypes={["image/png"]}
+                    allowMultiple={false}
+                    maxFiles={1}
+                    onupdatefiles={(fileItems) => setBannerImagedata(fileItems)}
+                    // onupdatefiles={(fileItems) => setImage(fileItems.map(fileItem => fileItem.file)}
                     name="bannerImage"
+                    labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                   />
                 </div>
 

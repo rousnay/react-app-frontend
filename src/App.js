@@ -50,8 +50,8 @@ function App() {
                 element={<AddUserInformation />}
               />
               <Route path="/SignIn" element={<SignIn />} />
-              <Route path="/Channel" element={<Channel />} />
               <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/Channel" element={<Channel />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />
