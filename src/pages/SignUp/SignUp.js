@@ -6,14 +6,14 @@ import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
-async function loginUser(credentials) {
+async function loginUser(payloadData) {
   // console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/signup", {
+  return fetch("https://api.finutss.com/user/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(payloadData),
   }).then((data) => data.json());
 }
 

@@ -6,16 +6,20 @@ import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
-async function loginUser(credentials) {
-  console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/verify/mobile", {
+async function loginUser(payloadData) {
+  console.log(payloadData);
+  return fetch("https://api.finutss.com/user/verify/mobile", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(credentials),
+    body: JSON.stringify(payloadData),
   }).then((data) => data.json());
 }
+
+const genDeviceToken = (() => {
+  return Math.random().toString(36).substring(2, 8);
+})();
 
 export default function MobileVerification() {
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -24,7 +28,7 @@ export default function MobileVerification() {
   const [phoneNumber, setPhoneNumber] = useState(userData.phoneNumber);
   const [otp, setOTP] = useState();
   const deviceType = "ios";
-  const deviceToken = "string";
+  const deviceToken = genDeviceToken;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

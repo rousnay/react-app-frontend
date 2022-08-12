@@ -9,7 +9,7 @@ import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function loginUser(credentials) {
   // console.log(credentials);
-  return fetch("http://13.124.197.107:3000/user/login", {
+  return fetch("https://api.finutss.com/user/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,14 +18,20 @@ async function loginUser(credentials) {
   }).then((data) => data.json());
 }
 
+const genDeviceToken = (() => {
+  return Math.random().toString(36).substring(2, 8);
+})();
+
 export default function SignIn() {
   // const classes = useStyles();
+  console.log(genDeviceToken);
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   // const [deviceType, setDeviceType] = useState();
   // const [deviceToken, setDeviceToken] = useState();
   const deviceType = "ios";
-  const deviceToken = "string";
+  const deviceToken = genDeviceToken;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

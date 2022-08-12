@@ -13,16 +13,17 @@ export default function Dashboard() {
   const [userInformation, setInformation] = useState();
   // Function to collect data
   const getApiData = async () => {
-    const response = await fetch("http://13.124.197.107:3000/user/info", {
+    const response = await fetch("https://api.finutss.com/user/info", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + userToken,
       },
-    }).then((response) => response.json());
+    }).then((response) => console.log(response));
 
     // update the state
     if (response.message === "Success") {
+      console.log(response);
       setInformation(response);
       localStorage.setItem("userData", JSON.stringify(response.data));
     }
@@ -32,7 +33,9 @@ export default function Dashboard() {
     getApiData();
   }, []);
 
-  console.log(userInformation);
+  useEffect(() => {
+    console.log(userInformation);
+  });
 
   return (
     <>

@@ -68,6 +68,9 @@ export default function Home() {
                 <ListItem>
                   <Link to="/Channel">Channel</Link>
                 </ListItem>
+                <ListItem>
+                  <Link to="/CreateTrack">CreateTrack</Link>
+                </ListItem>
               </ul>
             </Grid>
           </Grid>

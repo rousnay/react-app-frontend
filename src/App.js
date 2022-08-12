@@ -13,11 +13,6 @@ import PublicHeader from "./pages/Home/PublicHeader";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Landing = lazy(() => import("./pages/Home/Landing"));
-const Channel = lazy(() => import("./pages/Channel/Channel"));
-const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
-const Tool = lazy(() => import("./pages/Tool/Tool"));
-const Guide = lazy(() => import("./pages/Guide/Guide"));
-const Support = lazy(() => import("./pages/Support/Support"));
 const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
 const MobileVerification = lazy(() =>
   import("./pages/SignUp/MobileVerification")
@@ -25,9 +20,14 @@ const MobileVerification = lazy(() =>
 const AddUserInformation = lazy(() =>
   import("./pages/SignUp/AddUserInformation")
 );
-
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
+const Channel = lazy(() => import("./pages/Channel/Channel"));
+const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
+const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
+const Tool = lazy(() => import("./pages/Tool/Tool"));
+const Guide = lazy(() => import("./pages/Guide/Guide"));
+const Support = lazy(() => import("./pages/Support/Support"));
 
 function App() {
   return (
@@ -52,6 +52,7 @@ function App() {
               <Route path="/SignIn" element={<SignIn />} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Channel" element={<Channel />} />
+              <Route path="/CreateTrack" element={<CreateTrack />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />

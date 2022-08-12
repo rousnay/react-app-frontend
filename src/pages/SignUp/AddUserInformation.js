@@ -11,16 +11,14 @@ const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = userData.token;
 console.log(userToken);
 
-async function loginUser(credentials) {
-  console.log(credentials);
-
-  return fetch("http://13.124.197.107:3000/user", {
+async function loginUser(payloadData) {
+  return fetch("https://api.finutss.com/user", {
     method: "POST",
     headers: {
       //   "Content-Type": "multipart/form-data",
       Authorization: "Bearer " + userToken,
     },
-    body: credentials,
+    body: payloadData,
   }).then((data) => data.json());
 }
 
@@ -28,32 +26,28 @@ export default function AddUserInformation() {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const deviceType = "ios";
-  const deviceToken = "string";
 
   var formData = new FormData();
   formData.append("username", username);
   formData.append("email", email);
   formData.append("password", password);
-  formData.append("deviceType", deviceType);
-  formData.append("deviceToken", deviceToken);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const response = await loginUser(formData);
 
-    console.log(response);
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
         timer: 2000,
       }).then((value) => {
+        localStorage.removeItem("token");
         localStorage.removeItem("userData");
-        localStorage.setItem("userData", JSON.stringify(response.data));
         window.location.href = "/SignIn";
       });
     } else {
-      swal("Failed", response.message, "error");
+      swal("Failed", response.message[0], "error");
       console.log(response);
     }
   };

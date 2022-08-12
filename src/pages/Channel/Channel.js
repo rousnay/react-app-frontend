@@ -22,16 +22,16 @@ console.log(userToken);
 //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
 // const channelId = "aaafb550-6ef9-45cf-a8a1-2cf853410577";
 
-const baseURL = "http://13.124.197.107:3000";
-async function loginUser(formData) {
-  console.log(formData);
+const baseURL = "https://api.finutss.com";
+async function loginUser(payloadData) {
+  console.log(payloadData);
   return fetch(`${baseURL}/channel`, {
     method: "POST",
     headers: {
       //   "Content-Type": "multipart/form-data",
       Authorization: "Bearer " + userToken,
     },
-    body: formData,
+    body: payloadData,
   }).then((data) => data.json());
 }
 
