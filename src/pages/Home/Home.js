@@ -69,7 +69,19 @@ export default function Home() {
                   <Link to="/Channel">Channel</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/CreateTrack">CreateTrack</Link>
+                  <Link to="/CreateTrack">Create Track</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/ReactMapGl">React-Map-Gl</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/ReactMapDraw">React-Map-Draw</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/ReactMapGLView">React-Map-GL-View</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/Draw">Draw</Link>
                 </ListItem>
               </ul>
             </Grid>

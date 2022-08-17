@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Container, Grid, Typography } from "@mui/material";
 
+import { Editor, DrawPolygonMode, DrawPointMode } from "@mapbox/mapbox-gl-draw";
+import { LayerStyle } from "./LayerStyle";
+import { GeoData } from "./SampleGeoJSON";
+import MapGL from "@urbica/react-map-gl";
+import Draw from "@urbica/react-map-gl-draw";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "mapbox-gl/dist/mapbox-gl.css";
 // import "./index.css";
@@ -11,7 +19,7 @@ mapboxgl.accessToken =
 // const MAPBOX_TOKEN =
 //   "pk.eyJ1Ijoicm91c25heSIsImEiOiJjbDZxYmhtdnMwYzA0M2ttaG45b2FxMGR3In0.kuDFvp9QAHL5W8u_JAbxbA";
 
-export default function CreateTrack() {
+export default function MapDraw() {
   // for the initial latitude, longitude, and zoom of the map
   const mapContainer = useRef(null);
   const map = useRef(null);
