@@ -26,11 +26,10 @@ const Channel = lazy(() => import("./pages/Channel/Channel"));
 
 const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
 const ReactMapGl = lazy(() => import("./pages/MetaTracks/ReactMapGl"));
-const ReactMapGLView = lazy(() => import("./pages/MetaTracks/ReactMapGLView"));
 const ReactMapDraw = lazy(() => import("./pages/MetaTracks/ReactMapDraw"));
-// const Draw = lazy(() => import("./pages/MetaTracks/Draw"));
 const UrbicaGl = lazy(() => import("./pages/MetaTracks/UrbicaGl"));
-
+const Draw = lazy(() => import("./pages/MetaTracks/Draw"));
+const ReactMapGLView = lazy(() => import("./pages/MetaTracks/ReactMapGLView"));
 const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
 const Tool = lazy(() => import("./pages/Tool/Tool"));
 const Guide = lazy(() => import("./pages/Guide/Guide"));
@@ -62,10 +61,10 @@ function App() {
 
               <Route path="/CreateTrack" element={<CreateTrack />} />
               <Route path="/ReactMapGl" element={<ReactMapGl />} />
-              <Route path="/ReactMapGLView" element={<ReactMapGLView />} />
               <Route path="/ReactMapDraw" element={<ReactMapDraw />} />
-              {/* <Route path="/Draw" element={<Draw />} /> */}
               <Route path="/UrbicaGl" element={<UrbicaGl />} />
+              <Route path="/Draw" element={<Draw />} />
+              <Route path="/ReactMapGLView" element={<ReactMapGLView />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />

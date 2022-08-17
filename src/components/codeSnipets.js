@@ -42,3 +42,15 @@ swal("Success", response.message, "success", {
   imageHeight: 200,
   imageAlt: "Custom image",
 });
+
+
+=========================
+
+var Draw = new MapboxDraw();
+map.addControl(Draw, 'bottom-left');
+
+
+document.getElementById('button').onclick = function () {
+  draw.changeMode('draw_polygon');
+
+}

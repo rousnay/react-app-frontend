@@ -77,12 +77,12 @@ export default function Home() {
                 <ListItem>
                   <Link to="/ReactMapDraw">React-Map-Draw</Link>
                 </ListItem>
-                <ListItem>
+                {/* <ListItem>
                   <Link to="/ReactMapGLView">React-Map-GL-View</Link>
                 </ListItem>
                 <ListItem>
                   <Link to="/Draw">Draw</Link>
-                </ListItem>
+                </ListItem> */}
               </ul>
             </Grid>
           </Grid>

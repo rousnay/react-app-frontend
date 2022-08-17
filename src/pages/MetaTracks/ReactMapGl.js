@@ -1,19 +1,13 @@
 import React, { useState, useEffect, useReducer } from "react";
+// import map from "mapbox-gl";
 import Map, { useControl, Source, Layer } from "react-map-gl";
 import { LayerStyle } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
-
-import MapGL from "@urbica/react-map-gl";
-import Draw from "@urbica/react-map-gl-draw";
-
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-
-// import ReactMapboxGl, { GeoJSONLayer } from "react-mapbox-gl";
-
 import { addLayer, selectLayer } from "./actions";
 import { initialState, reducer } from "./reducer";
 import GeoJsonModel from "./GeoJsonModel";
-
+// import ReactMapboxGl, { GeoJSONLayer } from "react-mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
@@ -26,18 +20,44 @@ const MAPBOX_TOKEN =
 //   zoom: 13,
 // };
 
-function DrawControl(props: DrawControlProps) {
-  useControl(() => new MapboxDraw(props), {
-    position: props.position,
-  });
+// function DrawControl(props: DrawControlProps) {
+//   useControl(() => new MapboxDraw(props), {
+//     position: props.position,
+//   });
 
+//   return null;
+// }
+function DrawControl(props) {
+  useControl(
+    function () {
+      return new MapboxDraw(props);
+    },
+    {
+      position: props.position,
+    }
+  );
   return null;
 }
+
+const layerStyle1 = {
+  id: "point",
+  type: "circle",
+  paint: {
+    "circle-radius": 5,
+    "circle-color": "#007cbf",
+  },
+};
+
+// var Draw = new MapboxDraw();
+
+// map.addControl(Draw, "bottom-left");
 
 export default function ReactMapGl() {
   // const [viewport, setViewport] = useState(initialViewport);
   // console.log(GeoData);
   // const data =
+
+  // const [geoData, setgeoData] = useState({});
 
   const [data, setData] = useState({
     type: "FeatureCollection",
@@ -46,14 +66,12 @@ export default function ReactMapGl() {
         type: "Feature",
         properties: {},
         geometry: {
-          coordinates: [-122.41411987304815, 37.792209769935084],
+          coordinates: [127.075062, 37.503365],
           type: "Point",
         },
       },
     ],
   });
-
-  const [position, setPosition] = useState("top-left");
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -86,8 +104,20 @@ export default function ReactMapGl() {
     }
   };
 
+  // const [mode, setMode] = useState("draw_point");
+
   return (
     <>
+      {/* <div>Mode: {mode}</div>
+      <div>
+        <button onClick={() => setMode("simple_select")}>simple_select</button>
+        <button onClick={() => setMode("draw_line_string")}>
+          draw_line_string
+        </button>
+        <button onClick={() => setMode("draw_polygon")}>draw_polygon</button>
+        <button onClick={() => setMode("draw_point")}>draw_point</button>
+      </div> */}
+
       <Map
         initialViewState={{
           longitude: 127.075062,
@@ -108,14 +138,17 @@ export default function ReactMapGl() {
           position="top-left"
           displayControlsDefault={false}
           controls={{
-            // polygon: true,
             point: true,
             trash: true,
           }}
+          defaultMode={"draw_point"}
+          // modes={mode}
+          // onDrawModeChange={({ mode }) => setMode(mode)}
           onDrawCreate={onDrawCreate}
           onDrawUpdate={onDrawUpdate}
           onDrawDelete={onDrawDelete}
           onDrawSelectionChange={onDrawSelectionChange}
+          onChange={(data) => setData(data)}
         />
 
         {/* <Draw
@@ -126,13 +159,19 @@ export default function ReactMapGl() {
 
         <Source type="geojson" data={GeoData}>
           <Layer {...LayerStyle} />
+          <Layer {...layerStyle1} />
         </Source>
 
-        {state.layers.map((layer, key) => (
+        {/* <Source type="geojson" data={GeoData}>
+          <Layer {...layerStyle1} />
+        </Source> */}
+
+        {/* {state.layers.map((layer, key) => (
           <Layer key={key} data={layer} />
-        ))}
+        ))} */}
       </Map>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(state, null, 2)}</pre> */}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </>
   );
 }
