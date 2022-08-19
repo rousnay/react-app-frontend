@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-// import Map, { useControl, Source, Layer } from "react-map-gl";
-import MapGL, { Source, Layer } from "@urbica/react-map-gl";
+// import map from "mapbox-gl";
+import MapGL, { Source, Layer, Marker } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
+import PinPoint from "./PinPoint";
+import PinInfo from "./PinInfo";
 
 import { LayerStyle } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
@@ -9,6 +11,22 @@ import { GeoData } from "./SampleGeoJSON";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+
+import "./style.css";
+const style = {
+  padding: "10px",
+  color: "#fff",
+  cursor: "pointer",
+  background: "#1978c8",
+  borderRadius: "6px",
+};
+
+const GeoCoordinates = GeoData.features[0].geometry.coordinates;
+console.log(typeof GeoCoordinates);
+console.log(typeof GeoData.features[0].geometry);
+console.log(GeoCoordinates);
+
+console.log(GeoData.features[0].geometry.coordinates[0]);
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
@@ -44,16 +62,20 @@ const MAPBOX_ACCESS_TOKEN =
 // };
 
 const layerStyle1 = {
-  id: "defaultPoint",
-  type: "line",
+  id: "point",
+  type: "circle",
   source: "route",
   layout: {
-    "line-join": "round",
-    "line-cap": "round",
+    // "line-join": "round",
+    // "line-cap": "round",
+    // "symbol-placement": "line",
+    // "text-field": "{title}", // part 2 of this is how to do it
+    // "text-size": 16,
   },
+
   paint: {
-    "line-color": "#888",
-    "line-width": 8,
+    "circle-radius": 3,
+    "circle-color": "#007cbf",
   },
 };
 
@@ -63,9 +85,11 @@ export default function ReactMapDraw() {
     features: [
       {
         type: "Feature",
-        properties: {},
+        properties: {
+          title: "aaaaaa",
+        },
         geometry: {
-          coordinates: [-122.41411987304815, 37.792209769935084],
+          coordinates: [127.075062, 37.503365],
           type: "Point",
         },
       },
@@ -73,6 +97,12 @@ export default function ReactMapDraw() {
   });
 
   // const [position, setPosition] = useState("top-right");
+
+  const [position, setPosition] = useState({
+    longitude: 127.075062,
+    latitude: 37.509365,
+  });
+
   const [mode, setMode] = useState("simple_select");
 
   useEffect(() => {
@@ -90,6 +120,43 @@ export default function ReactMapDraw() {
   //     longitude: -122.486052,
   //     zoom: 15,
   //   });
+
+  // const onMarkerClick = (event) => {
+  //   alert("You clicked on marker");
+  //   event.stopPropagation();
+  // };
+  const onDragEnd = (lngLat) => {
+    setPosition({ longitude: lngLat.lng, latitude: lngLat.lat });
+  };
+  const onMapClick = (event) => {
+    setPosition({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
+  };
+
+  // const _renderCityMarker = (lngLat, index) => {
+  //   return (
+  //     <Marker
+  //       key={`marker-${index}`}
+  //       longitude={lngLat[index][0]}
+  //       latitude={lngLat[index][0]}
+  //     >
+  //       <PinPoint
+  //         ids={index + 1}
+  //         // size={20}
+  //         // onClick={() => this.setState({ popupInfo: city })}
+  //       />
+  //     </Marker>
+  //   );
+  // };
+
+  const pointMarker = GeoCoordinates.map(
+    (lngLat, index) => (
+      <Marker key={index} longitude={lngLat[0]} latitude={lngLat[1]}>
+        <PinPoint ids={index} />
+      </Marker>
+    )
+
+    // console.log(index)
+  );
 
   return (
     <>
@@ -112,9 +179,10 @@ export default function ReactMapDraw() {
         style={{ width: "100%", height: "400px" }}
         mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
         accessToken={MAPBOX_ACCESS_TOKEN}
-        latitude={37.503365}
         longitude={127.075062}
+        latitude={37.503365}
         zoom={13}
+        // onClick={onMapClick}
       >
         <Source id="route" type="geojson" data={GeoData} />
         <Layer {...LayerStyle} />
@@ -136,6 +204,19 @@ export default function ReactMapDraw() {
           onChange={(data) => setData(data)}
           position={"top-right"}
         />
+
+        {/* <Marker
+          longitude={position.longitude}
+          latitude={position.latitude}
+          // onClick={onMarkerClick}
+          // onDragEnd={onDragEnd}
+          // draggable
+        >
+          <div style={style}>1</div>
+
+
+        </Marker> */}
+        {pointMarker}
       </MapGL>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </>

@@ -1,6 +1,7 @@
 import React from "react";
 import { CardContent, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+
 export default function UserInfo(props) {
   const userData = props.loginInfo;
   return (

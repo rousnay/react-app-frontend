@@ -7,6 +7,9 @@ export const LayerStyle = {
   layout: {
     "line-join": "round",
     "line-cap": "round",
+    // "symbol-placement": "line",
+    // "text-field": "retwert", // part 2 of this is how to do it
+    // "text-size": 16,
   },
   paint: {
     "line-color": "#f73a6b",

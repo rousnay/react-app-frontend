@@ -3,7 +3,7 @@
   padding: 0;
 }
 
-pre {
+/* pre {
   display: block;
   position: fixed;
   top: 10px;
@@ -11,4 +11,13 @@ pre {
   width: 30%;
   background-color: #fff;
   padding: 10px;
+} */
+
+.marker {
+  background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
+  background-size: cover;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  cursor: pointer;
 }
