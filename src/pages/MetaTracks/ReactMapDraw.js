@@ -25,51 +25,41 @@ import { CloseFullscreenOutlined } from "@mui/icons-material";
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
-const style = {
-  padding: "10px",
-  color: "#fff",
-  cursor: "pointer",
-  background: "#1978c8",
-  borderRadius: "6px",
-};
+const GeoCoordinates = GeoData.features[0].geometry.coordinates;
+const theMiddle = Math.floor(GeoCoordinates.length / 2);
+const theMiddleCoordinates = GeoCoordinates[theMiddle];
+
+var line = turf.lineString(GeoCoordinates);
+const turfFeatures = turf.points(GeoCoordinates);
+const centerFeatures = turf.center(turfFeatures);
+const centralCoordinates = centerFeatures.geometry.coordinates;
 
 const initialData = {
   type: "FeatureCollection",
   features: [
     {
+      id: "initialID742ddabd3f",
       type: "Feature",
-      properties: {
-        title: "aaaaaa",
-      },
+      properties: {},
       geometry: {
-        coordinates: [127.0724674540391, 37.50263022192452],
+        coordinates: theMiddleCoordinates,
         type: "Point",
       },
     },
   ],
 };
 const getLocalData = JSON.parse(localStorage.getItem("layers")) || initialData;
-const GeoCoordinatesLocal = getLocalData.features.map(
-  (features, i) => features.geometry.coordinates
-);
 
-const turfFeatures = turf.points(GeoCoordinatesLocal);
-const centerFeatures = turf.center(turfFeatures);
-const centralCoordinates = centerFeatures.geometry.coordinates;
-
-const GeoCoordinates = GeoData.features[0].geometry.coordinates;
-var line = turf.lineString(GeoCoordinates);
-var pt = turf.point([127.05404, 37.505342]);
-var isPointOnLine = turf.booleanPointOnLine(pt, line);
-var isWithin = turf.booleanWithin(pt, line);
-console.log(isPointOnLine);
-console.log(isWithin);
+// var pt = turf.point([127.05404, 37.505342]);
+// var isPointOnLine = turf.booleanPointOnLine(pt, line);
+// var isWithin = turf.booleanWithin(pt, line);
+// console.log(isPointOnLine);
+// console.log(isWithin);
 
 export default function ReactMapDraw() {
   const [data, setData] = useState(getLocalData);
   useEffect(() => {
     localStorage.setItem("layers", JSON.stringify(data));
-    console.log(data);
   }, [data]);
 
   const [mode, setMode] = useState("simple_select");
@@ -78,15 +68,6 @@ export default function ReactMapDraw() {
     prevMode.current = mode;
   }, [mode]);
   var recentMode = prevMode.current;
-
-  // if (currentMode === "draw_point") {
-  // }
-
-  // var [currentMode, setCurrentMode] = useState(mode);
-  // useEffect(() => {
-  //   currentMode = mode;
-  //   console.log(currentMode);
-  // }, [mode]);
 
   // const [viewport, setViewport] = useState({
   //   latitude: 37.830348,
@@ -110,11 +91,12 @@ export default function ReactMapDraw() {
     );
     if (recentMode === "draw_point") {
       recentMode = "simple_select";
-      console.log(theDistance);
       if (theDistance < 10) {
         swal("Success", "New point has been added", "success");
+        console.info(`Success: ${theDistance}`);
       } else {
         swal("Error", "Please point the pin on the line", "error");
+        console.info(`Error: ${theDistance}`);
       }
     }
   };
@@ -130,20 +112,9 @@ export default function ReactMapDraw() {
   };
 
   const onMarkerClick = (event, lngLat) => {
-    console.log(lngLat);
-    console.log(line);
     event.stopPropagation();
     let currentPoint = JSON.stringify(lngLat);
-
-    let isThePointOnLine = JSON.stringify(
-      turf.booleanPointOnLine(lngLat, line)
-    );
-    let theDistance = JSON.stringify(
-      turf.pointToLineDistance(lngLat, line, { units: "meters" })
-    );
-    // swal("Coordinates", currentPoint, "info");
-    // swal("Coordinates", isThePointOnLine, "info");
-    swal("Coordinates", theDistance, "info");
+    swal("Coordinates", currentPoint, "info");
   };
 
   const onDataChange = (data) => {
@@ -153,18 +124,24 @@ export default function ReactMapDraw() {
     let pointToLineDistance = JSON.stringify(
       turf.pointToLineDistance(selectedPoint, line, { units: "meters" })
     );
-
-    console.log(pointToLineDistance);
     if (pointToLineDistance < 10) {
       setData(data);
     } else {
     }
-    // pointMarkerLocal();
   };
+
+  // if (data) {
+  //   const newCurrentData = data.features.map(
+  //     (features, i) => features.geometry.coordinates
+  //   );
+  // } else {
+  //   const newCurrentData = [];
+  // }
 
   const newCurrentData = data.features.map(
     (features, i) => features.geometry.coordinates
   );
+
   const pointMarkerLocal = newCurrentData.map((lngLat, index) => (
     <Marker
       key={index}
@@ -172,7 +149,7 @@ export default function ReactMapDraw() {
       latitude={lngLat[1]}
       // draggable
       // onDragEnd={onDragEnd}
-      onClick={(event) => onMarkerClick(event, lngLat)}
+      // onClick={(event) => onMarkerClick(event, lngLat)}
     >
       <PinPoint ids={index + 1} />
     </Marker>
@@ -199,10 +176,6 @@ export default function ReactMapDraw() {
         // latitude={37.505021}
         zoom={14}
         onClick={onMapClick}
-        // onClick={
-        //   (event, mayMode) => console.log(mayMode)
-        //   mayMode === "draw_point" ? onMapClick() : onMap2Click()
-        // }
         scrollZoom={true}
         doubleClickZoom={true}
         touchZoom={true}
