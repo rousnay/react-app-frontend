@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import map from "mapbox-gl";
 import MapGL, { Source, Layer, Marker } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
-
+import swal from "sweetalert";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
 import { GeoData2 } from "./SampleGeoJSON2";
@@ -13,6 +13,7 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import "./style.css";
+import { CloseFullscreenOutlined } from "@mui/icons-material";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
@@ -79,10 +80,24 @@ export default function ReactMapDraw() {
   //   setPosition({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
   // };
 
-  const onMarkerClick = (event) => {
-    alert("You clicked on marker");
+  const onMarkerClick = (event, lngLat) => {
     event.stopPropagation();
+    var currentPoint = JSON.stringify(lngLat);
+    swal("Coordinates", currentPoint, "info");
   };
+  const pointMarkerLocal = GeoCoordinatesLocal.map((lngLat, index) => (
+    <Marker
+      key={index}
+      longitude={lngLat[0]}
+      latitude={lngLat[1]}
+      // draggable
+      // onDragEnd={onDragEnd}
+      onClick={(event) => onMarkerClick(event, lngLat)}
+    >
+      <PinPoint ids={index + 1} />
+    </Marker>
+  ));
+
   const pointMarker = GeoCoordinates.map((lngLat, index) => (
     <Marker key={index} longitude={lngLat[0]} latitude={lngLat[1]}>
       <PinPoint ids={index + 1} />
@@ -90,19 +105,6 @@ export default function ReactMapDraw() {
   ));
 
   const pointMarkerNew = GeoCoordinates2.map((lngLat, index) => (
-    <Marker
-      key={index}
-      longitude={lngLat[0]}
-      latitude={lngLat[1]}
-      // draggable
-      // onDragEnd={onDragEnd}
-      // onClick={onMarkerClick}
-    >
-      <PinPoint ids={index + 1} />
-    </Marker>
-  ));
-
-  const pointMarkerLocal = GeoCoordinatesLocal.map((lngLat, index) => (
     <Marker
       key={index}
       longitude={lngLat[0]}
@@ -161,8 +163,8 @@ export default function ReactMapDraw() {
           onChange={(data) => setData(data)}
         />
 
-        {pointMarker}
-        {pointMarkerNew}
+        {/* {pointMarker}
+        {pointMarkerNew} */}
         {pointMarkerLocal}
       </MapGL>
       <pre>{JSON.stringify(data, null, 2)}</pre>

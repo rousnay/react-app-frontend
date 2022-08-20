@@ -35,7 +35,7 @@ export const LayerStyle2 = {
 export const layerStyle3 = {
   id: "point",
   type: "circle",
-  source: "route",
+  source: "route3",
   layout: {
     // "line-join": "round",
     // "line-cap": "round",
