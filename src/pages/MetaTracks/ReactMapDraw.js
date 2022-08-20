@@ -49,23 +49,18 @@ const initialData = {
   ],
 };
 const getLocalData = JSON.parse(localStorage.getItem("layers")) || initialData;
-
 const GeoCoordinatesLocal = getLocalData.features.map(
   (features, i) => features.geometry.coordinates
 );
-console.log(GeoCoordinatesLocal);
 
 const turfFeatures = turf.points(GeoCoordinatesLocal);
 const centerFeatures = turf.center(turfFeatures);
 const centralCoordinates = centerFeatures.geometry.coordinates;
-console.log(centralCoordinates);
 
 const GeoCoordinates = GeoData.features[0].geometry.coordinates;
-console.log(GeoCoordinates);
 var line = turf.lineString(GeoCoordinates);
 var pt = turf.point([127.05404, 37.505342]);
 var isPointOnLine = turf.booleanPointOnLine(pt, line);
-
 var isWithin = turf.booleanWithin(pt, line);
 console.log(isPointOnLine);
 console.log(isWithin);
@@ -78,14 +73,15 @@ export default function ReactMapDraw() {
   }, [data]);
 
   const [mode, setMode] = useState("simple_select");
-
   const prevMode = useRef(mode);
-
   useEffect(() => {
     prevMode.current = mode;
   }, [mode]);
-
   var recentMode = prevMode.current;
+
+  // if (currentMode === "draw_point") {
+  // }
+
   // var [currentMode, setCurrentMode] = useState(mode);
   // useEffect(() => {
   //   currentMode = mode;
@@ -97,6 +93,7 @@ export default function ReactMapDraw() {
   //   longitude: -122.486052,
   //   zoom: 15,
   // });
+
   // const [position, setPosition] = useState({
   //   longitude: 127.075062,
   //   latitude: 37.509365,
@@ -106,19 +103,20 @@ export default function ReactMapDraw() {
   //   setPosition({ longitude: lngLat.lng, latitude: lngLat.lat });
   // };
 
-  // if (currentMode === "draw_point") {
-  // }
-
   const onMapClick = (event) => {
-    // event.stopPropagation();
-    let currentPoint = JSON.stringify(event.lngLat);
+    let NewselectedPoint = [event.lngLat.lng, event.lngLat.lat];
+    let theDistance = JSON.stringify(
+      turf.pointToLineDistance(NewselectedPoint, line, { units: "meters" })
+    );
     if (recentMode === "draw_point") {
-      swal("Coordinates", currentPoint, "info");
       recentMode = "simple_select";
-    } else {
-      swal("Coordinates", currentPoint, "warning");
+      console.log(theDistance);
+      if (theDistance < 10) {
+        swal("Success", "New point has been added", "success");
+      } else {
+        swal("Error", "Please point the pin on the line", "error");
+      }
     }
-    // setPosition({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
   };
 
   const onDrawPoint = (newMode) => {
@@ -132,7 +130,8 @@ export default function ReactMapDraw() {
   };
 
   const onMarkerClick = (event, lngLat) => {
-    console.log("fill");
+    console.log(lngLat);
+    console.log(line);
     event.stopPropagation();
     let currentPoint = JSON.stringify(lngLat);
 
@@ -147,7 +146,26 @@ export default function ReactMapDraw() {
     swal("Coordinates", theDistance, "info");
   };
 
-  const pointMarkerLocal = GeoCoordinatesLocal.map((lngLat, index) => (
+  const onDataChange = (data) => {
+    // event.stopPropagation();
+    let selectedPoint =
+      data.features[data.features.length - 1].geometry.coordinates;
+    let pointToLineDistance = JSON.stringify(
+      turf.pointToLineDistance(selectedPoint, line, { units: "meters" })
+    );
+
+    console.log(pointToLineDistance);
+    if (pointToLineDistance < 10) {
+      setData(data);
+    } else {
+    }
+    // pointMarkerLocal();
+  };
+
+  const newCurrentData = data.features.map(
+    (features, i) => features.geometry.coordinates
+  );
+  const pointMarkerLocal = newCurrentData.map((lngLat, index) => (
     <Marker
       key={index}
       longitude={lngLat[0]}
@@ -160,22 +178,6 @@ export default function ReactMapDraw() {
     </Marker>
   ));
 
-  // const pointMarker = GeoCoordinates.map((lngLat, index) => (
-  //   <Marker key={index} longitude={lngLat[0]} latitude={lngLat[1]}>
-  //     <PinPoint ids={index + 1} />
-  //   </Marker>
-  // ));
-
-  // const pointMarkerNew = GeoCoordinates2.map((lngLat, index) => (
-  //   <Marker
-  //     key={index}
-  //     longitude={lngLat[0]}
-  //     latitude={lngLat[1]}
-  //   >
-  //     <PinPoint ids={index + 1} />
-  //   </Marker>
-  // ));
-
   return (
     <>
       <div>
@@ -184,6 +186,7 @@ export default function ReactMapDraw() {
       <div>
         <button onClick={() => setMode("simple_select")}>Selector</button>
         <button onClick={() => setMode("draw_point")}>Draw a point</button>
+        {/* <button onClick={() => Draw.deleteFeature()}>Delete</button> */}
       </div>
 
       <MapGL
@@ -216,18 +219,19 @@ export default function ReactMapDraw() {
           displayControlsDefault={false}
           controls={{
             polygon: false,
-            point: true,
+            point: false,
             trash: true,
             scrollZoom: true,
           }}
           mode={mode}
+          pointControl={false}
           lineStringControl={false}
           polygonControl={false}
           combineFeaturesControl={false}
           uncombineFeaturesControl={false}
           onDrawModeChange={({ mode }) => setMode(mode)}
           data={data}
-          onChange={(data) => setData(data)}
+          onChange={(data) => onDataChange(data)}
         />
 
         {/* {pointMarker}
