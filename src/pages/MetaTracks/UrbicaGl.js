@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
 
-import { LayerStyle } from "./LayerStyle";
+import { LayerStyle1, layerStyle3 } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -42,20 +42,6 @@ const MAPBOX_ACCESS_TOKEN =
 //     ],
 //   },
 // };
-
-const layerStyle1 = {
-  id: "defaultPoint",
-  type: "line",
-  source: "route",
-  layout: {
-    "line-join": "round",
-    "line-cap": "round",
-  },
-  paint: {
-    "line-color": "#888",
-    "line-width": 8,
-  },
-};
 
 export default function UrbicaGl() {
   const [data, setData] = useState({
@@ -117,8 +103,8 @@ export default function UrbicaGl() {
         zoom={13}
       >
         <Source id="route" type="geojson" data={GeoData} />
-        <Layer {...LayerStyle} />
-        <Layer {...layerStyle1} />
+        <Layer {...LayerStyle1} />
+        <Layer {...layerStyle3} />
         <Draw
           displayControlsDefault={false}
           controls={{

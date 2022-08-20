@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 // import map from "mapbox-gl";
 import Map, { useControl, Source, Layer } from "react-map-gl";
-import { LayerStyle } from "./LayerStyle";
+import { LayerStyle1, layerStyle3 } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { addLayer, selectLayer } from "./actions";
@@ -38,15 +38,6 @@ function DrawControl(props) {
   );
   return null;
 }
-
-const layerStyle1 = {
-  id: "point",
-  type: "circle",
-  paint: {
-    "circle-radius": 5,
-    "circle-color": "#007cbf",
-  },
-};
 
 // var Draw = new MapboxDraw();
 
@@ -158,8 +149,8 @@ export default function ReactMapGl() {
         /> */}
 
         <Source type="geojson" data={GeoData}>
-          <Layer {...LayerStyle} />
-          <Layer {...layerStyle1} />
+          <Layer {...LayerStyle1} />
+          <Layer {...layerStyle3} />
         </Source>
 
         {/* <Source type="geojson" data={GeoData}>
