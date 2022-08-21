@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 // import map from "mapbox-gl";
 import MapGL, {
   Source,
@@ -13,10 +13,11 @@ import swal from "sweetalert";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
 import { GeoData } from "./SampleGeoJSON";
 // import { GeoData2 } from "./SampleGeoJSON2";
+import PinList from "./PinList";
 import PinPoint from "./PinPoint";
 import PinInfo from "./PinInfo";
 
-import PinList from "./PinList";
+import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
 
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -67,11 +68,15 @@ export default function ReactMapDraw() {
   }, [data]);
 
   const [mode, setMode] = useState("simple_select");
+  const [currentMode, setCurrentMode] = useState("draw_point");
+
   const prevMode = useRef(mode);
   useEffect(() => {
     prevMode.current = mode;
+    (() => {
+      setCurrentMode(prevMode.current);
+    })();
   }, [mode]);
-  var recentMode = prevMode.current;
 
   // const [viewport, setViewport] = useState({
   //   latitude: 37.830348,
@@ -87,56 +92,6 @@ export default function ReactMapDraw() {
   // const onDragEnd = (lngLat) => {
   //   setPosition({ longitude: lngLat.lng, latitude: lngLat.lat });
   // };
-
-  const onMapClick = (event) => {
-    let NewSelectedPoint = [event.lngLat.lng, event.lngLat.lat];
-    let theDistance = JSON.stringify(
-      turf.pointToLineDistance(NewSelectedPoint, line, { units: "meters" })
-    );
-    if (recentMode === "draw_point") {
-      recentMode = "simple_select";
-      if (theDistance < 10) {
-        swal("Success", "New pin has been added", "success");
-        console.info(`Success: ${theDistance}`);
-      } else {
-        swal("Error", "Pin is not on the line", "error");
-        console.info(`Error: ${theDistance}`);
-      }
-    }
-  };
-
-  const onDrawPoint = (newMode) => {
-    setMode(newMode);
-    console.log("fill");
-  };
-
-  const onSimpleSelect = (newMode) => {
-    setMode(newMode);
-    console.log("blank");
-  };
-
-  const onMarkerClick = (event, lngLat) => {
-    event.stopPropagation();
-    let currentPoint = JSON.stringify(lngLat);
-    swal("Coordinates", currentPoint, "info");
-  };
-
-  const onDataChange = (data) => {
-    // event.stopPropagation();
-    let selectedPoint =
-      data.features[data.features.length - 1].geometry.coordinates;
-    let pointToLineDistance = JSON.stringify(
-      turf.pointToLineDistance(selectedPoint, line, { units: "meters" })
-    );
-    if (pointToLineDistance < 10) {
-      setData(data);
-    } else {
-    }
-  };
-
-  const onDataDelete = (h) => {
-    console.log(`Deleted feature ID: ${h.features[0].id}`);
-  };
 
   const newCurrentData = data.features.map(
     (features, i) => features.geometry.coordinates
@@ -158,7 +113,8 @@ export default function ReactMapDraw() {
   return (
     <>
       <div>
-        Mode: {mode} prevMode: {prevMode.current}
+        Mode: {mode}
+        prevMode: {currentMode}
       </div>
       <div>
         <button onClick={() => setMode("simple_select")}>Selector</button>
@@ -175,7 +131,7 @@ export default function ReactMapDraw() {
         // longitude={127.07744}
         // latitude={37.505021}
         zoom={14}
-        onClick={onMapClick}
+        onClick={(event) => onMapClick(event, line, currentMode)}
         scrollZoom={true}
         doubleClickZoom={true}
         touchZoom={true}
@@ -196,7 +152,7 @@ export default function ReactMapDraw() {
             trash: true,
             scrollZoom: true,
           }}
-          mode={mode}
+          mode={currentMode}
           data={data}
           pointControl={false}
           lineStringControl={false}
@@ -204,8 +160,8 @@ export default function ReactMapDraw() {
           combineFeaturesControl={false}
           uncombineFeaturesControl={false}
           onDrawModeChange={({ mode }) => setMode(mode)}
-          onDrawDelete={(h) => onDataDelete(h)}
-          onChange={(data) => onDataChange(data)}
+          onDrawDelete={(currentFeature) => onDataDelete(currentFeature)}
+          onChange={(data) => onDataChange(data, line, setData)}
         />
 
         {/* {pointMarker}
