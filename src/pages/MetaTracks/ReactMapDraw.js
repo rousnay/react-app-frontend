@@ -16,6 +16,8 @@ import { GeoData } from "./SampleGeoJSON";
 import PinPoint from "./PinPoint";
 import PinInfo from "./PinInfo";
 
+import PinList from "./PinList";
+
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -48,6 +50,7 @@ const initialData = {
     },
   ],
 };
+
 const getLocalData = JSON.parse(localStorage.getItem("layers")) || initialData;
 
 // var pt = turf.point([127.05404, 37.505342]);
@@ -60,6 +63,7 @@ export default function ReactMapDraw() {
   const [data, setData] = useState(getLocalData);
   useEffect(() => {
     localStorage.setItem("layers", JSON.stringify(data));
+    console.log(data);
   }, [data]);
 
   const [mode, setMode] = useState("simple_select");
@@ -85,17 +89,17 @@ export default function ReactMapDraw() {
   // };
 
   const onMapClick = (event) => {
-    let NewselectedPoint = [event.lngLat.lng, event.lngLat.lat];
+    let NewSelectedPoint = [event.lngLat.lng, event.lngLat.lat];
     let theDistance = JSON.stringify(
-      turf.pointToLineDistance(NewselectedPoint, line, { units: "meters" })
+      turf.pointToLineDistance(NewSelectedPoint, line, { units: "meters" })
     );
     if (recentMode === "draw_point") {
       recentMode = "simple_select";
       if (theDistance < 10) {
-        swal("Success", "New point has been added", "success");
+        swal("Success", "New pin has been added", "success");
         console.info(`Success: ${theDistance}`);
       } else {
-        swal("Error", "Please point the pin on the line", "error");
+        swal("Error", "Pin is not on the line", "error");
         console.info(`Error: ${theDistance}`);
       }
     }
@@ -130,13 +134,9 @@ export default function ReactMapDraw() {
     }
   };
 
-  // if (data) {
-  //   const newCurrentData = data.features.map(
-  //     (features, i) => features.geometry.coordinates
-  //   );
-  // } else {
-  //   const newCurrentData = [];
-  // }
+  const onDataDelete = (h) => {
+    console.log(`Deleted feature ID: ${h.features[0].id}`);
+  };
 
   const newCurrentData = data.features.map(
     (features, i) => features.geometry.coordinates
@@ -197,13 +197,14 @@ export default function ReactMapDraw() {
             scrollZoom: true,
           }}
           mode={mode}
+          data={data}
           pointControl={false}
           lineStringControl={false}
           polygonControl={false}
           combineFeaturesControl={false}
           uncombineFeaturesControl={false}
           onDrawModeChange={({ mode }) => setMode(mode)}
-          data={data}
+          onDrawDelete={(h) => onDataDelete(h)}
           onChange={(data) => onDataChange(data)}
         />
 
@@ -212,7 +213,8 @@ export default function ReactMapDraw() {
         {pointMarkerLocal}
         <ScaleControl />
       </MapGL>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+
+      <PinList data={data} />
     </>
   );
 }
