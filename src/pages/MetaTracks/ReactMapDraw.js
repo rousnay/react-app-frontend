@@ -41,7 +41,7 @@ const initialData = {
   type: "FeatureCollection",
   features: [
     {
-      id: "initialID742ddabd3f",
+      id: "Initial_pin_ID",
       type: "Feature",
       properties: {},
       geometry: {
@@ -53,7 +53,6 @@ const initialData = {
 };
 
 const getLocalData = JSON.parse(localStorage.getItem("layers")) || initialData;
-
 // var pt = turf.point([127.05404, 37.505342]);
 // var isPointOnLine = turf.booleanPointOnLine(pt, line);
 // var isWithin = turf.booleanWithin(pt, line);
@@ -66,10 +65,12 @@ export default function ReactMapDraw() {
     localStorage.setItem("layers", JSON.stringify(data));
     console.log(data);
   }, [data]);
+  const dataReset = () => {
+    setData(initialData);
+  };
 
   const [mode, setMode] = useState("simple_select");
   const [currentMode, setCurrentMode] = useState("draw_point");
-
   const prevMode = useRef(mode);
   useEffect(() => {
     prevMode.current = mode;
@@ -119,6 +120,7 @@ export default function ReactMapDraw() {
       <div>
         <button onClick={() => setMode("simple_select")}>Selector</button>
         <button onClick={() => setMode("draw_point")}>Draw a point</button>
+        <button onClick={() => dataReset()}>Reset data</button>
         {/* <button onClick={() => Draw.deleteFeature()}>Delete</button> */}
       </div>
 
