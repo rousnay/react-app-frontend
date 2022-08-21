@@ -75,7 +75,7 @@ export default function Home() {
                   <Link to="/ReactMapGl">React-Map-Gl</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/ReactMapDraw">React-Map-Draw</Link>
+                  <Link to="/GPXupload">GPXupload</Link>
                 </ListItem>
                 {/* <ListItem>
                   <Link to="/ReactMapGLView">React-Map-GL-View</Link>
