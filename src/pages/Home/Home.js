@@ -72,7 +72,7 @@ export default function Home() {
                   <Link to="/CreateTrack">Create Track</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/ReactMapGl">React-Map-Gl</Link>
+                  <Link to="/ReactMapDraw">React Map Draw</Link>
                 </ListItem>
                 <ListItem>
                   <Link to="/GPXupload">GPXupload</Link>
