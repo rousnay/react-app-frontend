@@ -1,108 +1,103 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  Container,
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+  Tooltip,
+  styled,
+} from "@mui/material";
+// import { styled } from "@mui/material/styles";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import AddIcon from "@mui/icons-material/Add";
+import LogoSquareWhite from "../assets/logo-square-white.svg";
 
-export default function PublicNav() {
-  var _a = (React.useState < null) | (HTMLElement > null),
-    anchorEl = _a[0],
-    setAnchorEl = _a[1];
-  var open = Boolean(anchorEl);
-  var handleClick = function (event) {
-    setAnchorEl(event.currentTarget);
-  };
-  var handleClose = function () {
-    setAnchorEl(null);
-  };
+const ListItem = styled("li")`
+  list-style: none;
+  width: 100%;
+  margin: 8px 0;
+  & > a {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    color: white;
+    background-color: var(--logoblack);
+    text-decoration: none;
+    &:hover {
+      background-color: var(--logored);
+      color: white;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    // background-color: lightblue;
+  }
+`;
 
+export default function PrivetSideBar() {
   return (
-    <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Typography sx={{ minWidth: 100 }}>Contact</Typography>
-        <Typography sx={{ minWidth: 100 }}>Profile</Typography>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
+    <>
+      <Grid
+        item
+        sm={12}
+        md={12}
+        sx={{
+          height: "calc(100vh - 78px)",
+          // width: "230px",
+          // display: "flex",
+          justifyContent: "center",
         }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
-    </React.Fragment>
+        <img src={LogoSquareWhite} alt="Logo" />
+        <Link to="/CreateTrack">
+          <Button
+            startIcon={<AddIcon />}
+            variant="contained"
+            color="logoblue"
+            className="channelSubmit"
+            sx={{
+              width: "80%",
+              margin: "0 10%",
+            }}
+          >
+            Create Track
+          </Button>
+        </Link>
+
+        <ul
+          style={{
+            display: "flex",
+            padding: "15px",
+            justifyContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <ListItem>
+            <Link to="/Dashboard">Dashboard</Link>
+          </ListItem>
+          <ListItem>
+            <Link to="#">Management</Link>
+          </ListItem>
+          <ListItem>
+            <Link to="#">Statistics</Link>
+          </ListItem>
+          <ListItem>
+            <Link to="#">Customer</Link>
+          </ListItem>
+        </ul>
+      </Grid>
+    </>
   );
 }

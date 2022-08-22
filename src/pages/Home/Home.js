@@ -1,9 +1,8 @@
 import React from "react";
-import { Container, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Container, Grid, styled } from "@mui/material";
 import logo from "../../assets/logo.svg";
 import Colors from "../../components/Colors";
-import { Link } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 
 const ListItem = styled("li")`
   list-style: none;

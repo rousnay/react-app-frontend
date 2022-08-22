@@ -45,7 +45,7 @@ export default function UserInfo(props) {
         <Link to="/Channel">
           {" "}
           <Button
-            fullWidth
+            // fullWidth
             variant="contained"
             color="themegreen"
             className="channelSubmit"

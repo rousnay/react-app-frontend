@@ -8,7 +8,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import LogoSquare from "../../assets/logo-square.svg";
+import LogoSquareBlack from "../../assets/logo-square-black.svg";
 import swal from "sweetalert";
 // Import React FilePond
 import Uploader from "./uploader";
@@ -101,7 +101,7 @@ export default function Channel() {
           </Grid>
 
           <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
-            <img src={LogoSquare} alt="Logo" />
+            <img src={LogoSquareBlack} alt="Logo" />
           </Grid>
           <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
             <Grid container>

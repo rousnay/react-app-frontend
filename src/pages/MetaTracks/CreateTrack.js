@@ -1,63 +1,203 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Container, Grid, Typography } from "@mui/material";
-// import { GeoData } from "./SampleGeoJSON";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import React, { useState } from "react";
+import "./CreateTrack.css";
+import {
+  Container,
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  Button,
+} from "@mui/material";
+import PrivetSideBar from "../../components/PrivetSideBar";
+import PrivetHeader from "../../components/PrivetHeader";
+import LogoSquareBlack from "../../assets/logo-square-black.svg";
+import swal from "sweetalert";
+// Import React FilePond
+import Uploader from "./uploader";
 
-import "mapbox-gl/dist/mapbox-gl.css";
-// import "./index.css";
+const userData = JSON.parse(localStorage.getItem("userData"));
+const userToken = localStorage.getItem("token");
 
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoicm91c25heSIsImEiOiJjbDZxYmhtdnMwYzA0M2ttaG45b2FxMGR3In0.kuDFvp9QAHL5W8u_JAbxbA";
+console.log(userToken);
 
-// const MAPBOX_TOKEN =
-//   "pk.eyJ1Ijoicm91c25heSIsImEiOiJjbDZxYmhtdnMwYzA0M2ttaG45b2FxMGR3In0.kuDFvp9QAHL5W8u_JAbxbA";
+// const userToken =
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
+// const channelId = "aaafb550-6ef9-45cf-a8a1-2cf853410577";
+
+const baseURL = "https://api.finutss.com";
+async function loginUser(payloadData) {
+  console.log(payloadData);
+  return fetch(`${baseURL}/channel`, {
+    method: "POST",
+    headers: {
+      //   "Content-Type": "multipart/form-data",
+      Authorization: "Bearer " + userToken,
+    },
+    body: payloadData,
+  }).then((data) => data.json());
+}
 
 export default function CreateTrack() {
-  // for the initial latitude, longitude, and zoom of the map
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
-  const [zoom, setZoom] = useState(9);
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+  const [image, setImage] = useState([]);
+  const [bannerImage, setBannerImage] = useState([]);
 
-  // The Mapbox map is initialized within a React Effect hook
-  // you also created a map useRef to store the initialize the map. The ref will prevent the map from reloading when the user interacts with the map.
-  useEffect(() => {
-    if (map.current) return; // initialize map only once
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v11",
-      // center: [lng, lat],
-      center: [127.078539, 37.511692],
-      zoom: zoom,
-    });
-  });
+  var formData = new FormData();
+  // formData.append("id", channelId);
+  formData.append("name", name);
+  formData.append("description", description);
+  formData.append("image", image[0]);
+  formData.append("bannerImage", bannerImage[0]);
 
-  useEffect(() => {
-    if (!map.current) return; // wait for map to initialize
-    map.current.on("move", () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
+  const submitImages = async (e) => {
+    e.preventDefault();
+
+    const response = await loginUser(formData);
+
+    console.log(response);
+    if (response.message === "Success") {
+      swal("Success", response.message, "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        // localStorage.setItem("userData", JSON.stringify(response.data));
+        // window.location.href = "/AddUserInformation";
+      });
+    } else {
+      swal("Failed", response.message, "error");
+    }
+  };
+
+  function setImagedata(fileItems) {
+    const _imageFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
     });
-  });
+    console.log(_imageFileItem[0]);
+    setImage(_imageFileItem);
+  }
+  function setBannerImagedata(fileItems) {
+    const _BannerImageFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+    //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
+    console.log(_BannerImageFileItem[0]);
+    setBannerImage(_BannerImageFileItem);
+  }
+
   return (
     <>
-      <Container>
-        <Grid container spacing={2}>
-          <Typography variant="h1" component="h2">
-            Create Track
-          </Typography>
-
-          <Grid item sm={12}>
-            <div className="sidebar">
-              Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-            </div>
+      <Container maxWidth="xl" sx={{ display: " flex" }}>
+        <Grid
+          container
+          sx={{
+            width: "230px",
+            display: "flex",
+            backgroundColor: `var(--logoblack)`,
+          }}
+        >
+          <PrivetSideBar />
+        </Grid>
+        <Grid
+          container
+          sx={{
+            width: "calc(100% - 230px)",
+            display: "flex",
+          }}
+        >
+          <Grid item sm={12} sx={{}}>
+            <Box sx={{ flexGrow: 1 }}>
+              <PrivetHeader loginInfo={userData} />
+            </Box>
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <Box sm={6} sx={{ flexGrow: 1 }}>
+              <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
+                Channel Information
+              </Typography>
+              <p>
+                Please enter information about your channel. Most of the channel
+                information can be re-edited at any time. If the image is not
+                set, it is exposed as the default.
+              </p>
+            </Box>
           </Grid>
 
-          <Grid item sm={12}>
-            <div ref={mapContainer} className="map-container" />
+          <Grid item sm={12} md={3} sx={{ textAlign: "right" }}>
+            <img src={LogoSquareBlack} alt="Logo" />
           </Grid>
+          <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
+            <Grid container>
+              <Grid item sm={12} md={5} className="channelTextInput">
+                <TextField
+                  variant="outlined"
+                  label="Channel Name"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="name"
+                  name="name"
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                  // id="standard-multiline-flexible"
+                  variant="outlined"
+                  label="Description"
+                  multiline
+                  fullWidth
+                  id="description"
+                  name="description"
+                  maxRows={4}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Grid>
+
+              <Grid
+                item
+                sm={12}
+                md={7}
+                sx={{
+                  display: "flex",
+                  flexFlow: "column",
+                  alignItems: "center",
+                }}
+              >
+                <div className="channelImageUpload">
+                  <div className="thumImageUpload">
+                    <h4>Channel Image</h4>
+                    <Uploader
+                      files={image}
+                      name={"image"}
+                      onupdatefiles={(fileItems) => setImagedata(fileItems)}
+                      labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                    />
+                  </div>
+
+                  <div className="bannerImageUpload">
+                    <h4>Banner Image</h4>
+                    <Uploader
+                      files={bannerImage}
+                      name={"bannerImage"}
+                      onupdatefiles={(fileItems) =>
+                        setBannerImagedata(fileItems)
+                      }
+                      labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="logoblue"
+                  className="channelSubmit"
+                >
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
         </Grid>
       </Container>
     </>

@@ -3,7 +3,7 @@ import { Container, Grid, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import LandingBgImage from "../../assets/landing-bg-black.jpg";
-import LogoSquare from "../../assets/logo-square.png";
+import LogoSquareWhite from "../../assets/logo-square-white.png";
 import AppPreview from "../../assets/app-preview.png";
 
 const LandingContainer = styled("div")`
@@ -22,7 +22,7 @@ export default function Landing() {
         <Container maxWidth="xl" sx={{}}>
           <Grid container>
             <Grid item sm={12} md={6} sx={{ padding: `100px 0` }}>
-              <img src={LogoSquare} alt="Logo" />
+              <img src={LogoSquareWhite} alt="Logo" />
               <Typography
                 variant="h4"
                 sx={{
