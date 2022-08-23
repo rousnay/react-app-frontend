@@ -12,9 +12,13 @@
   --themeinput : #bacbe9;
   --themebg : #F6F9FF;
 }
-body:has(.PrivetHeader){
+
+body.hasPublicHeader{
+  background-color:  white!important;
+}
+body.hasPrivetHeader{
   background-color:  var(--themebg)!important;
-};
+}
 .App {
   text-align: center;
 }

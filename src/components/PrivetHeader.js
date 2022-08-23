@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Container,
@@ -13,10 +13,14 @@ import {
   Avatar,
   styled,
 } from "@mui/material";
-import "../assets/PrivetStyles.css";
 import LogoWidthWhite from "../assets/logo-width-white.svg";
 
 export default function PrivetHeader(props) {
+  useEffect(() => {
+    document.body.classList.remove("hasPublicHeader");
+    document.body.classList.add("hasPrivetHeader");
+  }, []);
+
   const userData = props.loginInfo;
   let totalBalance = "$99,000";
 

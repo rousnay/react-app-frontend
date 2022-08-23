@@ -64,7 +64,17 @@ export const TrackInfoFormStyled = styled("form")`
     // border-radius: 8px;
   }
   .trackInformation {
+    margin-left: 15px;
     display: flex;
     flex-flow: column;
+    > div {
+      margin: 10px 0;
+    }
+    #description {
+      height: 150px !important;
+    }
+    .previewImageUpload {
+      margin-top: 0;
+    }
   }
 `;

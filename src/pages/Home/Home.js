@@ -4,7 +4,6 @@ import { Container, Grid, styled } from "@mui/material";
 import logo from "../../assets/logo.svg";
 import Colors from "../../components/Colors";
 import PublicHeader from "../../components/PublicHeader";
-import PublicStyles from "../../assets/PublicStyles.css";
 const ListItem = styled("li")`
   list-style: none;
   margin: 8px 4px;

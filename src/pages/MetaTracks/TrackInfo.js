@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Container,
   Grid,
-  Box,
+  Stack,
   Typography,
   TextField,
   Button,
@@ -123,7 +123,6 @@ export default function TrackInfo() {
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
-            // id="standard-multiline-flexible"
             variant="outlined"
             label="Description"
             multiline
@@ -144,36 +143,37 @@ export default function TrackInfo() {
             maxRows={4}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <div className="channelImageUpload">
-            <div className="thumImageUpload">
-              <h4>Preview Image</h4>
-              <Uploader
-                files={previewImage}
-                name={"previewImage"}
-                onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
-                labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-              />
-            </div>
+          <div className="previewImageUpload">
+            <h4>Preview Image</h4>
+            <Uploader
+              files={previewImage}
+              name={"previewImage"}
+              onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+            />
           </div>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="logoblue"
-            className="channelSubmit"
-          >
-            Cancel
-          </Button>
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="logoblue"
-            className="channelSubmit"
-          >
-            Next
-          </Button>
+          <Stack spacing={2} direction="row">
+            <Button
+              type="submit"
+              fullWidth
+              variant="outlined"
+              color="themepurple"
+              className="channelSubmit"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="themepurple"
+              className="channelSubmit"
+            >
+              Next
+            </Button>
+          </Stack>
         </Grid>
       </TrackInfoFormStyled>
     </>

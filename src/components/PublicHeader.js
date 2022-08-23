@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import "../assets/PublicStyles.css";
 import logo from "../assets/logo.svg";
 
 const MenuItem = styled("li")`
@@ -35,6 +34,11 @@ const SigninStyles = {
 };
 
 export default function PublicHeader() {
+  useEffect(() => {
+    document.body.classList.remove("hasPrivetHeader");
+    document.body.classList.add("hasPublicHeader");
+  }, []);
+
   return (
     <>
       <Container maxWidth="100%">
