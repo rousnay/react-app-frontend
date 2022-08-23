@@ -54,7 +54,7 @@ export default function PrivetSideBar() {
         sm={12}
         md={12}
         sx={{
-          height: "calc(100vh)",
+          height: "calc(100vh - 68px)",
           // width: "230px",
           // display: "flex",
           justifyContent: "center",

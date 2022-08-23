@@ -24,6 +24,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Channel = lazy(() => import("./pages/Channel/Channel"));
 
 const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
+const MetaInfo = lazy(() => import("./pages/MetaTracks/MetaInfo"));
 const ReactMapDraw = lazy(() => import("./pages/MetaTracks/ReactMapDraw"));
 const GPXupload = lazy(() => import("./pages/MetaTracks/GPXupload"));
 const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
@@ -55,6 +56,7 @@ function App() {
               <Route path="/Channel" element={<Channel />} />
 
               <Route path="/CreateTrack" element={<CreateTrack />} />
+              <Route path="/CreateTrack/MetaInfo" element={<MetaInfo />} />
               <Route path="/ReactMapDraw" element={<ReactMapDraw />} />
               <Route path="/GPXupload" element={<GPXupload />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
