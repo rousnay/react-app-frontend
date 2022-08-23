@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
@@ -53,13 +53,16 @@ export default function SignUp() {
       <Container maxWidth="xl" sx={{}}>
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
-            <img src={logo} alt="Logo" />
-            <h3>Verify your Identity</h3>
+            <Link to="/">
+              <img src={logo} alt="Logo" />
+            </Link>
+
+            <h3 style={{ marginTop: "50px" }}>Verify your Identity</h3>
             <p>
               FINUTSS is receiving identity verification to prevent identity
               theft and encourage transparent community operation.
             </p>
-            <div className="">
+            <div className="formHolder">
               <form className="" noValidate onSubmit={handleSubmit}>
                 <TextField
                   variant="outlined"
@@ -108,7 +111,7 @@ export default function SignUp() {
             md={6}
             sx={{
               backgroundColor: ` var(--logoblack)`,
-              height: "calc(100vh - 78px)",
+              height: "100vh",
               display: "flex",
               justifyContent: "center",
               padding: "50px",

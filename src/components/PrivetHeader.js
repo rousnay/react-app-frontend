@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -13,6 +14,7 @@ import {
   styled,
 } from "@mui/material";
 import "../assets/PrivetStyles.css";
+import LogoWidthWhite from "../assets/logo-width-white.svg";
 
 export default function PrivetHeader(props) {
   const userData = props.loginInfo;
@@ -53,10 +55,16 @@ export default function PrivetHeader(props) {
             container
             sx={{
               width: "230px",
+              paddingTop: "30px",
               display: "flex",
+              justifyContent: "center",
               backgroundColor: `var(--logoblack)`,
             }}
-          ></Grid>
+          >
+            <Link to="/" style={{ height: "fit-content" }}>
+              <img src={LogoWidthWhite} alt="Logo" />
+            </Link>
+          </Grid>
 
           <Grid
             container

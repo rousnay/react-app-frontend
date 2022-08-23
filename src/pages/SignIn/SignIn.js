@@ -1,7 +1,6 @@
-import React from "react";
-import { useState } from "react";
-import { Container, Grid, Button, TextField } from "@mui/material";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
@@ -63,9 +62,11 @@ export default function SignIn() {
       <Container maxWidth="xl" sx={{}}>
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
-            <img src={logo} alt="Logo" />
+            <Link to="/">
+              <img src={logo} alt="Logo" />
+            </Link>
 
-            <div className="">
+            <div className="formHolder" style={{ marginTop: "50px" }}>
               <form className="" noValidate onSubmit={handleSubmit}>
                 <TextField
                   variant="outlined"
@@ -113,7 +114,7 @@ export default function SignIn() {
             md={6}
             sx={{
               backgroundColor: ` var(--logoblack)`,
-              height: "calc(100vh - 78px)",
+              height: "100vh",
               display: "flex",
               justifyContent: "center",
               padding: "50px",

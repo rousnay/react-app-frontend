@@ -60,9 +60,9 @@ export default function PrivetSideBar() {
           justifyContent: "center",
         }}
       >
-        <Link to="/">
+        {/* <Link to="/">
           <img src={LogoSquareWhite} alt="Logo" />
-        </Link>
+        </Link> */}
         <Link to="/CreateTrack">
           <Button
             startIcon={<AddIcon />}
@@ -71,7 +71,7 @@ export default function PrivetSideBar() {
             className="channelSubmit"
             sx={{
               width: "80%",
-              margin: "0 10%",
+              margin: "40px 10% 0",
             }}
           >
             Create Track
