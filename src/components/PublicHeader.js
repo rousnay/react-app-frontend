@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Container, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import logo from "../../assets/logo.svg";
-import { Link } from "react-router-dom";
+import "../assets/PublicStyles.css";
+import logo from "../assets/logo.svg";
 
 const MenuItem = styled("li")`
   list-style: none;
@@ -36,7 +37,7 @@ const SigninStyles = {
 export default function PublicHeader() {
   return (
     <>
-      <Container maxWidth="xl">
+      <Container maxWidth="100%">
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
           <Grid item xs={12} md={4}>
             <Link to="/">

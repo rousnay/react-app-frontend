@@ -9,7 +9,6 @@ import "@fontsource/montserrat/700.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppTheme } from "./assets/AppTheme";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PublicHeader from "./pages/Home/PublicHeader";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Landing = lazy(() => import("./pages/Home/Landing"));
@@ -38,7 +37,6 @@ function App() {
       <ThemeProvider theme={AppTheme}>
         <BrowserRouter>
           <CssBaseline />
-          <PublicHeader />
           <Suspense fallback={<p>Loading...</p>}>
             <Routes>
               <Route path="/" element={<Home />} />

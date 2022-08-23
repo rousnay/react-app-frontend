@@ -54,13 +54,15 @@ export default function PrivetSideBar() {
         sm={12}
         md={12}
         sx={{
-          height: "calc(100vh - 78px)",
+          height: "calc(100vh)",
           // width: "230px",
           // display: "flex",
           justifyContent: "center",
         }}
       >
-        <img src={LogoSquareWhite} alt="Logo" />
+        <Link to="/">
+          <img src={LogoSquareWhite} alt="Logo" />
+        </Link>
         <Link to="/CreateTrack">
           <Button
             startIcon={<AddIcon />}

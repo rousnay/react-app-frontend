@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import LandingBgImage from "../../assets/landing-bg-black.jpg";
 import LogoSquareWhite from "../../assets/logo-square-white.png";
 import AppPreview from "../../assets/app-preview.png";
+import PublicHeader from "../../components/PublicHeader";
 
 const LandingContainer = styled("div")`
   background-image: url(${LandingBgImage});
@@ -18,6 +19,7 @@ const LandingContainer = styled("div")`
 export default function Landing() {
   return (
     <>
+      <PublicHeader />
       <LandingContainer>
         <Container maxWidth="xl" sx={{}}>
           <Grid container>

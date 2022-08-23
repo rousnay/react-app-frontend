@@ -1,5 +1,8 @@
 import React from "react";
 import {
+  Container,
+  Grid,
+  Box,
   Typography,
   AppBar,
   Toolbar,
@@ -7,7 +10,9 @@ import {
   Menu,
   MenuItem,
   Avatar,
+  styled,
 } from "@mui/material";
+import "../assets/PrivetStyles.css";
 
 export default function PrivetHeader(props) {
   const userData = props.loginInfo;
@@ -39,36 +44,80 @@ export default function PrivetHeader(props) {
 
   return (
     <>
-      <AppBar position="static" color="logored">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          ></IconButton>
+      <Container
+        maxWidth="100%"
+        sx={{ width: "100%", padding: `0!important`, backgroundColor: "white" }}
+      >
+        <Container maxWidth="xl" sx={{ display: " flex" }}>
+          <Grid
+            container
+            sx={{
+              width: "230px",
+              display: "flex",
+              backgroundColor: `var(--logoblack)`,
+            }}
+          ></Grid>
 
-          <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-            Welcome, {userData ? userData.username : "Guest"}
-          </Typography>
+          <Grid
+            container
+            sx={{
+              width: "calc(100% - 230px)",
+              display: "flex",
+            }}
+          >
+            <Box sx={{ flexGrow: 1 }}>
+              <AppBar
+                className="PrivetHeader"
+                position="static"
+                sx={{ backgroundColor: "white", boxShadow: "none" }}
+              >
+                <Toolbar>
+                  <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                  ></IconButton>
 
-          <div>
-            <span style={{}}>{userData ? totalBalance : "$0,00"}</span>
-            <IconButton onClick={handleMenu} color="inherit">
-              <Avatar src={userData ? userData.profilePhoto : ""} />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-            >
-              {loginButton}
-            </Menu>
-          </div>
-        </Toolbar>
-      </AppBar>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1, color: `var(--themeblack)` }}
+                  >
+                    Welcome,{" "}
+                    <span style={{ fontWeight: "bold" }}>
+                      {userData ? userData.username : "Guest"}
+                    </span>
+                  </Typography>
+
+                  <div>
+                    <span
+                      style={{
+                        color: `var(--themeyellow)`,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {userData ? totalBalance : "$0,00"}
+                    </span>
+                    <IconButton onClick={handleMenu} color="inherit">
+                      <Avatar src={userData ? userData.profilePhoto : ""} />
+                    </IconButton>
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                    >
+                      {loginButton}
+                    </Menu>
+                  </div>
+                </Toolbar>
+              </AppBar>
+            </Box>
+          </Grid>
+        </Container>
+      </Container>
     </>
   );
 }

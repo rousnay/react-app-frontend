@@ -10,9 +10,11 @@
   --themeblack : #1d1f30;
   --themegray : #777983;
   --themeinput : #bacbe9;
-  --themebg : #d0d0d0;
+  --themebg : #F6F9FF;
 }
-
+body:has(.PrivetHeader){
+  background-color:  var(--themebg)!important;
+};
 .App {
   text-align: center;
 }

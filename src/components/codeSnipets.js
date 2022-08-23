@@ -54,3 +54,16 @@ document.getElementById('button').onclick = function () {
   draw.changeMode('draw_polygon');
 
 }
+
+=========================
+  (async () => {
+    if (userData) {
+      const { default: PrivetStyles } = await import(
+        "../assets/PrivetStyles.css"
+      );
+    } else {
+      const { default: PrivetStyles } = await import(
+        "../assets/PublicStyles.css"
+      );
+    }
+  })();

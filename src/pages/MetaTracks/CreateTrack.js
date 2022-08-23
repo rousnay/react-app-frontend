@@ -87,6 +87,7 @@ export default function CreateTrack() {
 
   return (
     <>
+      <PrivetHeader loginInfo={userData} />
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
           container
@@ -105,11 +106,6 @@ export default function CreateTrack() {
             display: "flex",
           }}
         >
-          <Grid item sm={12} sx={{}}>
-            <Box sx={{ flexGrow: 1 }}>
-              <PrivetHeader loginInfo={userData} />
-            </Box>
-          </Grid>
           <Grid item sm={12} md={6}>
             <Box sm={6} sx={{ flexGrow: 1 }}>
               <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>

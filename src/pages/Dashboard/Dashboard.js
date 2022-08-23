@@ -40,6 +40,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <PrivetHeader loginInfo={userData} />
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
           container
@@ -56,14 +57,9 @@ export default function Dashboard() {
           sx={{
             width: "calc(100% - 230px)",
             display: "flex",
+            backgroundColor: `var(--themebg)`,
           }}
         >
-          <Grid item sm={12} sx={{}}>
-            <Box sx={{ flexGrow: 1 }}>
-              <PrivetHeader loginInfo={userData} />
-            </Box>
-          </Grid>
-
           <Grid item sm={12} sx={{ padding: "30px" }}>
             <h2>Profile information </h2>
             <Card className="">
