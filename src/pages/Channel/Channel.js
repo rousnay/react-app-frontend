@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Channel.css";
+import { Link } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -12,6 +12,7 @@ import LogoSquareBlack from "../../assets/logo-square-black.svg";
 import swal from "sweetalert";
 // Import React FilePond
 import Uploader from "./uploader";
+import "./Channel.css";
 
 // const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
@@ -86,7 +87,7 @@ export default function Channel() {
   return (
     <>
       <Container maxWidth="xl" sx={{}}>
-        <Grid container>
+        <Grid container sx={{ marginTop: "30px" }}>
           <Grid item sm={12} md={6}>
             <Box sm={6} sx={{ flexGrow: 1 }}>
               <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
@@ -101,7 +102,9 @@ export default function Channel() {
           </Grid>
 
           <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
-            <img src={LogoSquareBlack} alt="Logo" />
+            <Link to="/" style={{ height: "fit-content" }}>
+              <img src={LogoSquareBlack} alt="Logo" />
+            </Link>
           </Grid>
           <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
             <Grid container>

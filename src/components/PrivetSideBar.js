@@ -87,6 +87,9 @@ export default function PrivetSideBar() {
           }}
         >
           <ListItem>
+            <Link to="/">Home Page</Link>
+          </ListItem>
+          <ListItem>
             <Link to="/Dashboard">Dashboard</Link>
           </ListItem>
           <ListItem>
