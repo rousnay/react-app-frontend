@@ -22,7 +22,7 @@ const AddUserInformation = lazy(() =>
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Channel = lazy(() => import("./pages/Channel/Channel"));
-
+const ChannelProfile = lazy(() => import("./pages/Channel/ChannelProfile"));
 const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
 const MetaInfo = lazy(() => import("./pages/MetaTracks/MetaInfo"));
 const ReactMapDraw = lazy(() => import("./pages/MetaTracks/ReactMapDraw"));
@@ -54,7 +54,7 @@ function App() {
               <Route path="/SignIn" element={<SignIn />} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Channel" element={<Channel />} />
-
+              <Route path="/ChannelProfile" element={<ChannelProfile />} />
               <Route path="/CreateTrack" element={<CreateTrack />} />
               <Route path="/CreateTrack/MetaInfo" element={<MetaInfo />} />
               <Route path="/ReactMapDraw" element={<ReactMapDraw />} />

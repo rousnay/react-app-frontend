@@ -42,10 +42,15 @@ export default function SignIn() {
     });
     console.log(response);
     if (response.message === "Success") {
-      swal("Success", response.message, "success", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
+      swal(
+        "Welcome to FINTUSS",
+        `${response.data.firstName} ${response.data.lastName}`,
+        "success",
+        {
+          buttons: false,
+          timer: 2000,
+        }
+      ).then((value) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
         window.location.href = "/Dashboard";

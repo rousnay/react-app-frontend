@@ -16,15 +16,16 @@ import "./Channel.css";
 
 // const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
-
+const userData = JSON.parse(localStorage.getItem("userData"));
 console.log(userToken);
+console.log(userData);
 
 // const userToken =
 //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
 // const channelId = "aaafb550-6ef9-45cf-a8a1-2cf853410577";
 
 const baseURL = "https://api.finutss.com";
-async function loginUser(payloadData) {
+async function createChannel(payloadData) {
   console.log(payloadData);
   return fetch(`${baseURL}/channel`, {
     method: "POST",
@@ -38,15 +39,27 @@ async function loginUser(payloadData) {
 
 export default function Channel() {
   useEffect(() => {
-    if (!userToken) {
+    if (!userData) {
       swal("Oops!", "Please sign in first", "error", {
         buttons: false,
         timer: 1500,
       }).then((value) => {
         window.location.href = "/SignIn";
       });
+    } else if (userData.email) {
+      swal("Oops!", `You already have a channel`, "info", {
+        buttons: ["Back to dashboard", "View your channel"],
+        // buttons: true,
+      }).then((goToChannel) => {
+        if (goToChannel) {
+          window.location.href = "/ChannelProfile";
+        } else {
+          window.location.href = "/Dashboard";
+        }
+      });
+    } else {
     }
-  }, [userToken]);
+  }, []);
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -63,7 +76,7 @@ export default function Channel() {
   const submitImages = async (e) => {
     e.preventDefault();
 
-    const response = await loginUser(formData);
+    const response = await createChannel(formData);
 
     console.log(response);
     if (response.message === "Success") {

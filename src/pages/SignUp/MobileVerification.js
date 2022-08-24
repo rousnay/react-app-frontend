@@ -32,54 +32,51 @@ export default function MobileVerification() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOTP] = useState();
 
-  useEffect(
-    (userData) => {
-      if (!userData) {
-        swal("Oops!", "Please sign up with a mobile number first", "error", {
-          buttons: true,
-          buttons: ["Back to the home page", "Sing Up"],
-        }).then((willSingUp) => {
-          if (willSingUp) {
-            swal("Going for sign up...", {
-              icon: "success",
-              timer: 1000,
-            }).then((value) => {
-              window.location.href = "/SignUp";
-            });
-          } else {
-            window.location.href = "/Dashboard";
-          }
-        });
-      } else if (userData.email) {
-        swal(
-          "Oops!",
-          `You are already verified with ${userData.countryCode} ${userData.phoneNumber} and signed in`,
-          "info",
-          {
-            buttons: ["Go to dashboard", "Logout"],
-            // buttons: true,
-            dangerMode: true,
-          }
-        ).then((willLoggedOut) => {
-          if (willLoggedOut) {
-            swal("You have been logged out!", {
-              icon: "success",
-              timer: 1000,
-            }).then((value) => {
-              handleLogout();
-              window.location.href = "/SignUp";
-            });
-          } else {
-            window.location.href = "/Dashboard";
-          }
-        });
-      } else {
-        setCountryCode(userData.countryCode);
-        setPhoneNumber(userData.phoneNumber);
-      }
-    },
-    [userData]
-  );
+  useEffect(() => {
+    if (!userData) {
+      swal("Oops!", "Please sign up with a mobile number first", "error", {
+        buttons: true,
+        buttons: ["Back to the home page", "Sing Up"],
+      }).then((willSingUp) => {
+        if (willSingUp) {
+          swal("Going for sign up...", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            window.location.href = "/SignUp";
+          });
+        } else {
+          window.location.href = "/";
+        }
+      });
+    } else if (userData.email) {
+      swal(
+        "Oops!",
+        `You are already verified with ${userData.countryCode} ${userData.phoneNumber} and signed in`,
+        "info",
+        {
+          buttons: ["Go to dashboard", "Logout"],
+          // buttons: true,
+          dangerMode: true,
+        }
+      ).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            handleLogout();
+            window.location.href = "/SignUp";
+          });
+        } else {
+          window.location.href = "/Dashboard";
+        }
+      });
+    } else {
+      setCountryCode(userData.countryCode);
+      setPhoneNumber(userData.phoneNumber);
+    }
+  }, [userData]);
 
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
