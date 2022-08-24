@@ -1,30 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userData");
+};
+
 // User data
 const userData = JSON.parse(localStorage.getItem("userData"));
-const userToken = userData.token;
-console.log(userToken);
 
-async function loginUser(payloadData) {
+async function addUserInfo(authToken, payloadData) {
   return fetch("https://api.finutss.com/user", {
     method: "POST",
     headers: {
       //   "Content-Type": "multipart/form-data",
-      Authorization: "Bearer " + userToken,
+      Authorization: "Bearer " + authToken,
     },
     body: payloadData,
   }).then((data) => data.json());
 }
 
 export default function AddUserInformation() {
+  const [userToken, setUserToken] = useState();
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  useEffect(
+    (userData) => {
+      if (!userData) {
+        swal("Oops!", "Please get verified with mobile number first", "error", {
+          buttons: true,
+          buttons: ["Back to sign up", "Verify mobile number"],
+        }).then((willSingUp) => {
+          if (willSingUp) {
+            swal("Going for mobile verification..", {
+              icon: "success",
+              timer: 1000,
+            }).then((value) => {
+              window.location.href = "/MobileVerification";
+            });
+          } else {
+            window.location.href = "/SignUp";
+          }
+        });
+      } else if (userData.email) {
+        swal(
+          "Oops!",
+          `You are already verified with ${userData.countryCode} ${userData.phoneNumber} and signed in`,
+          "info",
+          {
+            buttons: ["Go to dashboard", "Logout"],
+            // buttons: true,
+            dangerMode: true,
+          }
+        ).then((willLoggedOut) => {
+          if (willLoggedOut) {
+            swal("You have been logged out!", {
+              icon: "success",
+              timer: 1000,
+            }).then((value) => {
+              handleLogout();
+              window.location.href = "/SignUp";
+            });
+          } else {
+            window.location.href = "/Dashboard";
+          }
+        });
+      } else {
+        setUserToken(userData.token);
+      }
+    },
+    [userData]
+  );
+  console.log(userToken);
 
   var formData = new FormData();
   formData.append("username", username);
@@ -34,7 +87,7 @@ export default function AddUserInformation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await loginUser(formData);
+    const response = await addUserInfo(userToken, formData);
 
     if (response.message === "Success") {
       swal("Success", response.message, "success", {

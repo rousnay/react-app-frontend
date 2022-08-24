@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Container,
@@ -37,6 +37,17 @@ async function loginUser(payloadData) {
 }
 
 export default function Channel() {
+  useEffect(() => {
+    if (!userToken) {
+      swal("Oops!", "Please sign in first", "error", {
+        buttons: false,
+        timer: 1500,
+      }).then((value) => {
+        window.location.href = "/SignIn";
+      });
+    }
+  }, [userToken]);
+
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState([]);

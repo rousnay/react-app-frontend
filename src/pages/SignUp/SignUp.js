@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 // import { styled } from "@mui/material/styles";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
+
+const userToken = localStorage.getItem("token");
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userData");
+};
 
 async function loginUser(payloadData) {
   // console.log(credentials);
@@ -18,6 +25,28 @@ async function loginUser(payloadData) {
 }
 
 export default function SignUp() {
+  useEffect(() => {
+    if (userToken) {
+      swal("Oops!", "You are already signed in with another account", "info", {
+        buttons: ["Go to dashboard", "Logout"],
+        // buttons: true,
+        dangerMode: true,
+      }).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            handleLogout();
+            window.location.reload();
+          });
+        } else {
+          window.location.href = "/Dashboard";
+        }
+      });
+    }
+  }, []);
+
   const [countryCode, setCountryCode] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const deviceType = "ios";

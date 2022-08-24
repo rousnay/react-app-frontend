@@ -21,7 +21,7 @@ console.log(userToken);
 const baseURL = "https://api.finutss.com";
 async function loginUser(payloadData) {
   console.log(payloadData);
-  return fetch(`${baseURL}/channel`, {
+  return fetch(`${baseURL}/track/info`, {
     method: "POST",
     headers: {
       //   "Content-Type": "multipart/form-data",
@@ -153,23 +153,23 @@ export default function TrackInfo() {
             />
           </div>
 
-          <Stack spacing={2} direction="row">
+          <Stack direction="row" sx={{ justifyContent: "space-around" }}>
             <Button
-              type="submit"
-              fullWidth
+              type="button"
+              size="small"
               variant="outlined"
               color="themepurple"
-              className="channelSubmit"
+              className="trackInfocancel"
             >
               Cancel
             </Button>
 
             <Button
               type="submit"
-              fullWidth
+              size="small"
               variant="contained"
               color="themepurple"
-              className="channelSubmit"
+              className="trackInfoSubmit"
             >
               Next
             </Button>

@@ -6,11 +6,23 @@ import TreadmillBg from "../../assets/treadmill-bg.svg";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import UserInfo from "./UserInfo";
+import swal from "sweetalert";
 
 const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
 
 export default function Dashboard() {
+  useEffect(() => {
+    if (!userToken) {
+      swal("Oops!", "Please sign in first", "error", {
+        buttons: false,
+        timer: 1500,
+      }).then((value) => {
+        window.location.href = "/SignIn";
+      });
+    }
+  }, [userToken]);
+
   const [userInformation, setInformation] = useState();
   // Function to collect data
   const getApiData = async () => {

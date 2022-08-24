@@ -68,7 +68,7 @@ export default function PrivetSideBar() {
             startIcon={<AddIcon />}
             variant="contained"
             color="logoblue"
-            className="channelSubmit"
+            className="createTrackButton"
             sx={{
               width: "80%",
               margin: "40px 10% 0",
