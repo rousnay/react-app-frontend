@@ -27,7 +27,7 @@ const initialData = {
       type: "Feature",
       properties: {},
       geometry: {
-        coordinates: [[0, 0]],
+        coordinates: [0, 0],
         type: "Point",
       },
     },
@@ -39,6 +39,9 @@ const localUserToken = localStorage.token;
 const localChannelId = LocalUserData.channelId;
 const LocalGeoJSONData =
   JSON.parse(localStorage.getItem("geoJSONLocal")) || initialData;
+const LocalCentralCoordinate = JSON.parse(
+  localStorage.getItem("centralCoordinateLocal")
+) || [0, 0];
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
@@ -66,7 +69,9 @@ export default function TrackInfo() {
   const [trackCoordinates, setTrackCoordinates] = useState(
     LocalGeoJSONData.features[0].geometry.coordinates
   );
-  const [centralCoordinate, setCentralCoordinate] = useState([0, 0]);
+  const [centralCoordinate, setCentralCoordinate] = useState(
+    LocalCentralCoordinate
+  );
 
   useEffect(() => {
     setCentralCoordinate(geoCentralCoordinate(trackCoordinates));
@@ -118,7 +123,6 @@ export default function TrackInfo() {
       return fileItem.file;
     });
     //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
-    console.log(_previewImageFileItem[0]);
     setPreviewImage(_previewImageFileItem);
   }
 
@@ -126,18 +130,9 @@ export default function TrackInfo() {
     const _gpxFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    console.log(_gpxFileItem[0]);
     setGpxFile(_gpxFileItem);
     convertToGeoJSON(_gpxFileItem[0]);
   }
-
-  const geoCentralCoordinate = (coordinatesList) => {
-    if (coordinatesList.length < 3) {
-      return [0, 0];
-    } else {
-      return coordinatesList[Math.floor(coordinatesList.length / 2)];
-    }
-  };
 
   const convertToGeoJSON = (gpxPayload) => {
     if (gpxPayload) {
@@ -154,11 +149,27 @@ export default function TrackInfo() {
         setTrackCoordinates(allGeoCoordinates);
         setCentralCoordinate(geoCentralCoordinate(allGeoCoordinates));
         localStorage.setItem("geoJSONLocal", JSON.stringify(geoJSONData));
+        localStorage.setItem(
+          "centralCoordinateLocal",
+          JSON.stringify(geoCentralCoordinate(allGeoCoordinates))
+        );
       };
     } else {
-      localStorage.removeItem("geoJSONLocal");
       setGeoJSON(initialData);
-      // setCentralCoordinate([126.9243863, 37.5623882]);
+      setCentralCoordinate([0, 0]);
+      localStorage.setItem("geoJSONLocal", JSON.stringify(initialData));
+      localStorage.setItem(
+        "centralCoordinateLocal",
+        JSON.stringify(geoCentralCoordinate([0, 0]))
+      );
+    }
+  };
+
+  const geoCentralCoordinate = (coordinatesList) => {
+    if (coordinatesList.length < 3) {
+      return [0, 0];
+    } else {
+      return coordinatesList[Math.floor(coordinatesList.length / 2)];
     }
   };
 
@@ -199,10 +210,10 @@ export default function TrackInfo() {
               latitude={centralCoordinate[1]}
               // onClick={(event) => onMapClick(event, line, currentMode)}
               zoom={12}
-              scrollZoom={true}
-              doubleClickZoom={true}
-              touchZoom={true}
-              interactiveLayerIds={"route"}
+              // scrollZoom={true}
+              // doubleClickZoom={true}
+              // touchZoom={true}
+              // interactiveLayerIds={"route"}
             >
               <Source id="route" type="geojson" data={geoJSON} />
               <Layer {...LayerStyle1} />
