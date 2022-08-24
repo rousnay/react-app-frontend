@@ -10,56 +10,73 @@ import {
 } from "@mui/material";
 import swal from "sweetalert";
 import Uploader from "./uploader";
-
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 
-const userData = JSON.parse(localStorage.getItem("userData"));
-const userToken = localStorage.getItem("token");
+const LocalUserData = JSON.parse(localStorage.getItem("userData"));
+const localUserToken = localStorage.token;
+const localChannelId = LocalUserData.channelId;
 
-console.log(userToken);
+console.log(LocalUserData);
+console.log(localUserToken);
+console.log(localChannelId);
 
 const baseURL = "https://api.finutss.com";
-async function loginUser(payloadData) {
-  console.log(payloadData);
+async function createNewTrack(payloadData) {
+  for (const value of payloadData.values()) {
+    console.log(value);
+  }
+
   return fetch(`${baseURL}/track/info`, {
     method: "POST",
     headers: {
-      //   "Content-Type": "multipart/form-data",
-      Authorization: "Bearer " + userToken,
+      // "Content-Type": "multipart/form-data",
+      Authorization: "Bearer " + localUserToken,
     },
     body: payloadData,
   }).then((data) => data.json());
 }
 
 export default function TrackInfo() {
-  const [gpxFile, setGpxFile] = useState([]);
+  // const [userToken, setUserToken] = useState(localUserToken);
+  // const [userInfo, setUserInfo] = useState(LocalUserData);
+  // const [channelId, setChannelId] = useState(localChannelId);
+
   const [name, setName] = useState();
   const [description, setDescription] = useState();
+  const [tags, setTags] = useState([]);
   const [previewImage, setPreviewImage] = useState([]);
+  const [type, setType] = useState("loop");
+  const [gpxFile, setGpxFile] = useState([]);
+  const [distanceInMetres, setDistanceInMetres] = useState();
+  const [durationInSeconds, setDurationInSeconds] = useState();
+  const [kcal, setKcal] = useState();
 
   var formData = new FormData();
-  // formData.append("id", channelId);
-  formData.append("gpxFile", gpxFile[0]);
+  formData.append("channelId", localChannelId);
   formData.append("name", name);
   formData.append("description", description);
+  formData.append("tags", tags);
   formData.append("previewImage", previewImage[0]);
+  formData.append("type", type);
+  formData.append("gpxFile", gpxFile[0]);
+  // formData.append("distanceInMetres", distanceInMetres);
+  // formData.append("durationInSeconds", durationInSeconds);
+  // formData.append("kcal", kcal);
 
-  const submitImages = async (e) => {
+  const submitTrackInfo = async (e) => {
     e.preventDefault();
-
-    const response = await loginUser(formData);
-
-    console.log(response);
+    const response = await createNewTrack(formData);
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
-        // localStorage.setItem("userData", JSON.stringify(response.data));
-        // window.location.href = "/AddUserInformation";
-      });
+        buttons: true,
+        // timer: 2000,
+      }).then((value) => {});
     } else {
-      swal("Failed", response.message, "error");
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+        // localStorage.setItem("userData", JSON.stringify(response.data));
+        // window.location.href = "/SignIn";
+      }).then((value) => {});
     }
   };
 
@@ -77,12 +94,12 @@ export default function TrackInfo() {
     });
     //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
     console.log(_previewImageFileItem[0]);
-    previewImage(_previewImageFileItem);
+    setPreviewImage(_previewImageFileItem);
   }
 
   return (
     <>
-      <TrackInfoFormStyled noValidate onSubmit={submitImages}>
+      <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
         <Grid item sm={12} md={8} className="gpxFileInfo">
           <div className="gpxFileUpload">
             <h4>GPX File</h4>
@@ -141,7 +158,7 @@ export default function TrackInfo() {
             id="tags"
             name="tags"
             maxRows={4}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setTags(e.target.value)}
           />
           <div className="previewImageUpload">
             <h4>Preview Image</h4>
@@ -154,7 +171,7 @@ export default function TrackInfo() {
           </div>
 
           <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-            <Button
+            {/* <Button
               type="button"
               size="small"
               variant="outlined"
@@ -162,7 +179,7 @@ export default function TrackInfo() {
               className="trackInfocancel"
             >
               Cancel
-            </Button>
+            </Button> */}
 
             <Button
               type="submit"

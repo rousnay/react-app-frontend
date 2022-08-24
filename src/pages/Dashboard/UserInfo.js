@@ -42,6 +42,10 @@ export default function UserInfo(props) {
           <span style={{ fontWeight: "bold" }}>Account Type: </span>
           {userData.accountType}
         </p>
+        <p>
+          <span style={{ fontWeight: "bold" }}>Channel ID: </span>
+          {userData.channelId}
+        </p>
         <Link to="/Channel">
           {" "}
           <Button

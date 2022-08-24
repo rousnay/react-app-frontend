@@ -30,9 +30,13 @@ submit: {
 },
 ===================================
 // get FormData values
-for (const value of formData.values()) {
-  console.log(value);
-}
+  for (const pair of payloadData.entries()) {
+    console.log(`${pair[0]}: ${pair[1]}`);
+  }
+
+  for (const value of payloadData.values()) {
+    console.log(value);
+  }
 ==================================\
 swal("Success", response.message, "success", {
   title: "Sweet!",

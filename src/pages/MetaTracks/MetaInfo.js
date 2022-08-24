@@ -16,7 +16,7 @@ import { TrackCreationNav } from "./MetaTracksStyles";
 const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
 
-console.log(userToken);
+// console.log(userToken);
 
 const baseURL = "https://api.finutss.com";
 async function loginUser(payloadData) {

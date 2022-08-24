@@ -37,7 +37,7 @@ export default function Uploader(props) {
         onupdatefiles={props.onupdatefiles}
         allowMultiple={false}
         maxFiles={1}
-        // acceptedFileTypes={["image/png"]}
+        // acceptedFileTypes={["image/png", "xml/gpx"]}
         labelIdle={props.labelIdle}
       />
     </>

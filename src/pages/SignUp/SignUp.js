@@ -13,8 +13,8 @@ const handleLogout = () => {
   localStorage.removeItem("userData");
 };
 
-async function loginUser(payloadData) {
-  // console.log(credentials);
+async function userSignUp(payloadData) {
+  console.log(payloadData);
   return fetch("https://api.finutss.com/user/signup", {
     method: "POST",
     headers: {
@@ -23,6 +23,10 @@ async function loginUser(payloadData) {
     body: JSON.stringify(payloadData),
   }).then((data) => data.json());
 }
+
+const genDeviceToken = (() => {
+  return Math.random().toString(36).substring(2, 8);
+})();
 
 export default function SignUp() {
   useEffect(() => {
@@ -50,11 +54,11 @@ export default function SignUp() {
   const [countryCode, setCountryCode] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const deviceType = "ios";
-  const deviceToken = "string";
+  const deviceToken = genDeviceToken;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await loginUser({
+    const response = await userSignUp({
       countryCode,
       phoneNumber,
       deviceType,
@@ -71,7 +75,7 @@ export default function SignUp() {
         window.location.href = "/MobileVerification";
       });
     } else if (response.statusCode === 400) {
-      swal("Failed", response.message[0], "error");
+      swal("Failed", response.error, "error");
     } else {
       swal("Failed", response.message, "error");
     }

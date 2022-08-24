@@ -24,6 +24,7 @@ export default function Dashboard() {
   }, [userToken]);
 
   const [userInformation, setInformation] = useState();
+
   // Function to collect data
   const getApiData = async () => {
     const response = await fetch("https://api.finutss.com/user/info", {
@@ -32,10 +33,10 @@ export default function Dashboard() {
         "Content-Type": "application/json",
         Authorization: "Bearer " + userToken,
       },
-    }).then((response) => console.log(response));
+    }).then((data) => data.json());
 
     // update the state
-    if (response.message === "Success") {
+    if (response.status === 200) {
       console.log(response);
       setInformation(response);
       localStorage.setItem("userData", JSON.stringify(response.data));
@@ -45,10 +46,6 @@ export default function Dashboard() {
   useEffect(() => {
     getApiData();
   }, []);
-
-  useEffect(() => {
-    console.log(userInformation);
-  });
 
   return (
     <>

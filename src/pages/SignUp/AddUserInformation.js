@@ -30,53 +30,51 @@ export default function AddUserInformation() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  useEffect(
-    (userData) => {
-      if (!userData) {
-        swal("Oops!", "Please get verified with mobile number first", "error", {
-          buttons: true,
-          buttons: ["Back to sign up", "Verify mobile number"],
-        }).then((willSingUp) => {
-          if (willSingUp) {
-            swal("Going for mobile verification..", {
-              icon: "success",
-              timer: 1000,
-            }).then((value) => {
-              window.location.href = "/MobileVerification";
-            });
-          } else {
+  useEffect(() => {
+    if (!userData) {
+      swal("Oops!", "Please get verified with mobile number first", "error", {
+        buttons: true,
+        buttons: ["Back to sign up", "Verify mobile number"],
+      }).then((willSingUp) => {
+        if (willSingUp) {
+          swal("Going for mobile verification..", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            window.location.href = "/MobileVerification";
+          });
+        } else {
+          window.location.href = "/SignUp";
+        }
+      });
+    } else if (userData.email) {
+      swal(
+        "Oops!",
+        `You are already verified with ${userData.countryCode} ${userData.phoneNumber} and signed in`,
+        "info",
+        {
+          buttons: ["Go to dashboard", "Sign up a new account"],
+          // buttons: true,
+          dangerMode: true,
+        }
+      ).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            handleLogout();
             window.location.href = "/SignUp";
-          }
-        });
-      } else if (userData.email) {
-        swal(
-          "Oops!",
-          `You are already verified with ${userData.countryCode} ${userData.phoneNumber} and signed in`,
-          "info",
-          {
-            buttons: ["Go to dashboard", "Logout"],
-            // buttons: true,
-            dangerMode: true,
-          }
-        ).then((willLoggedOut) => {
-          if (willLoggedOut) {
-            swal("You have been logged out!", {
-              icon: "success",
-              timer: 1000,
-            }).then((value) => {
-              handleLogout();
-              window.location.href = "/SignUp";
-            });
-          } else {
-            window.location.href = "/Dashboard";
-          }
-        });
-      } else {
-        setUserToken(userData.token);
-      }
-    },
-    [userData]
-  );
+          });
+        } else {
+          window.location.href = "/Dashboard";
+        }
+      });
+    } else {
+      setUserToken(userData.token);
+    }
+  }, [userData]);
+
   console.log(userToken);
 
   var formData = new FormData();

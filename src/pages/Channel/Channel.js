@@ -26,7 +26,15 @@ console.log(userData);
 
 const baseURL = "https://api.finutss.com";
 async function createChannel(payloadData) {
-  console.log(payloadData);
+  // console.log(payloadData);
+
+  for (const pair of payloadData.entries()) {
+    console.log(`${pair[0]}:, ${pair[1]}`);
+  }
+
+  for (const value of payloadData.values()) {
+    console.log(value);
+  }
   return fetch(`${baseURL}/channel`, {
     method: "POST",
     headers: {
@@ -46,7 +54,7 @@ export default function Channel() {
       }).then((value) => {
         window.location.href = "/SignIn";
       });
-    } else if (userData.email) {
+    } else if (userData.channelId) {
       swal("Oops!", `You already have a channel`, "info", {
         buttons: ["Back to dashboard", "View your channel"],
         // buttons: true,
@@ -73,12 +81,12 @@ export default function Channel() {
   formData.append("image", image[0]);
   formData.append("bannerImage", bannerImage[0]);
 
-  const submitImages = async (e) => {
+  const submitChannelInfo = async (e) => {
     e.preventDefault();
 
     const response = await createChannel(formData);
-
     console.log(response);
+
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
@@ -88,7 +96,7 @@ export default function Channel() {
         // window.location.href = "/AddUserInformation";
       });
     } else {
-      swal("Failed", response.message, "error");
+      swal("Failed", response.error, "error");
     }
   };
 
@@ -130,7 +138,11 @@ export default function Channel() {
               <img src={LogoSquareBlack} alt="Logo" />
             </Link>
           </Grid>
-          <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
+          <form
+            style={{ width: "100%" }}
+            noValidate
+            onSubmit={submitChannelInfo}
+          >
             <Grid container>
               <Grid item sm={12} md={5} className="channelTextInput">
                 <TextField
