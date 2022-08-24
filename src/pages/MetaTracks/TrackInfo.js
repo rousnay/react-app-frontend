@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Container,
@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import swal from "sweetalert";
 import Uploader from "./uploader";
+import toGeoJson from "@mapbox/togeojson";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 
 const LocalUserData = JSON.parse(localStorage.getItem("userData"));
 const localUserToken = localStorage.token;
 const localChannelId = LocalUserData.channelId;
+const LocalGeoJSONData = JSON.parse(localStorage.getItem("geoJSONLocal")) || {};
 
 console.log(LocalUserData);
 console.log(localUserToken);
@@ -37,9 +39,11 @@ async function createNewTrack(payloadData) {
 }
 
 export default function TrackInfo() {
-  // const [userToken, setUserToken] = useState(localUserToken);
-  // const [userInfo, setUserInfo] = useState(LocalUserData);
-  // const [channelId, setChannelId] = useState(localChannelId);
+  const [geoJSON, setGeoJSON] = useState(LocalGeoJSONData);
+  useEffect(() => {
+    console.log(geoJSON);
+    localStorage.setItem("geoJSONLocal", JSON.stringify(geoJSON));
+  }, [geoJSON]);
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -47,9 +51,9 @@ export default function TrackInfo() {
   const [previewImage, setPreviewImage] = useState([]);
   const [type, setType] = useState("loop");
   const [gpxFile, setGpxFile] = useState([]);
-  const [distanceInMetres, setDistanceInMetres] = useState();
-  const [durationInSeconds, setDurationInSeconds] = useState();
-  const [kcal, setKcal] = useState();
+  // const [distanceInMetres, setDistanceInMetres] = useState();
+  // const [durationInSeconds, setDurationInSeconds] = useState();
+  // const [kcal, setKcal] = useState();
 
   var formData = new FormData();
   formData.append("channelId", localChannelId);
@@ -66,27 +70,20 @@ export default function TrackInfo() {
   const submitTrackInfo = async (e) => {
     e.preventDefault();
     const response = await createNewTrack(formData);
+
     if (response.message === "Success") {
-      swal("Success", response.message, "success", {
-        buttons: true,
-        // timer: 2000,
-      }).then((value) => {});
+      swal("Success", "Track information has been add", "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        localStorage.setItem("currentTtrackId", response.data.id);
+      });
     } else {
       swal("Oops!", response.error, "error", {
         buttons: true,
-        // localStorage.setItem("userData", JSON.stringify(response.data));
-        // window.location.href = "/SignIn";
       }).then((value) => {});
     }
   };
-
-  function setGpxFiledata(fileItems) {
-    const _gpxFileItem = fileItems.map((fileItem) => {
-      return fileItem.file;
-    });
-    console.log(_gpxFileItem[0]);
-    setGpxFile(_gpxFileItem);
-  }
 
   function setPreviewImagedata(fileItems) {
     const _previewImageFileItem = fileItems.map((fileItem) => {
@@ -96,6 +93,32 @@ export default function TrackInfo() {
     console.log(_previewImageFileItem[0]);
     setPreviewImage(_previewImageFileItem);
   }
+
+  function setGpxFiledata(fileItems) {
+    const _gpxFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+    console.log(_gpxFileItem[0]);
+    setGpxFile(_gpxFileItem);
+    convertGeoJSON(_gpxFileItem[0]);
+  }
+
+  const convertGeoJSON = (gpxPayload) => {
+    console.log(gpxPayload);
+    if (gpxPayload) {
+      const fileReader = new FileReader();
+      fileReader.readAsText(gpxPayload, "UTF-8");
+      fileReader.onload = () => {
+        setGeoJSON(
+          toGeoJson.gpx(
+            new DOMParser().parseFromString(fileReader.result, "text/xml")
+          )
+        );
+      };
+    } else {
+      setGeoJSON({});
+    }
+  };
 
   return (
     <>
@@ -122,7 +145,7 @@ export default function TrackInfo() {
               <li>Set the condition value using the action tool.</li>
             </ul>
           </div>
-
+          <div className="gpxMapPreview"></div>
           <div>Zoomed Preview</div>
           <div>Pin List</div>
         </Grid>
@@ -171,16 +194,6 @@ export default function TrackInfo() {
           </div>
 
           <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-            {/* <Button
-              type="button"
-              size="small"
-              variant="outlined"
-              color="themepurple"
-              className="trackInfocancel"
-            >
-              Cancel
-            </Button> */}
-
             <Button
               type="submit"
               size="small"

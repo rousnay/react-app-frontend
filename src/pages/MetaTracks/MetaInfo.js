@@ -3,164 +3,199 @@ import { Link } from "react-router-dom";
 import {
   Container,
   Grid,
-  Box,
+  Stack,
   Typography,
   TextField,
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
 import Uploader from "./uploader";
+import { TrackInfoFormStyled } from "./MetaTracksStyles";
 
-import { TrackCreationNav } from "./MetaTracksStyles";
+const LocalUserData = JSON.parse(localStorage.getItem("userData"));
+const localUserToken = localStorage.token;
+const localChannelId = LocalUserData.channelId;
 
-const userData = JSON.parse(localStorage.getItem("userData"));
-const userToken = localStorage.getItem("token");
-
-// console.log(userToken);
+console.log(LocalUserData);
+console.log(localUserToken);
+console.log(localChannelId);
 
 const baseURL = "https://api.finutss.com";
-async function loginUser(payloadData) {
-  console.log(payloadData);
-  return fetch(`${baseURL}/channel`, {
+async function createNewTrack(payloadData) {
+  for (const value of payloadData.values()) {
+    console.log(value);
+  }
+
+  return fetch(`${baseURL}/track/info`, {
     method: "POST",
     headers: {
-      //   "Content-Type": "multipart/form-data",
-      Authorization: "Bearer " + userToken,
+      // "Content-Type": "multipart/form-data",
+      Authorization: "Bearer " + localUserToken,
     },
     body: payloadData,
   }).then((data) => data.json());
 }
 
 export default function MetaInfo() {
+  // const [userToken, setUserToken] = useState(localUserToken);
+  // const [userInfo, setUserInfo] = useState(LocalUserData);
+  // const [channelId, setChannelId] = useState(localChannelId);
+
   const [name, setName] = useState();
   const [description, setDescription] = useState();
-  const [image, setImage] = useState([]);
-  const [bannerImage, setBannerImage] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [previewImage, setPreviewImage] = useState([]);
+  const [type, setType] = useState("loop");
+  const [gpxFile, setGpxFile] = useState([]);
+  const [distanceInMetres, setDistanceInMetres] = useState();
+  const [durationInSeconds, setDurationInSeconds] = useState();
+  const [kcal, setKcal] = useState();
 
   var formData = new FormData();
-  // formData.append("id", channelId);
+  formData.append("channelId", localChannelId);
   formData.append("name", name);
   formData.append("description", description);
-  formData.append("image", image[0]);
-  formData.append("bannerImage", bannerImage[0]);
+  formData.append("tags", tags);
+  formData.append("previewImage", previewImage[0]);
+  formData.append("type", type);
+  formData.append("gpxFile", gpxFile[0]);
+  // formData.append("distanceInMetres", distanceInMetres);
+  // formData.append("durationInSeconds", durationInSeconds);
+  // formData.append("kcal", kcal);
 
-  const submitImages = async (e) => {
+  const submitTrackInfo = async (e) => {
     e.preventDefault();
+    const response = await createNewTrack(formData);
 
-    const response = await loginUser(formData);
-
-    console.log(response);
     if (response.message === "Success") {
-      swal("Success", response.message, "success", {
+      swal("Success", "Track information has been add", "success", {
         buttons: false,
         timer: 2000,
       }).then((value) => {
-        // localStorage.setItem("userData", JSON.stringify(response.data));
-        // window.location.href = "/AddUserInformation";
+        localStorage.setItem("currentTtrackId", response.data.id);
       });
     } else {
-      swal("Failed", response.message, "error");
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+      }).then((value) => {
+        // window.location.href = "/SignIn";
+      });
     }
   };
 
-  function setImagedata(fileItems) {
-    const _imageFileItem = fileItems.map((fileItem) => {
+  function setGpxFiledata(fileItems) {
+    const _gpxFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    console.log(_imageFileItem[0]);
-    setImage(_imageFileItem);
+    console.log(_gpxFileItem[0]);
+    setGpxFile(_gpxFileItem);
   }
-  function setBannerImagedata(fileItems) {
-    const _BannerImageFileItem = fileItems.map((fileItem) => {
+
+  function setPreviewImagedata(fileItems) {
+    const _previewImageFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
     //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
-    console.log(_BannerImageFileItem[0]);
-    setBannerImage(_BannerImageFileItem);
+    console.log(_previewImageFileItem[0]);
+    setPreviewImage(_previewImageFileItem);
   }
+
   return (
     <>
-      <Grid container>
-        <form style={{ width: "100%" }} noValidate onSubmit={submitImages}>
-          <Grid item sm={12} md={6} className="channelTextInput">
-            <Box sm={6} sx={{ flexGrow: 1 }}>
-              <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
-                Channel Information
-              </Typography>
-              <p>
-                Please enter information about your channel. Most of the channel
-                information can be re-edited at any time. If the image is not
-                set, it is exposed as the default.
-              </p>
-            </Box>
-            <TextField
-              variant="outlined"
-              label="Channel Name"
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              name="name"
-              onChange={(e) => setName(e.target.value)}
+      <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
+        <Grid item sm={12} md={8} className="gpxFileInfo">
+          <div className="gpxFileUpload">
+            <h4>GPX File</h4>
+            <Uploader
+              files={gpxFile}
+              name={"gpxFile"}
+              onupdatefiles={(fileItems) => setGpxFiledata(fileItems)}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
             />
-            <TextField
-              // id="standard-multiline-flexible"
-              variant="outlined"
-              label="Description"
-              multiline
-              fullWidth
-              id="description"
-              name="description"
-              maxRows={4}
-              onChange={(e) => setDescription(e.target.value)}
+          </div>
+
+          <div className="howTo">
+            <h5>How to make a Track</h5>
+            <ul>
+              <li>
+                Upload the GPX File. <span>How to make GPX file</span>
+              </li>
+              <li>Create a Pin by selecting a specific location.</li>
+              <li>Put Metadata such as photos, voices in the Pin.</li>
+              <li>Set the condition value using the action tool.</li>
+            </ul>
+          </div>
+
+          <div>Zoomed Preview</div>
+          <div>Pin List</div>
+        </Grid>
+
+        <Grid item sm={12} md={4} className="trackInformation">
+          <h4>Track Information</h4>
+          <TextField
+            variant="outlined"
+            label="Title"
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            name="name"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            variant="outlined"
+            label="Description"
+            multiline
+            fullWidth
+            id="description"
+            name="description"
+            maxRows={4}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <TextField
+            // id="standard-multiline-flexible"
+            variant="outlined"
+            label="Tags"
+            multiline
+            fullWidth
+            id="tags"
+            name="tags"
+            maxRows={4}
+            onChange={(e) => setTags(e.target.value)}
+          />
+          <div className="previewImageUpload">
+            <h4>Preview Image</h4>
+            <Uploader
+              files={previewImage}
+              name={"previewImage"}
+              onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
             />
-          </Grid>
+          </div>
 
-          <Grid
-            item
-            sm={12}
-            md={3}
-            sx={{
-              display: "flex",
-              flexFlow: "column",
-              alignItems: "center",
-            }}
-          >
-            <div className="channelImageUpload">
-              <div className="thumImageUpload">
-                <h4>Channel Image</h4>
-                <Uploader
-                  files={image}
-                  name={"image"}
-                  onupdatefiles={(fileItems) => setImagedata(fileItems)}
-                  labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                />
-              </div>
-
-              <div className="bannerImageUpload">
-                <h4>Banner Image</h4>
-                <Uploader
-                  files={bannerImage}
-                  name={"bannerImage"}
-                  onupdatefiles={(fileItems) => setBannerImagedata(fileItems)}
-                  labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                />
-              </div>
-            </div>
+          <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+            <Button
+              type="button"
+              size="small"
+              variant="outlined"
+              color="themepurple"
+              className="trackInfocancel"
+            >
+              Cancel
+            </Button>
 
             <Button
               type="submit"
-              fullWidth
+              size="small"
               variant="contained"
-              color="logoblue"
-              className="channelSubmit"
+              color="themepurple"
+              className="trackInfoSubmit"
             >
-              Save
+              Next
             </Button>
-          </Grid>
-        </form>
-      </Grid>{" "}
-      {/* Grid container ENDs */}
+          </Stack>
+        </Grid>
+      </TrackInfoFormStyled>
     </>
   );
 }
