@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import MapGL, { Source, Layer } from "@urbica/react-map-gl";
+import { LayerStyle1 } from "./LayerStyle";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "./style.css";
+
 import {
   Container,
   Grid,
@@ -13,21 +19,35 @@ import Uploader from "./uploader";
 import toGeoJson from "@mapbox/togeojson";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 
+const initialData = {
+  type: "FeatureCollection",
+  features: [
+    {
+      id: "Initial_pin_ID",
+      type: "Feature",
+      properties: {},
+      geometry: {
+        coordinates: [[0, 0]],
+        type: "Point",
+      },
+    },
+  ],
+};
+
 const LocalUserData = JSON.parse(localStorage.getItem("userData"));
 const localUserToken = localStorage.token;
 const localChannelId = LocalUserData.channelId;
-const LocalGeoJSONData = JSON.parse(localStorage.getItem("geoJSONLocal")) || {};
+const LocalGeoJSONData =
+  JSON.parse(localStorage.getItem("geoJSONLocal")) || initialData;
 
-console.log(LocalUserData);
-console.log(localUserToken);
-console.log(localChannelId);
+const MAPBOX_ACCESS_TOKEN =
+  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
 const baseURL = "https://api.finutss.com";
 async function createNewTrack(payloadData) {
   for (const value of payloadData.values()) {
     console.log(value);
   }
-
   return fetch(`${baseURL}/track/info`, {
     method: "POST",
     headers: {
@@ -40,9 +60,17 @@ async function createNewTrack(payloadData) {
 
 export default function TrackInfo() {
   const [geoJSON, setGeoJSON] = useState(LocalGeoJSONData);
+  const [trackName, setTrackName] = useState(
+    LocalGeoJSONData.features[0].properties.name
+  );
+  const [trackCoordinates, setTrackCoordinates] = useState(
+    LocalGeoJSONData.features[0].geometry.coordinates
+  );
+  const [centralCoordinate, setCentralCoordinate] = useState([0, 0]);
+
   useEffect(() => {
-    console.log(geoJSON);
-    localStorage.setItem("geoJSONLocal", JSON.stringify(geoJSON));
+    setCentralCoordinate(geoCentralCoordinate(trackCoordinates));
+    console.log(centralCoordinate);
   }, [geoJSON]);
 
   const [name, setName] = useState();
@@ -100,23 +128,37 @@ export default function TrackInfo() {
     });
     console.log(_gpxFileItem[0]);
     setGpxFile(_gpxFileItem);
-    convertGeoJSON(_gpxFileItem[0]);
+    convertToGeoJSON(_gpxFileItem[0]);
   }
 
-  const convertGeoJSON = (gpxPayload) => {
-    console.log(gpxPayload);
+  const geoCentralCoordinate = (coordinatesList) => {
+    if (coordinatesList.length < 3) {
+      return [0, 0];
+    } else {
+      return coordinatesList[Math.floor(coordinatesList.length / 2)];
+    }
+  };
+
+  const convertToGeoJSON = (gpxPayload) => {
     if (gpxPayload) {
       const fileReader = new FileReader();
       fileReader.readAsText(gpxPayload, "UTF-8");
       fileReader.onload = () => {
-        setGeoJSON(
-          toGeoJson.gpx(
-            new DOMParser().parseFromString(fileReader.result, "text/xml")
-          )
+        var geoJSONData = toGeoJson.gpx(
+          new DOMParser().parseFromString(fileReader.result, "text/xml")
         );
+        const collectionName = geoJSONData.features[0].properties.name;
+        const allGeoCoordinates = geoJSONData.features[0].geometry.coordinates;
+        setGeoJSON(geoJSONData);
+        setTrackName(collectionName);
+        setTrackCoordinates(allGeoCoordinates);
+        setCentralCoordinate(geoCentralCoordinate(allGeoCoordinates));
+        localStorage.setItem("geoJSONLocal", JSON.stringify(geoJSONData));
       };
     } else {
-      setGeoJSON({});
+      localStorage.removeItem("geoJSONLocal");
+      setGeoJSON(initialData);
+      // setCentralCoordinate([126.9243863, 37.5623882]);
     }
   };
 
@@ -145,9 +187,28 @@ export default function TrackInfo() {
               <li>Set the condition value using the action tool.</li>
             </ul>
           </div>
-          <div className="gpxMapPreview"></div>
-          <div>Zoomed Preview</div>
-          <div>Pin List</div>
+
+          <div className="gpxMapPreview">
+            <h5>GPX file: {trackName}</h5>
+
+            <MapGL
+              style={{ width: "100%", height: "500px" }}
+              mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
+              accessToken={MAPBOX_ACCESS_TOKEN}
+              longitude={centralCoordinate[0]}
+              latitude={centralCoordinate[1]}
+              // onClick={(event) => onMapClick(event, line, currentMode)}
+              zoom={12}
+              scrollZoom={true}
+              doubleClickZoom={true}
+              touchZoom={true}
+              interactiveLayerIds={"route"}
+            >
+              <Source id="route" type="geojson" data={geoJSON} />
+              <Layer {...LayerStyle1} />
+            </MapGL>
+          </div>
+          {/* <div>Pin list</div> */}
         </Grid>
 
         <Grid item sm={12} md={4} className="trackInformation">
