@@ -127,8 +127,8 @@ export default function CreateTrack() {
           }}
         >
           <TrackCreationNav />
-          <TrackInfo />
-          {/* <MetaInfo/> */}
+          {/* <TrackInfo /> */}
+          <MetaInfo />
         </Grid>
       </Container>
     </>

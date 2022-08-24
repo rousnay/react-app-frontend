@@ -14,7 +14,6 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import * as turf from "@turf/turf";
 import swal from "sweetalert";
 import Uploader from "./uploader";
 import toGeoJson from "@mapbox/togeojson";
@@ -145,36 +144,37 @@ export default function TrackInfo() {
           new DOMParser().parseFromString(fileReader.result, "text/xml")
         );
         const LineCollectionName = geoJSONLineData.features[0].properties.name;
-
         const allLineGeoCoordinates =
           geoJSONLineData.features[0].geometry.coordinates;
-
-        const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
-        const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
-        const centralLineCoordinates =
-          turfcenterLineFeature.geometry.coordinates;
-
         setGeoJSON(geoJSONLineData);
         setTrackName(LineCollectionName);
         setTrackCoordinates(allLineGeoCoordinates);
-        setCentralCoordinate(centralLineCoordinates);
+        setCentralCoordinate(geoCentralCoordinate(allLineGeoCoordinates));
         localStorage.setItem(
           "geoJSONLineLocal",
           JSON.stringify(geoJSONLineData)
         );
         localStorage.setItem(
           "centralLineCoordinateLocal",
-          JSON.stringify(centralLineCoordinates)
+          JSON.stringify(geoCentralCoordinate(allLineGeoCoordinates))
         );
       };
     } else {
       setGeoJSON(initialLineData);
       setCentralCoordinate([0, 0]);
-      localStorage.setItem("geoJSONLineLocal", JSON.stringify(initialLineData));
+      localStorage.setItem("geoJSONLocal", JSON.stringify(initialLineData));
       localStorage.setItem(
         "centralLineCoordinateLocal",
-        JSON.stringify([0, 0])
+        JSON.stringify(geoCentralCoordinate([0, 0]))
       );
+    }
+  };
+
+  const geoCentralCoordinate = (coordinatesList) => {
+    if (coordinatesList.length < 3) {
+      return [0, 0];
+    } else {
+      return coordinatesList[Math.floor(coordinatesList.length / 2)];
     }
   };
 

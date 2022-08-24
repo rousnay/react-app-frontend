@@ -52,16 +52,14 @@ export const TrackInfoFormStyled = styled("form")`
     padding: 15px;
     background-color: white;
     border-radius: 8px;
+    .howTo {
+      padding: 15px 30px 30px;
+    }
   }
   > div {
     padding: 15px;
     background-color: white;
     border-radius: 8px;
-  }
-  .gpxFileInfo {
-    // padding: 15px;
-    // background-color: white;
-    // border-radius: 8px;
   }
   .trackInformation {
     margin-left: 15px;
