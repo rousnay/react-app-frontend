@@ -242,7 +242,7 @@ export default function TrackInfo() {
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
                   // onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.6}
+                  zoom={12}
                   // scrollZoom={true}
                   // doubleClickZoom={true}
                   // touchZoom={true}

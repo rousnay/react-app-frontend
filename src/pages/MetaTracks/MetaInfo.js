@@ -41,11 +41,13 @@ const localGeoJSONLineData = JSON.parse(
 const localLineCentralCoordinate = JSON.parse(
   localStorage.getItem("centralLineCoordinateLocal")
 );
-var line = turf.lineString(localGeoJSONLineData);
 
 const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
 const theMiddle = Math.floor(GeoCoordinates.length / 2);
 const theMiddleCoordinates = GeoCoordinates[theMiddle];
+
+var line = turf.lineString(GeoCoordinates);
+console.log(line);
 
 const initialPointData = {
   type: "FeatureCollection",
@@ -102,7 +104,7 @@ export default function MetaInfo() {
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
 
   useEffect(() => {
-    localStorage.setItem("layers", JSON.stringify(geoJSONPoint));
+    localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
     console.log(geoJSONPoint);
   }, [geoJSONPoint]);
   const dataReset = () => {
@@ -130,7 +132,7 @@ export default function MetaInfo() {
   const [pinImage, setPinImage] = useState([]);
 
   var formData = new FormData();
-  formData.append("trackId ", pinId);
+  formData.append("pinId ", pinId);
   formData.append("lon ", lon);
   formData.append("lat", lat);
   formData.append("feature", feature);
@@ -158,18 +160,18 @@ export default function MetaInfo() {
   };
 
   function setPinSoundFile(fileItems) {
-    const _previewImageFileItem = fileItems.map((fileItem) => {
+    const _pinSoundFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
     //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
-    setPinSound(_previewImageFileItem);
+    setPinSound(_pinSoundFileItem);
   }
 
   function setPinImageFile(fileItems) {
-    const _gpxFileItem = fileItems.map((fileItem) => {
+    const _pinImageFile = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    setPinImage(_gpxFileItem);
+    setPinImage(_pinImageFile);
     // convertToGeoJSON(_gpxFileItem[0]);
   }
 
@@ -261,7 +263,7 @@ export default function MetaInfo() {
                     className="backToTrackInfo"
                     onClick={() => setMode("simple_select")}
                   >
-                    Selector
+                    Selector a pin
                   </Button>
 
                   <Button
@@ -272,7 +274,7 @@ export default function MetaInfo() {
                     className="metaInfoSubmit"
                     onClick={() => setMode("draw_point")}
                   >
-                    Draw a point
+                    Add a pin
                   </Button>
 
                   <Button
@@ -283,7 +285,7 @@ export default function MetaInfo() {
                     className="metaInfoSubmit"
                     onClick={() => dataReset()}
                   >
-                    Reset data
+                    Reset all pins
                   </Button>
                 </Stack>
 
@@ -293,8 +295,8 @@ export default function MetaInfo() {
                   accessToken={MAPBOX_ACCESS_TOKEN}
                   longitude={localLineCentralCoordinate[0]}
                   latitude={localLineCentralCoordinate[1]}
-                  // onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.6}
+                  onClick={(event) => onMapClick(event, line, currentMode)}
+                  zoom={12}
                   // scrollZoom={true}
                   // doubleClickZoom={true}
                   // touchZoom={true}

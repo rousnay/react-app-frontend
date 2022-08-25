@@ -14,7 +14,7 @@ export const LayerStyle1 = {
   },
   paint: {
     "line-color": "#f73a6b",
-    "line-width": 5,
+    "line-width": 3,
   },
 };
 
