@@ -58,8 +58,8 @@ function App() {
               <Route path="/ChannelProfile" element={<ChannelProfile />} />
 
               <Route path="/CreateTrack" element={<CreateTrack />} />
-              <Route path="/CreateTrack/TrackInfo" element={<TrackInfo />} />
-              <Route path="/CreateTrack/MetaInfo" element={<MetaInfo />} />
+              <Route path="/TrackInfo" element={<TrackInfo />} />
+              <Route path="/MetaInfo" element={<MetaInfo />} />
               <Route path="/ReactMapDraw" element={<ReactMapDraw />} />
               <Route path="/GPXupload" element={<GPXupload />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />

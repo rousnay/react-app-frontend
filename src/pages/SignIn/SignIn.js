@@ -53,6 +53,7 @@ export default function SignIn() {
       ).then((value) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userData", JSON.stringify(response.data));
+        localStorage.setItem("channelId", response.data.channelId);
         window.location.href = "/Dashboard";
       });
     } else if (response.statusCode === 400) {

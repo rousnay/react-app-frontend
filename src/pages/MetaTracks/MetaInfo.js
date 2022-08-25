@@ -14,33 +14,39 @@ import MapGL, {
   Marker,
   ScaleControl,
 } from "@urbica/react-map-gl";
-import DeckGL, { FlyToInterpolator } from "deck.gl";
 import Draw from "@urbica/react-map-gl-draw";
 import * as turf from "@turf/turf";
 import swal from "sweetalert";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
-import { GeoData } from "./SampleGeoJSON";
 import Uploader from "./uploader";
-// import { GeoData2 } from "./SampleGeoJSON2";
 import PinList from "./PinList";
 import PinPoint from "./PinPoint";
 import PinInfo from "./PinInfo";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
-
+import PrivetSideBar from "../../components/PrivetSideBar";
+import PrivetHeader from "../../components/PrivetHeader";
+import TrackCreationNav from "./TrackCreationNav";
 import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
-
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import "./style.css";
 import { CloseFullscreenOutlined } from "@mui/icons-material";
 
-const LocalGeoJSONLineData = JSON.parse(
+const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
+
+const localGeoJSONLineData = JSON.parse(
   localStorage.getItem("geoJSONLineLocal")
 );
-const LocalLineCentralCoordinate = localStorage.getItem(
-  "centralLineCoordinateLocal"
+const localLineCentralCoordinate = JSON.parse(
+  localStorage.getItem("centralLineCoordinateLocal")
 );
+var line = turf.lineString(localGeoJSONLineData);
+
+const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
+const theMiddle = Math.floor(GeoCoordinates.length / 2);
+const theMiddleCoordinates = GeoCoordinates[theMiddle];
+
 const initialPointData = {
   type: "FeatureCollection",
   features: [
@@ -49,7 +55,7 @@ const initialPointData = {
       type: "Feature",
       properties: {},
       geometry: {
-        coordinates: LocalLineCentralCoordinate,
+        coordinates: theMiddleCoordinates,
         type: "Point",
       },
     },
@@ -65,15 +71,12 @@ const localGeoJSONPointData =
   JSON.parse(localStorage.getItem("geoJSONPointLocal")) || initialPointData;
 
 const geoPointCoordinates =
-  LocalGeoJSONLineData.features[0].geometry.coordinates;
-
+  localGeoJSONPointData.features[0].geometry.coordinates;
 console.log(geoPointCoordinates);
 
-// var line = turf.lineString(geoPointCoordinates);
-
-const turfFeatures = turf.points(geoPointCoordinates);
-const centerFeatures = turf.center(turfFeatures);
-const centralFeaturesCoordinates = centerFeatures.geometry.coordinates;
+// const turfFeatures = turf.points(geoPointCoordinates);
+// const centerFeatures = turf.center(turfFeatures);
+// const centralFeaturesCoordinates = centerFeatures.geometry.coordinates;
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
@@ -95,19 +98,27 @@ async function createNewTrack(payloadData) {
 }
 
 export default function MetaInfo() {
-  const [geoJSONLine, setGeoJSON] = useState(LocalGeoJSONLineData);
+  const [geoJSONLine, setGeoJSON] = useState(localGeoJSONLineData);
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
-  const [trackName, setTrackName] = useState(
-    localGeoJSONPointData.features[0].properties.name
-  );
-  const [trackCoordinates, setTrackCoordinates] = useState(
-    localGeoJSONPointData.features[0].geometry.coordinates
-  );
-  const [centralPointCoordinate, setCentralCoordinate] = useState(
-    localGeoJSONPointData
-  );
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    localStorage.setItem("layers", JSON.stringify(geoJSONPoint));
+    console.log(geoJSONPoint);
+  }, [geoJSONPoint]);
+  const dataReset = () => {
+    setGeoJSONPoint(initialPointData);
+  };
+
+  const [mode, setMode] = useState("simple_select");
+  const [currentMode, setCurrentMode] = useState("draw_point");
+  const prevMode = useRef(mode);
+  useEffect(() => {
+    prevMode.current = mode;
+    (() => {
+      setCurrentMode(prevMode.current);
+    })();
+  }, [mode]);
+
   const [pinId, setPinId] = useState();
   const [lon, setLon] = useState();
   const [lat, setLat] = useState();
@@ -193,124 +204,218 @@ export default function MetaInfo() {
   //   }
   // };
 
-  const geoCentralCoordinate = (coordinatesList) => {
-    if (coordinatesList.length < 3) {
-      return [0, 0];
-    } else {
-      return coordinatesList[Math.floor(coordinatesList.length / 2)];
-    }
-  };
+  const newCurrentData = geoJSONPoint.features.map(
+    (features, i) => features.geometry.coordinates
+  );
+
+  const pointMarkerLocal = newCurrentData.map((lngLat, index) => (
+    <Marker
+      key={index}
+      longitude={lngLat[0]}
+      latitude={lngLat[1]}
+      // draggable
+      // onDragEnd={onDragEnd}
+      // onClick={(event) => onMarkerClick(event, lngLat)}
+    >
+      <PinPoint ids={index + 1} />
+    </Marker>
+  ));
 
   return (
     <>
-      <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
-        <Grid item sm={12} md={8} className="gpxFileInfo">
-          <div className="metaMapContainer">
-            <h4>GPX file: {trackName}</h4>
-            <MapGL
-              style={{ width: "100%", height: "500px" }}
-              mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
-              accessToken={MAPBOX_ACCESS_TOKEN}
-              longitude={centralFeaturesCoordinates[0]}
-              latitude={centralFeaturesCoordinates[1]}
-              // onClick={(event) => onMapClick(event, line, currentMode)}
-              zoom={11.6}
-              // scrollZoom={true}
-              // doubleClickZoom={true}
-              // touchZoom={true}
-              // interactiveLayerIds={"route"}
-            >
-              <Source id="route" type="geojson" data={geoJSONLine} />
-              <Layer {...LayerStyle1} />
-            </MapGL>
-          </div>
-          <div className="howTo">
-            <h4>How to make a Track</h4>
-            <ul>
-              <li>
-                Upload the GPX File. <span>How to make GPX file</span>
-              </li>
-              <li>Create a Pin by selecting a specific location.</li>
-              <li>Put Metadata such as photos, voices in the Pin.</li>
-              <li>Set the condition value using the action tool.</li>
-            </ul>
-          </div>
-          {/* <div>Pin list</div> */}
+      <PrivetHeader loginInfo={userInfo} />
+
+      <Container maxWidth="xl" sx={{ display: " flex" }}>
+        <Grid
+          container
+          sx={{
+            width: "230px",
+            display: "flex",
+            backgroundColor: `var(--logoblack)`,
+          }}
+        >
+          <PrivetSideBar />
         </Grid>
 
-        <Grid item sm={12} md={4} className="trackInformation metaInformation">
-          <h4>Metadata</h4>
-          <TextField
-            variant="outlined"
-            label="Name"
-            margin="normal"
-            required
-            fullWidth
-            id="pinName"
-            name="pinName"
-            onChange={(e) => setPinName(e.target.value)}
-          />
+        <Grid
+          container
+          sx={{
+            width: "calc(100% - 230px)",
+            padding: "30px",
+            display: "flex",
+          }}
+        >
+          <TrackCreationNav />
+          <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
+            <Grid item sm={12} md={8} className="gpxFileInfo">
+              <div className="metaMapContainer">
+                <h4>Track Name: </h4>
+                <div>Current Mode: {mode}</div>
 
-          <TextField
-            variant="outlined"
-            label="Distance"
-            margin="normal"
-            required
-            fullWidth
-            id="pinDistance"
-            name="pinDistance"
-            onChange={(e) => setPinDistance(e.target.value)}
-          />
+                <Stack direction="row" sx={{ justifyContent: "flex-start" }}>
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="outlined"
+                    color="logoblue"
+                    className="backToTrackInfo"
+                    onClick={() => setMode("simple_select")}
+                  >
+                    Selector
+                  </Button>
 
-          <TextField
-            variant="outlined"
-            label="Text"
-            multiline
-            fullWidth
-            id="pinText"
-            name="pinText"
-            maxRows={4}
-            onChange={(e) => setPinText(e.target.value)}
-          />
-          <div className="pinSoundUpload">
-            <Uploader
-              files={pinSound}
-              name={"pinSound"}
-              onupdatefiles={(fileItems) => setPinSoundFile(fileItems)}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-            />
-          </div>
-          <div className="pinImageUpload">
-            <Uploader
-              files={pinImage}
-              name={"pinImage"}
-              onupdatefiles={(fileItems) => setPinImageFile(fileItems)}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-            />
-          </div>
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="contained"
+                    color="logoblue"
+                    className="metaInfoSubmit"
+                    onClick={() => setMode("draw_point")}
+                  >
+                    Draw a point
+                  </Button>
 
-          <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-            <Button
-              type="button"
-              size="small"
-              variant="outlined"
-              color="themepurple"
-              className="backToTrackInfo"
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="contained"
+                    color="logored"
+                    className="metaInfoSubmit"
+                    onClick={() => dataReset()}
+                  >
+                    Reset data
+                  </Button>
+                </Stack>
+
+                <MapGL
+                  style={{ width: "100%", height: "500px" }}
+                  mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
+                  accessToken={MAPBOX_ACCESS_TOKEN}
+                  longitude={localLineCentralCoordinate[0]}
+                  latitude={localLineCentralCoordinate[1]}
+                  // onClick={(event) => onMapClick(event, line, currentMode)}
+                  zoom={11.6}
+                  // scrollZoom={true}
+                  // doubleClickZoom={true}
+                  // touchZoom={true}
+                  // interactiveLayerIds={"route"}
+                >
+                  <Source id="route" type="geojson" data={geoJSONLine} />
+                  <Layer {...LayerStyle1} />
+                  <Draw
+                    position={"top-right"}
+                    displayControlsDefault={false}
+                    controls={{
+                      polygon: false,
+                      point: false,
+                      trash: true,
+                      scrollZoom: true,
+                    }}
+                    mode={currentMode}
+                    data={geoJSONPoint}
+                    pointControl={false}
+                    lineStringControl={false}
+                    polygonControl={false}
+                    combineFeaturesControl={false}
+                    uncombineFeaturesControl={false}
+                    onDrawModeChange={({ mode }) => setMode(mode)}
+                    onDrawDelete={(currentFeature) =>
+                      onDataDelete(currentFeature)
+                    }
+                    onChange={(geoJSONPoint) =>
+                      onDataChange(geoJSONPoint, line, setGeoJSONPoint)
+                    }
+                  />
+                  {pointMarkerLocal}
+                </MapGL>
+              </div>
+              <div className="howTo">
+                <h4>Pin IDs:</h4>
+                <PinList data={geoJSONPoint} />
+              </div>
+              {/* <div>Pin list</div> */}
+            </Grid>
+
+            <Grid
+              item
+              sm={12}
+              md={4}
+              className="trackInformation metaInformation"
             >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              size="small"
-              variant="contained"
-              color="themepurple"
-              className="metaInfoSubmit"
-            >
-              Next
-            </Button>
-          </Stack>
+              <h4>Metadata</h4>
+              <TextField
+                variant="outlined"
+                label="Name"
+                margin="normal"
+                required
+                fullWidth
+                id="pinName"
+                name="pinName"
+                onChange={(e) => setPinName(e.target.value)}
+              />
+
+              <TextField
+                variant="outlined"
+                label="Distance"
+                margin="normal"
+                required
+                fullWidth
+                id="pinDistance"
+                name="pinDistance"
+                onChange={(e) => setPinDistance(e.target.value)}
+              />
+
+              <TextField
+                variant="outlined"
+                label="Text"
+                multiline
+                fullWidth
+                id="pinText"
+                name="pinText"
+                maxRows={4}
+                onChange={(e) => setPinText(e.target.value)}
+              />
+              <div className="pinSoundUpload">
+                <Uploader
+                  files={pinSound}
+                  name={"pinSound"}
+                  onupdatefiles={(fileItems) => setPinSoundFile(fileItems)}
+                  labelIdle='Drop Sound for pin or <span class="filepond--label-action">Browse</span>'
+                />
+              </div>
+              <div className="pinImageUpload">
+                <Uploader
+                  files={pinImage}
+                  name={"pinImage"}
+                  onupdatefiles={(fileItems) => setPinImageFile(fileItems)}
+                  labelIdle='Drop Image for pin or <span class="filepond--label-action">Browse</span>'
+                />
+              </div>
+
+              <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                <Button
+                  type="button"
+                  size="small"
+                  variant="outlined"
+                  color="themepurple"
+                  className="backToTrackInfo"
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  size="small"
+                  variant="contained"
+                  color="themepurple"
+                  className="metaInfoSubmit"
+                >
+                  Next
+                </Button>
+              </Stack>
+            </Grid>
+          </TrackInfoFormStyled>
         </Grid>
-      </TrackInfoFormStyled>
+      </Container>
     </>
   );
 }

@@ -41,9 +41,9 @@ export default function ChannelProfile() {
                   Channel
                 </span>
               </Typography>
-              <Link to="/Dashboard">
+              <Link to="/CreateTrack">
                 <Button variant="outlined" size="large" color="logoblue">
-                  Visit Dashboard
+                  Create a Meta Track
                 </Button>
               </Link>
             </Grid>

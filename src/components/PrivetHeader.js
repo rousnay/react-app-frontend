@@ -33,8 +33,7 @@ export default function PrivetHeader(props) {
     setAnchorEl(null);
   };
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userData");
+    localStorage.clear();
     window.location.href = "/Landing";
   };
   const handleSignIn = () => {

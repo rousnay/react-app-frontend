@@ -19,6 +19,11 @@ import swal from "sweetalert";
 import Uploader from "./uploader";
 import toGeoJson from "@mapbox/togeojson";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
+import PrivetSideBar from "../../components/PrivetSideBar";
+import PrivetHeader from "../../components/PrivetHeader";
+import TrackCreationNav from "./TrackCreationNav";
+
+const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 
 const initialLineData = {
   type: "FeatureCollection",
@@ -109,9 +114,10 @@ export default function TrackInfo() {
     if (response.message === "Success") {
       swal("Success", "Track information has been add", "success", {
         buttons: false,
-        timer: 2000,
+        timer: 1500,
       }).then((value) => {
         localStorage.setItem("currentTrackId", response.data.id);
+        window.location.href = "/CreateTrack";
       });
     } else {
       swal("Oops!", response.error, "error", {
@@ -180,108 +186,133 @@ export default function TrackInfo() {
 
   return (
     <>
-      <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
-        <Grid item sm={12} md={8} className="gpxFileInfo">
-          <div className="gpxFileUpload">
-            <h4>GPX File</h4>
-            <Uploader
-              files={gpxFile}
-              name={"gpxFile"}
-              onupdatefiles={(fileItems) => setGpxFiledata(fileItems)}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-            />
-          </div>
+      <PrivetHeader loginInfo={userInfo} />
 
-          <div className="howTo">
-            <h4>How to make a Track</h4>
-            <ul>
-              <li>
-                Upload the GPX File. <span>How to make GPX file</span>
-              </li>
-              <li>Create a Pin by selecting a specific location.</li>
-              <li>Put Metadata such as photos, voices in the Pin.</li>
-              <li>Set the condition value using the action tool.</li>
-            </ul>
-          </div>
-
-          <div className="gpxMapPreview">
-            <h4>GPX file: {trackName}</h4>
-            <MapGL
-              style={{ width: "100%", height: "500px" }}
-              mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
-              accessToken={MAPBOX_ACCESS_TOKEN}
-              longitude={centralLineCoordinate[0]}
-              latitude={centralLineCoordinate[1]}
-              // onClick={(event) => onMapClick(event, line, currentMode)}
-              zoom={11.6}
-              // scrollZoom={true}
-              // doubleClickZoom={true}
-              // touchZoom={true}
-              // interactiveLayerIds={"route"}
-            >
-              <Source id="route" type="geojson" data={geoJSONLine} />
-              <Layer {...LayerStyle1} />
-            </MapGL>
-          </div>
-          {/* <div>Pin list</div> */}
+      <Container maxWidth="xl" sx={{ display: " flex" }}>
+        <Grid
+          container
+          sx={{
+            width: "230px",
+            display: "flex",
+            backgroundColor: `var(--logoblack)`,
+          }}
+        >
+          <PrivetSideBar />
         </Grid>
 
-        <Grid item sm={12} md={4} className="trackInformation">
-          <h4>Track Information</h4>
-          <TextField
-            variant="outlined"
-            label="Title"
-            margin="normal"
-            required
-            fullWidth
-            id="name"
-            name="name"
-            onChange={(e) => setName(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            label="Description"
-            multiline
-            fullWidth
-            id="description"
-            name="description"
-            maxRows={4}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <TextField
-            // id="standard-multiline-flexible"
-            variant="outlined"
-            label="Tags"
-            multiline
-            fullWidth
-            id="tags"
-            name="tags"
-            maxRows={4}
-            onChange={(e) => setTags(e.target.value)}
-          />
-          <div className="previewImageUpload">
-            <h4>Preview Image</h4>
-            <Uploader
-              files={previewImage}
-              name={"previewImage"}
-              onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-            />
-          </div>
+        <Grid
+          container
+          sx={{
+            width: "calc(100% - 230px)",
+            padding: "30px",
+            display: "flex",
+          }}
+        >
+          <TrackCreationNav />
+          <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
+            <Grid item sm={12} md={8} className="gpxFileInfo">
+              <div className="gpxFileUpload">
+                <h4>GPX File</h4>
+                <Uploader
+                  files={gpxFile}
+                  name={"gpxFile"}
+                  onupdatefiles={(fileItems) => setGpxFiledata(fileItems)}
+                  labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                />
+              </div>
 
-          <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-            <Button
-              type="submit"
-              size="small"
-              variant="contained"
-              color="themepurple"
-              className="trackInfoSubmit"
-            >
-              Next
-            </Button>
-          </Stack>
+              <div className="howTo">
+                <h4>How to make a Track</h4>
+                <ul>
+                  <li>
+                    Upload the GPX File. <span>How to make GPX file</span>
+                  </li>
+                  <li>Create a Pin by selecting a specific location.</li>
+                  <li>Put Metadata such as photos, voices in the Pin.</li>
+                  <li>Set the condition value using the action tool.</li>
+                </ul>
+              </div>
+
+              <div className="gpxMapPreview">
+                <h4>GPX file: {trackName}</h4>
+                <MapGL
+                  style={{ width: "100%", height: "500px" }}
+                  mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
+                  accessToken={MAPBOX_ACCESS_TOKEN}
+                  longitude={centralLineCoordinate[0]}
+                  latitude={centralLineCoordinate[1]}
+                  // onClick={(event) => onMapClick(event, line, currentMode)}
+                  zoom={11.6}
+                  // scrollZoom={true}
+                  // doubleClickZoom={true}
+                  // touchZoom={true}
+                  // interactiveLayerIds={"route"}
+                >
+                  <Source id="route" type="geojson" data={geoJSONLine} />
+                  <Layer {...LayerStyle1} />
+                </MapGL>
+              </div>
+              {/* <div>Pin list</div> */}
+            </Grid>
+
+            <Grid item sm={12} md={4} className="trackInformation">
+              <h4>Track Information</h4>
+              <TextField
+                variant="outlined"
+                label="Title"
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                name="name"
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                label="Description"
+                multiline
+                fullWidth
+                id="description"
+                name="description"
+                maxRows={4}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <TextField
+                // id="standard-multiline-flexible"
+                variant="outlined"
+                label="Tags"
+                multiline
+                fullWidth
+                id="tags"
+                name="tags"
+                maxRows={4}
+                onChange={(e) => setTags(e.target.value)}
+              />
+              <div className="previewImageUpload">
+                <h4>Preview Image</h4>
+                <Uploader
+                  files={previewImage}
+                  name={"previewImage"}
+                  onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
+                  labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                />
+              </div>
+
+              <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                <Button
+                  type="submit"
+                  size="small"
+                  variant="contained"
+                  color="themepurple"
+                  className="trackInfoSubmit"
+                >
+                  Next
+                </Button>
+              </Stack>
+            </Grid>
+          </TrackInfoFormStyled>
         </Grid>
-      </TrackInfoFormStyled>
+      </Container>
     </>
   );
 }
