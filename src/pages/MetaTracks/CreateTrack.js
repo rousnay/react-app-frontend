@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import mapboxgl from "!mapbox-gl";
+// import mapboxgl from "!mapbox-gl";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import { LayerStyle1 } from "./LayerStyle";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -224,7 +224,7 @@ export default function CreateTrack() {
           <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="gpxFileUpload">
-                <h4>GPX File- c2:</h4>
+                <h4>GPX File:</h4>
                 <Uploader
                   files={gpxFile}
                   name={"gpxFile"}
@@ -246,7 +246,7 @@ export default function CreateTrack() {
               </div>
 
               <div className="gpxMapPreview">
-                <h4>GPX file: {trackName}</h4>
+                <h4>GPX Name: {trackName}</h4>
                 <MapGL
                   style={{ width: "100%", height: "500px" }}
                   mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
