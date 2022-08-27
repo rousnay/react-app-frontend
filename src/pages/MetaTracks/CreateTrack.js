@@ -224,7 +224,7 @@ export default function CreateTrack() {
           <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="gpxFileUpload">
-                <h4>GPX File</h4>
+                <h4>GPX File (c1):</h4>
                 <Uploader
                   files={gpxFile}
                   name={"gpxFile"}
