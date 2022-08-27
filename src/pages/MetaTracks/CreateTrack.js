@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import mapboxgl from "!mapbox-gl";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import { LayerStyle1 } from "./LayerStyle";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
