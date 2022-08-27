@@ -68,6 +68,7 @@ const localUserData = JSON.parse(localStorage.getItem("userData"));
 const localUserToken = localStorage.token;
 const localChannelId = localUserData.channelId;
 const localCurrentTrackId = localStorage.currentTrackId;
+const localCurrentTrackName = localStorage.currentTrackName;
 
 const localGeoJSONPointData =
   JSON.parse(localStorage.getItem("geoJSONPointLocal")) || initialPointData;
@@ -84,7 +85,11 @@ const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
 const baseURL = "https://api.finutss.com";
-async function createNewTrack(payloadData) {
+async function addNewPin(payloadData) {
+  for (const pair of payloadData.entries()) {
+    console.log(`${pair[0]}: ${pair[1]}`);
+  }
+
   for (const value of payloadData.values()) {
     console.log(value);
   }
@@ -102,10 +107,23 @@ async function createNewTrack(payloadData) {
 export default function MetaInfo() {
   const [geoJSONLine, setGeoJSON] = useState(localGeoJSONLineData);
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
+  // const [geoJSONFeatures, setgeoJSONFeatures] = useState(localGeoJSONPointData);
 
   useEffect(() => {
     localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
+
+    setFeature(JSON.stringify(geoJSONPoint));
+    setPinId(geoJSONPoint.features[0].id);
+    setLon(geoJSONPoint.features[0].geometry.coordinates[0]);
+    setLat(geoJSONPoint.features[0].geometry.coordinates[1]);
+
+    console.log(JSON.parse(localStorage.getItem("geoJSONPointLocal")));
+    console.log(localGeoJSONPointData);
     console.log(geoJSONPoint);
+    console.log(feature);
+    console.log(id);
+    console.log(lon);
+    console.log(lat);
   }, [geoJSONPoint]);
   const dataReset = () => {
     setGeoJSONPoint(initialPointData);
@@ -121,36 +139,37 @@ export default function MetaInfo() {
     })();
   }, [mode]);
 
-  const [pinId, setPinId] = useState();
+  const [id, setPinId] = useState();
+  const [name, setPinName] = useState();
   const [lon, setLon] = useState();
   const [lat, setLat] = useState();
+  const [distanceInKm, setPinDistance] = useState();
   const [feature, setFeature] = useState();
-  const [pinName, setPinName] = useState();
-  const [pinDistance, setPinDistance] = useState();
-  const [pinText, setPinText] = useState();
-  const [pinSound, setPinSound] = useState([]);
-  const [pinImage, setPinImage] = useState([]);
+  const [text, setPinText] = useState();
+  const [sound, setPinSound] = useState([]);
+  const [image, setPinImage] = useState([]);
 
   var formData = new FormData();
-  formData.append("pinId ", pinId);
-  formData.append("lon ", lon);
+  formData.append("id", id);
+  formData.append("name", name);
+  formData.append("lon", lon);
   formData.append("lat", lat);
+  formData.append("distanceInKm", distanceInKm);
   formData.append("feature", feature);
-  formData.append("pinName", pinName);
-  formData.append("pinDistance", pinDistance);
-  formData.append("pinSound", pinSound[0]);
-  formData.append("pinImage", pinImage[0]);
+  formData.append("text", text);
+  formData.append("sound", sound[0]);
+  formData.append("image", image[0]);
 
-  const submitTrackInfo = async (e) => {
+  const submitMetaInfo = async (e) => {
     e.preventDefault();
-    const response = await createNewTrack(formData);
+    const response = await addNewPin(formData);
 
     if (response.message === "Success") {
       swal("Success", "Pin has been add", "success", {
         buttons: false,
         timer: 2000,
       }).then((value) => {
-        localStorage.setItem("currentTtrackId", response.data.id);
+        // localStorage.setItem("currentTtrackId", response.data.id);
       });
     } else {
       swal("Oops!", response.error, "error", {
@@ -168,10 +187,10 @@ export default function MetaInfo() {
   }
 
   function setPinImageFile(fileItems) {
-    const _pinImageFile = fileItems.map((fileItem) => {
+    const _pinImageFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    setPinImage(_pinImageFile);
+    setPinImage(_pinImageFileItem);
     // convertToGeoJSON(_gpxFileItem[0]);
   }
 
@@ -248,10 +267,10 @@ export default function MetaInfo() {
           }}
         >
           <TrackCreationNav />
-          <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
+          <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
-                <h4>Track Name: </h4>
+                <h4>Track Name: {localCurrentTrackName}</h4>
                 <div>Current Mode: {mode}</div>
 
                 <Stack direction="row" sx={{ justifyContent: "flex-start" }}>
@@ -379,17 +398,21 @@ export default function MetaInfo() {
               />
               <div className="pinSoundUpload">
                 <Uploader
-                  files={pinSound}
-                  name={"pinSound"}
-                  onupdatefiles={(fileItems) => setPinSoundFile(fileItems)}
+                  files={sound}
+                  name={"sound"}
+                  onupdatefiles={(soundFileItems) =>
+                    setPinSoundFile(soundFileItems)
+                  }
                   labelIdle='Drop Sound for pin or <span class="filepond--label-action">Browse</span>'
                 />
               </div>
               <div className="pinImageUpload">
                 <Uploader
-                  files={pinImage}
-                  name={"pinImage"}
-                  onupdatefiles={(fileItems) => setPinImageFile(fileItems)}
+                  files={image}
+                  name={"image"}
+                  onupdatefiles={(imageFileItems) =>
+                    setPinImageFile(imageFileItems)
+                  }
                   labelIdle='Drop Image for pin or <span class="filepond--label-action">Browse</span>'
                 />
               </div>

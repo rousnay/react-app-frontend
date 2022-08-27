@@ -128,7 +128,9 @@ export default function CreateTrack() {
         buttons: false,
         timer: 1000,
       }).then((value) => {
+        localStorage.removeItem("geoJSONPointLocal");
         localStorage.setItem("currentTrackId", response.data.id);
+        localStorage.setItem("currentTrackName", response.data.name);
         window.location.href = "/MetaInfo";
       });
     } else {

@@ -17,12 +17,12 @@ export default function TrackCreationNav() {
       <Grid item sm={12}>
         <TrackCreationNavStyled>
           <li>
-            <Link to="/TrackInfo">
+            <Link to="/CreateTrack">
               <span>1</span> Track Info
             </Link>
           </li>
           <li>
-            <Link to="../CreateTrack/MetaInfo">
+            <Link to="/MetaInfo">
               <span>2</span> Meta Info
             </Link>
           </li>
