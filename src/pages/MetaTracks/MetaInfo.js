@@ -13,6 +13,7 @@ import MapGL, {
   Layer,
   Marker,
   ScaleControl,
+  NavigationControl,
 } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
 import * as turf from "@turf/turf";
@@ -218,6 +219,7 @@ export default function MetaInfo() {
     const pinId = getPointId(pinIndex);
     pinSelector(pinIndex + 1);
     console.log(pinIndex + 1, pinId);
+    e.stopPropagation();
   };
   const newCurrentData = geoJSONPoint.features.map(
     (features, i) => features.geometry.coordinates
@@ -309,16 +311,12 @@ export default function MetaInfo() {
                   longitude={localLineCentralCoordinate[0]}
                   latitude={localLineCentralCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={12}
-                  // scrollZoom={true}
-                  // doubleClickZoom={true}
-                  // touchZoom={true}
-                  // interactiveLayerIds={"route"}
+                  zoom={11}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
                   <Draw
-                    position={"top-right"}
+                    position={"top-left"}
                     displayControlsDefault={false}
                     controls={{
                       polygon: false,
@@ -342,6 +340,7 @@ export default function MetaInfo() {
                     }
                   />
                   {pointMarkerLocal}
+                  <NavigationControl />
                 </MapGL>
               </div>
               <div className="howTo">

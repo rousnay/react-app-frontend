@@ -255,18 +255,12 @@ export default function CreateTrack() {
                   accessToken={MAPBOX_ACCESS_TOKEN}
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
-                  // onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.6}
-                  // scrollZoom={true}
-                  // doubleClickZoom={true}
-                  // touchZoom={true}
-                  // interactiveLayerIds={"route"}
+                  zoom={11.5}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
                 </MapGL>
               </div>
-              {/* <div>Pin list</div> */}
             </Grid>
 
             <Grid item sm={12} md={4} className="trackInformation">
