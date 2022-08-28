@@ -56,6 +56,25 @@ a.filepond--credits {
   margin: 12px;
   border-radius: 4px;
   }
+
+
+  .myStyle{
+    height: 30px!important;
+    width: 30px!important;
+    border-radius: 50%!important;
+    color: white!important;
+    background-color: #FF9128!important;
+  }
+
+  .myStyle span{
+  background-color: white!important;
+  border-radius: 50%!important;
+  height: 17px!important;
+  width: 17px!important;
+  text-align: center!important;
+  line-height: 18px!important;
+}
+
 /* map ends */
 
 @media (prefers-reduced-motion: no-preference) {

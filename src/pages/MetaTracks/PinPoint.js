@@ -12,27 +12,27 @@ export default function CityPin(props) {
   return (
     <>
       <div
+        className={`newclass currentPin-${props.ids}`}
         style={{
-          height: "13.06px",
-          width: "15.86px",
+          height: "15px",
+          width: "20px",
           background: "white",
           border: "1px solid #FF7A22",
           borderRadius: "3px",
-          padding: "2px",
           color: "#fff",
-          lineHeight: "1px",
           cursor: "pointer",
-          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
         // onClick={onClick}
       >
         <span
           style={{
+            display: "block",
             fontWeight: 700,
-            textAlign: "center",
             color: "#FF7A22",
-            fontSize: "10px",
-            lineHeight: "13px",
+            fontSize: "12px",
           }}
         >
           {props.ids}

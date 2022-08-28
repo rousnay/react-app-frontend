@@ -71,3 +71,30 @@ document.getElementById('button').onclick = function () {
       );
     }
   })();
+
+  =========================
+  const getPointId = (pin) => {
+    return geoJSONPoint.features[pin].id;
+  };
+
+  const pinSelector = (pin) => {
+    const allPinItem = document.querySelectorAll(".newclass");
+    allPinItem.forEach((box) => {
+      box.classList.remove("myStyle");
+    });
+
+    document.querySelector(`.currentPin-${pin}`).classList.add("myStyle");
+  };
+
+  const getPinIndex = (lonLat) => {
+    return geoJSONPoint.features.findIndex(
+      (topic) => topic.geometry.coordinates === lonLat
+    );
+  };
+
+  const markerClickHandler = (e, coords) => {
+    const pinIndex = getPinIndex(coords);
+    const pinId = getPointId(pinIndex);
+    pinSelector(pinIndex + 1);
+    console.log(pinIndex + 1, pinId);
+  };

@@ -10,7 +10,7 @@ export const onMapClick = (event, line, currentMode) => {
   );
   if (currentMode === "draw_point") {
     currentMode = "simple_select";
-    if (theDistance < 10) {
+    if (theDistance < 25) {
       swal("Success", "New pin has been added", "success");
       console.info(`Success: ${theDistance}`);
     } else {
@@ -30,7 +30,7 @@ export const onDataChange = (data, line, setData) => {
   let pointToLineDistance = JSON.stringify(
     turf.pointToLineDistance(selectedPoint, line, { units: "meters" })
   );
-  if (pointToLineDistance < 10) {
+  if (pointToLineDistance < 25) {
     setData(data);
   } else {
   }

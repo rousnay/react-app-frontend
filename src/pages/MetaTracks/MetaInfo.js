@@ -47,7 +47,7 @@ const theMiddle = Math.floor(GeoCoordinates.length / 2);
 const theMiddleCoordinates = GeoCoordinates[theMiddle];
 
 var line = turf.lineString(GeoCoordinates);
-console.log(line);
+// console.log(line);
 
 const initialPointData = {
   type: "FeatureCollection",
@@ -75,7 +75,7 @@ const localGeoJSONPointData =
 
 const geoPointCoordinates =
   localGeoJSONPointData.features[0].geometry.coordinates;
-console.log(geoPointCoordinates);
+// console.log(geoPointCoordinates);
 
 // const turfFeatures = turf.points(geoPointCoordinates);
 // const centerFeatures = turf.center(turfFeatures);
@@ -86,13 +86,13 @@ const MAPBOX_ACCESS_TOKEN =
 
 const baseURL = "https://api.finutss.com";
 async function addNewPin(payloadData) {
-  for (const pair of payloadData.entries()) {
-    console.log(`${pair[0]}: ${pair[1]}`);
-  }
+  // for (const pair of payloadData.entries()) {
+  //   console.log(`${pair[0]}: ${pair[1]}`);
+  // }
 
-  for (const value of payloadData.values()) {
-    console.log(value);
-  }
+  // for (const value of payloadData.values()) {
+  //   console.log(value);
+  // }
 
   return fetch(`${baseURL}/track/${localCurrentTrackId}/pin-point`, {
     method: "POST",
@@ -117,13 +117,13 @@ export default function MetaInfo() {
     setLon(geoJSONPoint.features[0].geometry.coordinates[0]);
     setLat(geoJSONPoint.features[0].geometry.coordinates[1]);
 
-    console.log(JSON.parse(localStorage.getItem("geoJSONPointLocal")));
-    console.log(localGeoJSONPointData);
-    console.log(geoJSONPoint);
-    console.log(feature);
-    console.log(id);
-    console.log(lon);
-    console.log(lat);
+    // console.log(JSON.parse(localStorage.getItem("geoJSONPointLocal")));
+    // console.log(localGeoJSONPointData);
+    // console.log(geoJSONPoint);
+    // console.log(feature);
+    // console.log(id);
+    // console.log(lon);
+    // console.log(lat);
   }, [geoJSONPoint]);
   const dataReset = () => {
     setGeoJSONPoint(initialPointData);
@@ -194,37 +194,31 @@ export default function MetaInfo() {
     // convertToGeoJSON(_gpxFileItem[0]);
   }
 
-  // const convertToGeoJSON = (gpxPayload) => {
-  //   if (gpxPayload) {
-  //     const fileReader = new FileReader();
-  //     fileReader.readAsText(gpxPayload, "UTF-8");
-  //     fileReader.onload = () => {
-  //       var geoJSONData = toGeoJson.gpx(
-  //         new DOMParser().parseFromString(fileReader.result, "text/xml")
-  //       );
-  //       const collectionName = geoJSONData.features[0].properties.name;
-  //       const allGeoCoordinates = geoJSONData.features[0].geometry.coordinates;
-  //       setGeoJSON(geoJSONData);
-  //       setTrackName(collectionName);
-  //       setTrackCoordinates(allGeoCoordinates);
-  //       setCentralCoordinate(geoCentralCoordinate(allGeoCoordinates));
-  //       localStorage.setItem("geoJSONLocal", JSON.stringify(geoJSONData));
-  //       localStorage.setItem(
-  //         "centralCoordinateLocal",
-  //         JSON.stringify(geoCentralCoordinate(allGeoCoordinates))
-  //       );
-  //     };
-  //   } else {
-  //     setGeoJSON(initialData);
-  //     setCentralCoordinate([0, 0]);
-  //     localStorage.setItem("geoJSONLocal", JSON.stringify(initialData));
-  //     localStorage.setItem(
-  //       "centralCoordinateLocal",
-  //       JSON.stringify(geoCentralCoordinate([0, 0]))
-  //     );
-  //   }
-  // };
+  const getPointId = (pin) => {
+    return geoJSONPoint.features[pin].id;
+  };
 
+  const pinSelector = (pin) => {
+    const allPinItem = document.querySelectorAll(".newclass");
+    allPinItem.forEach((box) => {
+      box.classList.remove("myStyle");
+    });
+
+    document.querySelector(`.currentPin-${pin}`).classList.add("myStyle");
+  };
+
+  const getPinIndex = (lonLat) => {
+    return geoJSONPoint.features.findIndex(
+      (topic) => topic.geometry.coordinates === lonLat
+    );
+  };
+
+  const markerClickHandler = (e, coords) => {
+    const pinIndex = getPinIndex(coords);
+    const pinId = getPointId(pinIndex);
+    pinSelector(pinIndex + 1);
+    console.log(pinIndex + 1, pinId);
+  };
   const newCurrentData = geoJSONPoint.features.map(
     (features, i) => features.geometry.coordinates
   );
@@ -234,9 +228,9 @@ export default function MetaInfo() {
       key={index}
       longitude={lngLat[0]}
       latitude={lngLat[1]}
+      onClick={(event) => markerClickHandler(event, lngLat)}
       // draggable
       // onDragEnd={onDragEnd}
-      // onClick={(event) => onMarkerClick(event, lngLat)}
     >
       <PinPoint ids={index + 1} />
     </Marker>
