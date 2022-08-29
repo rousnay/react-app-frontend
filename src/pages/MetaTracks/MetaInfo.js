@@ -183,7 +183,6 @@ export default function MetaInfo() {
     const _pinSoundFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
     setPinSound(_pinSoundFileItem);
   }
 
@@ -192,11 +191,10 @@ export default function MetaInfo() {
       return fileItem.file;
     });
     setPinImage(_pinImageFileItem);
-    // convertToGeoJSON(_gpxFileItem[0]);
   }
 
-  const getPointId = (pin) => {
-    return geoJSONPoint.features[pin].id;
+  const getPointId = (pin, geoJson) => {
+    return geoJson.features[pin].id;
   };
 
   const pinSelector = (pin) => {
@@ -208,36 +206,31 @@ export default function MetaInfo() {
     document.querySelector(`.pin-number-${pin}`).classList.add("selected-pin");
   };
 
-  // const getPinIndex = (lonLat) => {
-  //   return geoJSONPoint.features.findIndex(
-  //     (topic) => topic.geometry.coordinates === lonLat
-  //   );
-  // };
-
-  const markerClickHandler = (e, coords, i) => {
-    // const pinIndex = getPinIndex(coords);
-    const pinIndex = i;
+  const markerClickHandler = (event, pinIndex) => {
     pinSelector(pinIndex + 1);
-    const pinId = getPointId(pinIndex);
-
+    const updatedLocalGeo = JSON.parse(
+      localStorage.getItem("geoJSONPointLocal")
+    );
+    const pinId = getPointId(pinIndex, updatedLocalGeo);
     console.log(
       "Pin -",
       pinIndex + 1,
       pinId.slice(-7),
-      geoJSONPoint.features[pinIndex].geometry.coordinates[1]
+      updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
     );
+    event.stopPropagation();
   };
 
-  const newCurrentData = geoJSONPoint.features.map(
-    (features, i) => features.geometry.coordinates
+  const currentCoordinates = geoJSONPoint.features.map(
+    (features) => features.geometry.coordinates
   );
 
-  const pointMarkerLocal = newCurrentData.map((lngLat, index) => (
+  const pointMarkerLocal = currentCoordinates.map((lngLat, index) => (
     <Marker
       key={index}
       longitude={lngLat[0]}
       latitude={lngLat[1]}
-      onClick={(event) => markerClickHandler(event, lngLat, index)}
+      onClick={(e) => markerClickHandler(e, index)}
       // draggable
       // onDragEnd={onDragEnd}
     >
@@ -332,7 +325,7 @@ export default function MetaInfo() {
                   longitude={localLineCentralCoordinate[0]}
                   latitude={localLineCentralCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11}
+                  zoom={11.5}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
