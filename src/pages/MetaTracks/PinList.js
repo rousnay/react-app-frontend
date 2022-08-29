@@ -8,7 +8,8 @@ export default function PinList(props) {
       <ul>
         {props.data.features.map((lngLat, index) => (
           <li key={lngLat.id}>
-            Pin: {index + 1}: {lngLat.id}
+            Pin {index + 1}: {lngLat.id.slice(-7)} :{" "}
+            {lngLat.geometry.coordinates[1]}
           </li>
         ))}
       </ul>

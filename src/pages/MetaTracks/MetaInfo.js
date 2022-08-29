@@ -200,12 +200,12 @@ export default function MetaInfo() {
   };
 
   const pinSelector = (pin) => {
-    const allPinItem = document.querySelectorAll(".newclass");
+    const allPinItem = document.querySelectorAll(".pin-list");
     allPinItem.forEach((box) => {
-      box.classList.remove("myStyle");
+      box.classList.remove("selected-pin");
     });
 
-    document.querySelector(`.currentPin-${pin}`).classList.add("myStyle");
+    document.querySelector(`.pin-number-${pin}`).classList.add("selected-pin");
   };
 
   const getPinIndex = (lonLat) => {
@@ -218,9 +218,14 @@ export default function MetaInfo() {
     const pinIndex = getPinIndex(coords);
     const pinId = getPointId(pinIndex);
     pinSelector(pinIndex + 1);
-    console.log(pinIndex + 1, pinId);
-    e.stopPropagation();
+    console.log(
+      "Pin -",
+      pinIndex + 1,
+      pinId.slice(-7),
+      geoJSONPoint.features[pinIndex].geometry.coordinates[1]
+    );
   };
+
   const newCurrentData = geoJSONPoint.features.map(
     (features, i) => features.geometry.coordinates
   );

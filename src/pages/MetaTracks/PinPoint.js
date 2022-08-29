@@ -12,7 +12,7 @@ export default function CityPin(props) {
   return (
     <>
       <div
-        className={`newclass currentPin-${props.ids}`}
+        className={`pin-list pin-number-${props.ids}`}
         style={{
           height: "15px",
           width: "20px",

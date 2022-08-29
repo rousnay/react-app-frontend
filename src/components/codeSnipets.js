@@ -98,3 +98,57 @@ document.getElementById('button').onclick = function () {
     pinSelector(pinIndex + 1);
     console.log(pinIndex + 1, pinId);
   };
+
+  ====================================
+
+
+  console.log("__________s_________");
+  getLocalGeoJSONPointData.features.forEach((box, i) => {
+    console.log(i + 1, box.id.slice(-7), box.geometry.coordinates[1]);
+  });
+  console.log(pinNumber, pinId.slice(-7));
+  console.log(newCurrentData);
+  console.log(coords[1]);
+  console.log(pinIndex);
+  console.log(getLocalGeoJSONPointData.features[pinIndex].id.slice(-7));
+  console.log(
+    getLocalGeoJSONPointData.features[pinIndex].geometry.coordinates[1]
+  );
+  console.log("__________e_________");
+
+
+  const initPointMarkerLocal = (
+    <Marker
+      longitude={theMiddleCoordinates[0]}
+      latitude={theMiddleCoordinates[1]}
+      onClick={(event) => markerClickHandler(event, theMiddleCoordinates)}
+      // draggable
+      // onDragEnd={onDragEnd}
+    >
+      <PinPoint ids={1} />
+    </Marker>
+  );
+
+  const [pointMarkerLocal, setPointMarkerLocal] =
+    useState(initPointMarkerLocal);
+
+  useEffect(() => {
+    // geoJSONPoint
+    console.log("data update");
+    setPointMarkerLocal(
+      geoJSONPoint.features
+        .map((features, i) => features.geometry.coordinates)
+        .map((lngLat, index) => (
+          <Marker
+            key={index}
+            longitude={lngLat[0]}
+            latitude={lngLat[1]}
+            onClick={(event) => markerClickHandler(event, lngLat)}
+            // draggable
+            // onDragEnd={onDragEnd}
+          >
+            <PinPoint ids={index + 1} />
+          </Marker>
+        ))
+    );
+  }, [geoJSONPoint]);
