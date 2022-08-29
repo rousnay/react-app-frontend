@@ -50,7 +50,7 @@ const theMiddleCoordinates = GeoCoordinates[theMiddle];
 var line = turf.lineString(GeoCoordinates);
 // console.log(line);
 
-const initialPointData = {
+const initialFeatureCollection = {
   type: "FeatureCollection",
   features: [
     {
@@ -72,7 +72,8 @@ const localCurrentTrackId = localStorage.currentTrackId;
 const localCurrentTrackName = localStorage.currentTrackName;
 
 const localGeoJSONPointData =
-  JSON.parse(localStorage.getItem("geoJSONPointLocal")) || initialPointData;
+  JSON.parse(localStorage.getItem("geoJSONPointLocal")) ||
+  initialFeatureCollection;
 
 const geoPointCoordinates =
   localGeoJSONPointData.features[0].geometry.coordinates;
@@ -127,7 +128,7 @@ export default function MetaInfo() {
     // console.log(lat);
   }, [geoJSONPoint]);
   const dataReset = () => {
-    setGeoJSONPoint(initialPointData);
+    setGeoJSONPoint(initialFeatureCollection);
   };
 
   const [mode, setMode] = useState("simple_select");
@@ -199,6 +200,18 @@ export default function MetaInfo() {
     setPinImage(_pinImageFileItem);
   }
 
+  const [newCollection, setNewCollection] = useState(initialFeatureCollection);
+  const [newFeatures, setNewFeatures] = useState([]);
+
+  useEffect(() => {
+    const turfFeaturesCollection = turf.featureCollection([...newFeatures]);
+    setNewCollection(turfFeaturesCollection);
+  }, [newFeatures]);
+
+  useEffect(() => {
+    console.log(newCollection);
+  }, [newCollection]);
+
   const getPointId = (pin, geoJson) => {
     return geoJson.features[pin].id;
   };
@@ -224,6 +237,26 @@ export default function MetaInfo() {
       pinId.slice(-7),
       updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
     );
+
+    const updatedLocalGeofeatures = updatedLocalGeo.features.map(
+      (features) => features
+    );
+
+    const featureArray = updatedLocalGeofeatures.map((features, index) => {
+      const featuresId = features.id;
+      const featuresCoords = features.geometry.coordinates;
+
+      const featureAdd = {
+        type: "Feature",
+        id: featuresId,
+        properties: { name: "test line", pointNumber: index + 1 },
+        geometry: { type: "Point", coordinates: featuresCoords },
+      };
+
+      return featureAdd;
+    });
+    setNewFeatures(featureArray);
+
     event.stopPropagation();
   };
 
@@ -243,20 +276,6 @@ export default function MetaInfo() {
       <PinPoint ids={index + 1} />
     </Marker>
   ));
-
-  var locationA = turf.point([-75.343, 39.984], { name: "Location A" });
-  var locationB = turf.point([-75.833, 39.284], { name: "Location B" });
-  var locationC = turf.point([-75.534, 39.123], { name: "Location C" });
-  var locationD = turf.point([-75.534, 39.123], { name: "Location D" });
-
-  var newFeatures = [];
-  newFeatures.push(locationB, locationC);
-  newFeatures.push(locationD);
-
-  console.log(newFeatures);
-
-  var newCollection = turf.featureCollection([locationA, ...newFeatures]);
-  console.log(newCollection);
 
   return (
     <>
