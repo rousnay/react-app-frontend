@@ -107,29 +107,21 @@ async function addNewPin(payloadData) {
 }
 
 export default function MetaInfo() {
-  const [geoJSONLine, setGeoJSON] = useState(localGeoJSONLineData);
+  const [geoJSONLine, setGeoJSONLine] = useState(localGeoJSONLineData);
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
   // const [geoJSONFeatures, setgeoJSONFeatures] = useState(localGeoJSONPointData);
 
   useEffect(() => {
     localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
-
     setFeature(JSON.stringify(geoJSONPoint));
     setPinId(geoJSONPoint.features[0].id);
     setLon(geoJSONPoint.features[0].geometry.coordinates[0]);
     setLat(geoJSONPoint.features[0].geometry.coordinates[1]);
-
-    // console.log(JSON.parse(localStorage.getItem("geoJSONPointLocal")));
-    // console.log(localGeoJSONPointData);
-    // console.log(geoJSONPoint);
-    // console.log(feature);
-    // console.log(id);
-    // console.log(lon);
-    // console.log(lat);
   }, [geoJSONPoint]);
-  const dataReset = () => {
-    setGeoJSONPoint(initialFeatureCollection);
-  };
+
+  // const dataReset = () => {
+  //   setGeoJSONPoint(initialFeatureCollection);
+  // };
 
   const [mode, setMode] = useState("simple_select");
   const [currentMode, setCurrentMode] = useState("draw_point");
@@ -200,6 +192,7 @@ export default function MetaInfo() {
     setPinImage(_pinImageFileItem);
   }
 
+  const [selectedPinIndex, setSelectedPinIndex] = useState();
   const [newCollection, setNewCollection] = useState(initialFeatureCollection);
   const [newFeatures, setNewFeatures] = useState([]);
 
@@ -211,6 +204,10 @@ export default function MetaInfo() {
   useEffect(() => {
     console.log(newCollection);
   }, [newCollection]);
+
+  useEffect(() => {
+    console.log(selectedPinIndex);
+  }, [selectedPinIndex]);
 
   const getPointId = (pin, geoJson) => {
     return geoJson.features[pin].id;
@@ -231,6 +228,8 @@ export default function MetaInfo() {
       localStorage.getItem("geoJSONPointLocal")
     );
     const pinId = getPointId(pinIndex, updatedLocalGeo);
+    setSelectedPinIndex(pinIndex);
+
     console.log(
       "Pin -",
       pinIndex + 1,
@@ -314,7 +313,7 @@ export default function MetaInfo() {
                   longitude={localLineCentralCoordinate[0]}
                   latitude={localLineCentralCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.5}
+                  zoom={11.8}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
@@ -361,8 +360,11 @@ export default function MetaInfo() {
                   Add a pin
                 </Button>
               </Stack>
-              <div className="howTo">
-                <PinList data={geoJSONPoint} />
+              <div className="pin_list">
+                <PinList
+                  data={geoJSONPoint}
+                  cuttentPinIndex={selectedPinIndex}
+                />
               </div>
               {/* <div>Pin list</div> */}
             </Grid>

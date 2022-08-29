@@ -3,11 +3,18 @@ import React, { useState, useEffect, useRef } from "react";
 export default function PinList(props) {
   return (
     <>
-      <ul>
+      <ul className="pin_items">
         {props.data.features.map((lngLat, index) => (
-          <li key={lngLat.id}>
-            Pin {index + 1}: {lngLat.id.slice(-7)} :{" "}
-            {lngLat.geometry.coordinates[1]}
+          <li
+            className={`pin_item ${
+              props.cuttentPinIndex === index ? "selected_pin" : ""
+            }`}
+            key={lngLat.id}
+          >
+            <span>
+              <span> {index + 1} </span>
+            </span>
+            {lngLat.id.slice(-7)} : {lngLat.geometry.coordinates[1]}
           </li>
         ))}
       </ul>

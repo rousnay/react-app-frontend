@@ -6,6 +6,7 @@ export const TrackCreationNavStyled = styled("ul")`
   padding: 0;
   justify-content: space-around;
   flex-wrap: "wrap";
+  margin-bottom: 30px;
   li {
     opacity: 0.6;
     list-style: none;
@@ -55,10 +56,46 @@ export const TrackInfoFormStyled = styled("form")`
     .pinInfoHeader {
       flex-direction: row;
       justify-content: space-between;
-      margin-top: 15px;
+      margin: 15px 0;
     }
     .howTo {
       padding: 15px 30px 30px;
+    }
+    .pin_list {
+      .pin_items {
+        list-style: none;
+      }
+      .pin_item {
+        display: flex;
+        margin: 10px 0;
+        > span {
+          height: 20px;
+          width: 25px;
+          background: white;
+          border: 1px solid #ff7a22;
+          border-radius: 3px;
+          color: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: enter;
+          margin-right: 15px;
+          > span {
+            font-weight: 700;
+            color: #ff7a22;
+            font-size: 13px;
+          }
+        }
+        &.selected_pin {
+          font-weight: 700;
+          > span {
+            color: white !important;
+            background-color: #ff9128 !important;
+            > span {
+              color: white !important;
+            }
+          }
+        }
+      }
     }
   }
   > div {
