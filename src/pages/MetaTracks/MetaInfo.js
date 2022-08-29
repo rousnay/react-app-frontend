@@ -208,16 +208,18 @@ export default function MetaInfo() {
     document.querySelector(`.pin-number-${pin}`).classList.add("selected-pin");
   };
 
-  const getPinIndex = (lonLat) => {
-    return geoJSONPoint.features.findIndex(
-      (topic) => topic.geometry.coordinates === lonLat
-    );
-  };
+  // const getPinIndex = (lonLat) => {
+  //   return geoJSONPoint.features.findIndex(
+  //     (topic) => topic.geometry.coordinates === lonLat
+  //   );
+  // };
 
-  const markerClickHandler = (e, coords) => {
-    const pinIndex = getPinIndex(coords);
-    const pinId = getPointId(pinIndex);
+  const markerClickHandler = (e, coords, i) => {
+    // const pinIndex = getPinIndex(coords);
+    const pinIndex = i;
     pinSelector(pinIndex + 1);
+    const pinId = getPointId(pinIndex);
+
     console.log(
       "Pin -",
       pinIndex + 1,
@@ -235,13 +237,27 @@ export default function MetaInfo() {
       key={index}
       longitude={lngLat[0]}
       latitude={lngLat[1]}
-      onClick={(event) => markerClickHandler(event, lngLat)}
+      onClick={(event) => markerClickHandler(event, lngLat, index)}
       // draggable
       // onDragEnd={onDragEnd}
     >
       <PinPoint ids={index + 1} />
     </Marker>
   ));
+
+  var locationA = turf.point([-75.343, 39.984], { name: "Location A" });
+  var locationB = turf.point([-75.833, 39.284], { name: "Location B" });
+  var locationC = turf.point([-75.534, 39.123], { name: "Location C" });
+  var locationD = turf.point([-75.534, 39.123], { name: "Location D" });
+
+  var newFeatures = [];
+  newFeatures.push(locationB, locationC);
+  newFeatures.push(locationD);
+
+  console.log(newFeatures);
+
+  var newCollection = turf.featureCollection([locationA, ...newFeatures]);
+  console.log(newCollection);
 
   return (
     <>

@@ -152,3 +152,19 @@ document.getElementById('button').onclick = function () {
         ))
     );
   }, [geoJSONPoint]);
+
+  ====================================================
+  async findAll() {
+    let raw = await knex.select('*').from('point')
+    var features = [];
+    raw.forEach((rows) => {
+      features.push(turf.point([rows.lon * 1, rows.lat * 1], { id: rows.id, note: rows.note }))
+    });
+    return features
+  }
+
+  =================================================
+  _.each(nodes, function(v) {
+    result.features.push(turf.point(v));
+});
+}
