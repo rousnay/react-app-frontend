@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 export default function PinList(props) {
   return (
     <>
-      <p>This is pin list</p>
-
       <ul>
         {props.data.features.map((lngLat, index) => (
           <li key={lngLat.id}>

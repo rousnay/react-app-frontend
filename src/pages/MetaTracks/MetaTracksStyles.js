@@ -52,6 +52,11 @@ export const TrackInfoFormStyled = styled("form")`
     padding: 15px;
     background-color: white;
     border-radius: 8px;
+    .pinInfoHeader {
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
     .howTo {
       padding: 15px 30px 30px;
     }

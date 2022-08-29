@@ -137,6 +137,12 @@ export default function MetaInfo() {
     prevMode.current = mode;
     (() => {
       setCurrentMode(prevMode.current);
+      const mapCanvas = document.querySelector("canvas.mapboxgl-canvas");
+      if (prevMode.current === "draw_point") {
+        mapCanvas.classList.add("draw_point_mode");
+      } else {
+        mapCanvas.classList.remove("draw_point_mode");
+      }
     })();
   }, [mode]);
 
@@ -281,42 +287,6 @@ export default function MetaInfo() {
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
                 <h4>Track Name: {localCurrentTrackName}</h4>
-                <div>Current Mode: {mode}</div>
-
-                <Stack direction="row" sx={{ justifyContent: "flex-start" }}>
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="outlined"
-                    color="logoblue"
-                    className="backToTrackInfo"
-                    onClick={() => setMode("simple_select")}
-                  >
-                    Selector a pin
-                  </Button>
-
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="contained"
-                    color="logoblue"
-                    className="metaInfoSubmit"
-                    onClick={() => setMode("draw_point")}
-                  >
-                    Add a pin
-                  </Button>
-
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="contained"
-                    color="logored"
-                    className="metaInfoSubmit"
-                    onClick={() => dataReset()}
-                  >
-                    Reset all pins
-                  </Button>
-                </Stack>
 
                 <MapGL
                   style={{ width: "100%", height: "500px" }}
@@ -357,8 +327,22 @@ export default function MetaInfo() {
                   <NavigationControl />
                 </MapGL>
               </div>
+              <Stack className="pinInfoHeader">
+                <h3>Pins</h3>
+                <Button
+                  type="button"
+                  size="small"
+                  variant={
+                    currentMode === "draw_point" ? "contained" : "outlined"
+                  }
+                  color="themepurple"
+                  className="metaInfoSubmit"
+                  onClick={() => setMode("draw_point")}
+                >
+                  Add a pin
+                </Button>
+              </Stack>
               <div className="howTo">
-                <h4>Pin IDs:</h4>
                 <PinList data={geoJSONPoint} />
               </div>
               {/* <div>Pin list</div> */}

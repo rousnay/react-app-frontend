@@ -57,8 +57,15 @@ a.filepond--credits {
   border-radius: 4px;
   }
 
+/* .simple_select_mode{ cursor: default; } */
 
-  .selected-pin{
+.mapboxgl-ctrl-attrib.mapboxgl-compact {
+  display: none;
+}
+
+.draw_point_mode{ cursor: cell; }
+
+.selected-pin{
     height: 30px!important;
     width: 30px!important;
     border-radius: 50%!important;
@@ -66,7 +73,7 @@ a.filepond--credits {
     background-color: #FF9128!important;
   }
 
-  .selected-pin span{
+.selected-pin span{
   background-color: white!important;
   border-radius: 50%!important;
   height: 17px!important;
