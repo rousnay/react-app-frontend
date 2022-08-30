@@ -46,7 +46,7 @@ export const TrackCreationNavStyled = styled("ul")`
   }
 `;
 
-export const TrackInfoFormStyled = styled("form")`
+export const TrackInfoFormStyled = styled("div")`
   display: flex;
   width: 100%;
   .gpxFileInfo {
@@ -115,6 +115,11 @@ export const TrackInfoFormStyled = styled("form")`
     }
     .previewImageUpload {
       margin-top: 0;
+    }
+  }
+  .meta_input_wrapper {
+    > div {
+      margin: 10px 0;
     }
   }
 `;

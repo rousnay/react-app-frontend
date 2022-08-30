@@ -28,6 +28,7 @@ import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
 import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
+import MetaInfoForm from "./MetaInfoForm";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -86,26 +87,6 @@ const geoPointCoordinates =
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
-const baseURL = "https://api.finutss.com";
-async function addNewPin(payloadData) {
-  // for (const pair of payloadData.entries()) {
-  //   console.log(`${pair[0]}: ${pair[1]}`);
-  // }
-
-  // for (const value of payloadData.values()) {
-  //   console.log(value);
-  // }
-
-  return fetch(`${baseURL}/track/${localCurrentTrackId}/pin-point`, {
-    method: "POST",
-    headers: {
-      // "Content-Type": "multipart/form-data",
-      Authorization: "Bearer " + localUserToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
-
 export default function MetaInfo() {
   const [geoJSONLine, setGeoJSONLine] = useState(localGeoJSONLineData);
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
@@ -139,60 +120,14 @@ export default function MetaInfo() {
     })();
   }, [mode]);
 
-  const [id, setPinId] = useState();
-  const [name, setPinName] = useState();
-  const [lon, setLon] = useState();
-  const [lat, setLat] = useState();
-  const [distanceInKm, setPinDistance] = useState();
-  const [feature, setFeature] = useState();
-  const [text, setPinText] = useState();
-  const [sound, setPinSound] = useState([]);
-  const [image, setPinImage] = useState([]);
+  const [id, setPinId] = useState("");
+  const [name, setPinName] = useState("");
+  const [lon, setLon] = useState("");
+  const [lat, setLat] = useState("");
+  const [distanceInKm, setPinDistance] = useState(0);
+  const [feature, setFeature] = useState({});
 
-  var formData = new FormData();
-  formData.append("id", id);
-  formData.append("name", name);
-  formData.append("lon", lon);
-  formData.append("lat", lat);
-  formData.append("distanceInKm", distanceInKm);
-  formData.append("feature", feature);
-  formData.append("text", text);
-  formData.append("sound", sound[0]);
-  formData.append("image", image[0]);
-
-  const submitMetaInfo = async (e) => {
-    e.preventDefault();
-    const response = await addNewPin(formData);
-
-    if (response.message === "Success") {
-      swal("Success", "Pin has been add", "success", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
-        // localStorage.setItem("currentTtrackId", response.data.id);
-      });
-    } else {
-      swal("Oops!", response.error, "error", {
-        buttons: true,
-      }).then((value) => {});
-    }
-  };
-
-  function setPinSoundFile(fileItems) {
-    const _pinSoundFileItem = fileItems.map((fileItem) => {
-      return fileItem.file;
-    });
-    setPinSound(_pinSoundFileItem);
-  }
-
-  function setPinImageFile(fileItems) {
-    const _pinImageFileItem = fileItems.map((fileItem) => {
-      return fileItem.file;
-    });
-    setPinImage(_pinImageFileItem);
-  }
-
-  const [selectedPinIndex, setSelectedPinIndex] = useState();
+  const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
   const [newCollection, setNewCollection] = useState(initialFeatureCollection);
   const [newFeatures, setNewFeatures] = useState([]);
 
@@ -205,9 +140,10 @@ export default function MetaInfo() {
     console.log(newCollection);
   }, [newCollection]);
 
-  useEffect(() => {
-    console.log(selectedPinIndex);
-  }, [selectedPinIndex]);
+  const formVisibility = {
+    opacity: selectedPinIndex + 1 < 1 ? 0.3 : 1,
+    pointerEvents: selectedPinIndex + 1 < 1 ? "none" : "initial",
+  };
 
   const getPointId = (pin, geoJson) => {
     return geoJson.features[pin].id;
@@ -218,7 +154,6 @@ export default function MetaInfo() {
     allPinItem.forEach((box) => {
       box.classList.remove("selected-pin");
     });
-
     document.querySelector(`.pin-number-${pin}`).classList.add("selected-pin");
   };
 
@@ -229,26 +164,29 @@ export default function MetaInfo() {
     );
     const pinId = getPointId(pinIndex, updatedLocalGeo);
     setSelectedPinIndex(pinIndex);
-
     console.log(
-      "Pin -",
       pinIndex + 1,
       pinId.slice(-7),
       updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
     );
 
+    setPinId(pinId);
+    setPinName("");
+    setLon(updatedLocalGeo.features[pinIndex].geometry.coordinates[0]);
+    setLat(updatedLocalGeo.features[pinIndex].geometry.coordinates[1]);
+    // setPinDistance(3);
+    setFeature("Test feature");
+
     const updatedLocalGeofeatures = updatedLocalGeo.features.map(
       (features) => features
     );
-
     const featureArray = updatedLocalGeofeatures.map((features, index) => {
       const featuresId = features.id;
       const featuresCoords = features.geometry.coordinates;
-
       const featureAdd = {
         type: "Feature",
         id: featuresId,
-        properties: { name: "test line", pointNumber: index + 1 },
+        properties: { name: "a name", pointNumber: index + 1 },
         geometry: { type: "Point", coordinates: featuresCoords },
       };
 
@@ -301,7 +239,8 @@ export default function MetaInfo() {
           }}
         >
           <TrackCreationNav />
-          <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}>
+          {/* <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}> */}
+          <TrackInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
                 <h4>Track Name: {localCurrentTrackName}</h4>
@@ -366,7 +305,6 @@ export default function MetaInfo() {
                   cuttentPinIndex={selectedPinIndex}
                 />
               </div>
-              {/* <div>Pin list</div> */}
             </Grid>
 
             <Grid
@@ -375,59 +313,15 @@ export default function MetaInfo() {
               md={4}
               className="trackInformation metaInformation"
             >
-              <h4>Metadata</h4>
-              <TextField
-                variant="outlined"
-                label="Name"
-                margin="normal"
-                required
-                fullWidth
-                id="pinName"
-                name="pinName"
-                onChange={(e) => setPinName(e.target.value)}
+              <MetaInfoForm
+                pinId={id}
+                pinLon={lon}
+                pinLat={lat}
+                distanceInKm={distanceInKm}
+                pinFeature={feature}
+                formVisibility={formVisibility}
+                selectedPinIndex={selectedPinIndex}
               />
-
-              <TextField
-                variant="outlined"
-                label="Distance"
-                margin="normal"
-                required
-                fullWidth
-                id="pinDistance"
-                name="pinDistance"
-                onChange={(e) => setPinDistance(e.target.value)}
-              />
-
-              <TextField
-                variant="outlined"
-                label="Text"
-                multiline
-                fullWidth
-                id="pinText"
-                name="pinText"
-                maxRows={4}
-                onChange={(e) => setPinText(e.target.value)}
-              />
-              <div className="pinSoundUpload">
-                <Uploader
-                  files={sound}
-                  name={"sound"}
-                  onupdatefiles={(soundFileItems) =>
-                    setPinSoundFile(soundFileItems)
-                  }
-                  labelIdle='Drop Sound for pin or <span class="filepond--label-action">Browse</span>'
-                />
-              </div>
-              <div className="pinImageUpload">
-                <Uploader
-                  files={image}
-                  name={"image"}
-                  onupdatefiles={(imageFileItems) =>
-                    setPinImageFile(imageFileItems)
-                  }
-                  labelIdle='Drop Image for pin or <span class="filepond--label-action">Browse</span>'
-                />
-              </div>
 
               <Stack direction="row" sx={{ justifyContent: "space-around" }}>
                 <Button
@@ -440,7 +334,7 @@ export default function MetaInfo() {
                   Back
                 </Button>
                 <Button
-                  type="submit"
+                  type="button"
                   size="small"
                   variant="contained"
                   color="themepurple"

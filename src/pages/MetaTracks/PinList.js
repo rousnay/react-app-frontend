@@ -14,7 +14,7 @@ export default function PinList(props) {
             <span>
               <span> {index + 1} </span>
             </span>
-            {lngLat.id.slice(-7)} : {lngLat.geometry.coordinates[1]}
+            PIN ID: {lngLat.id}
           </li>
         ))}
       </ul>
