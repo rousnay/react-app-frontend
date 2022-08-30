@@ -124,7 +124,7 @@ export default function MetaInfo() {
   const [name, setPinName] = useState("");
   const [lon, setLon] = useState("");
   const [lat, setLat] = useState("");
-  const [distanceInKm, setPinDistance] = useState(0);
+  const [distanceInKm, SetDistanceInKm] = useState(0);
   const [feature, setFeature] = useState({});
 
   const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
@@ -193,6 +193,26 @@ export default function MetaInfo() {
       return featureAdd;
     });
     setNewFeatures(featureArray);
+
+    const turfPointFrom = turf.point(
+      updatedLocalGeo.features[0].geometry.coordinates
+    );
+    const turfPointTo = turf.point(
+      updatedLocalGeo.features[pinIndex].geometry.coordinates
+    );
+
+    const pointToPointDistance = (pointFrom, pointTo, line) => {
+      const nearestPointOnLineFrom = turf.nearestPointOnLine(line, pointFrom);
+      const nearestPointOnLineTo = turf.nearestPointOnLine(line, pointTo);
+      const slicedLine = turf.lineSlice(
+        nearestPointOnLineFrom,
+        nearestPointOnLineTo,
+        line
+      );
+      return turf.lineDistance(slicedLine, "kilometers").toFixed(2);
+    };
+
+    SetDistanceInKm(pointToPointDistance(turfPointFrom, turfPointTo, line));
 
     event.stopPropagation();
   };

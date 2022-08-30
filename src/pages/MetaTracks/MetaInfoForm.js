@@ -50,13 +50,13 @@ export default function MetaInfoForm(props) {
   const [text, setPinText] = useState("");
   const [sound, setPinSound] = useState([]);
   const [image, setPinImage] = useState([]);
-  const [distanceInKm, setPinDistance] = useState(0);
+  // const [distanceInKm, setPinDistance] = useState(0);
 
   var formData = new FormData();
   formData.append("id", props.pinId);
   formData.append("lon", props.pinLon);
   formData.append("lat", props.pinLat);
-  formData.append("distanceInKm", distanceInKm);
+  formData.append("distanceInKm", props.distanceInKm);
   formData.append("feature", props.feature);
 
   formData.append("name", name);
@@ -125,13 +125,13 @@ export default function MetaInfoForm(props) {
           <TextField
             variant="outlined"
             label="Distance"
-            value={distanceInKm}
+            value={props.distanceInKm}
             margin="normal"
             required
             fullWidth
             id="pinDistance"
             name="pinDistance"
-            onChange={(e) => setPinDistance(e.target.value)}
+            // onChange={(e) => setPinDistance(e.target.value)}
           />
           <TextField
             variant="outlined"
