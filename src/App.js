@@ -26,9 +26,7 @@ const ChannelProfile = lazy(() => import("./pages/Channel/ChannelProfile"));
 const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
 const TrackInfo = lazy(() => import("./pages/MetaTracks/TrackInfo"));
 const MetaInfo = lazy(() => import("./pages/MetaTracks/MetaInfo"));
-const MetaReview = lazy(() => import("./pages/MetaTracks/MetaReview"));
-const ReactMapDraw = lazy(() => import("./pages/MetaTracks/ReactMapDraw"));
-const GPXupload = lazy(() => import("./pages/MetaTracks/GPXupload"));
+const TrackReview = lazy(() => import("./pages/MetaTracks/TrackReview"));
 const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
 const Tool = lazy(() => import("./pages/Tool/Tool"));
 const Guide = lazy(() => import("./pages/Guide/Guide"));
@@ -57,13 +55,10 @@ function App() {
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/Channel" element={<Channel />} />
               <Route path="/ChannelProfile" element={<ChannelProfile />} />
-
               <Route path="/CreateTrack" element={<CreateTrack />} />
               <Route path="/TrackInfo" element={<TrackInfo />} />
               <Route path="/MetaInfo" element={<MetaInfo />} />
-              <Route path="/MetaReview" element={<MetaReview />} />
-              <Route path="/ReactMapDraw" element={<ReactMapDraw />} />
-              <Route path="/GPXupload" element={<GPXupload />} />
+              <Route path="/TrackReview" element={<TrackReview />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />

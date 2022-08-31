@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PinList(props) {
+export default function TrackReviewPinList(props) {
   const updatedformValuesLocal =
     JSON.parse(localStorage.getItem("formValuesLocal")) ||
     props.localFormValues;

@@ -21,9 +21,8 @@ import * as turf from "@turf/turf";
 import swal from "sweetalert";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
 import Uploader from "./uploader";
-import PinList from "./PinList";
+import MetaInfoPinList from "./MetaInfoPinList";
 import PinPoint from "./PinPoint";
-import PinInfo from "./PinInfo";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -328,7 +327,7 @@ export default function MetaInfo() {
                 </Button>
               </Stack>
               <div className="pin_list">
-                <PinList
+                <MetaInfoPinList
                   data={geoJSONPoint}
                   localFormValues={initialFormValuesLocal}
                   cuttentPinIndex={selectedPinIndex}
@@ -367,7 +366,7 @@ export default function MetaInfo() {
                   </Button>
                 </Link>
 
-                <Link to="/MetaReview">
+                <Link to="/TrackReview">
                   <Button
                     type="button"
                     size="small"

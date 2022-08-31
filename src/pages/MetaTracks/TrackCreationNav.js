@@ -27,7 +27,7 @@ export default function TrackCreationNav() {
             </Link>
           </li>
           <li>
-            <Link to="/TrackAction">
+            <Link to="#">
               <span>3</span> Action
             </Link>
           </li>
