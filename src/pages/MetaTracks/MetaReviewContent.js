@@ -49,7 +49,7 @@ async function addNewPin(payloadData) {
   }).then((data) => data.json());
 }
 
-export default function MetaInfoForm(props) {
+export default function MetaReviewContent(props) {
   // ===============================
   // dynamic input setup STARTs
   // ===============================

@@ -24,7 +24,7 @@ import Uploader from "./uploader";
 import PinList from "./PinList";
 import PinPoint from "./PinPoint";
 import PinInfo from "./PinInfo";
-import { MetaInfoFormStyled } from "./MetaTracksStyles";
+import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
@@ -37,8 +37,6 @@ import "./style.css";
 import { CloseFullscreenOutlined } from "@mui/icons-material";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserData = JSON.parse(localStorage.getItem("userData"));
-const localCurrentTrackName = localStorage.currentTrackName;
 
 const localGeoJSONLineData = JSON.parse(
   localStorage.getItem("geoJSONLineLocal")
@@ -50,7 +48,9 @@ const localLineCentralCoordinate = JSON.parse(
 const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
 const theMiddle = Math.floor(GeoCoordinates.length / 2);
 const theMiddleCoordinates = GeoCoordinates[theMiddle];
+
 var line = turf.lineString(GeoCoordinates);
+// console.log(line);
 
 const initialFeatureCollection = {
   type: "FeatureCollection",
@@ -67,14 +67,23 @@ const initialFeatureCollection = {
   ],
 };
 
+const localUserData = JSON.parse(localStorage.getItem("userData"));
+const localUserToken = localStorage.token;
+const localChannelId = localUserData.channelId;
+const localCurrentTrackId = localStorage.currentTrackId;
+const localCurrentTrackName = localStorage.currentTrackName;
+
 const localGeoJSONPointData =
   JSON.parse(localStorage.getItem("geoJSONPointLocal")) ||
   initialFeatureCollection;
 
+const geoPointCoordinates =
+  localGeoJSONPointData.features[0].geometry.coordinates;
+
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
-export default function MetaInfo() {
+export default function MetaReview() {
   const initialFormValues = [
     {
       id: "",
@@ -85,6 +94,16 @@ export default function MetaInfo() {
 
   const initialFormValuesLocal =
     JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
+
+  //   const [initFormValue, setInitFormValue] = useState(initialFormValuesLocal);
+
+  // useEffect(() => {
+  //   localStorage.setItem(
+  //     "formValuesLocal",
+  //     JSON.stringify(initialFormValuesLocal)
+  //   );
+  //   setInitFormValue(initialFormValuesLocal)
+  // });
 
   const [geoJSONLine, setGeoJSONLine] = useState(localGeoJSONLineData);
   const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
@@ -268,7 +287,7 @@ export default function MetaInfo() {
         >
           <TrackCreationNav />
           {/* <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}> */}
-          <MetaInfoFormStyled>
+          <TrackInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
                 <h4>Track Name: {localCurrentTrackName}</h4>
@@ -367,7 +386,7 @@ export default function MetaInfo() {
                   </Button>
                 </Link>
 
-                <Link to="/MetaReview">
+                <Link to="/CreateTrack">
                   <Button
                     type="button"
                     size="small"
@@ -380,7 +399,7 @@ export default function MetaInfo() {
                 </Link>
               </Stack>
             </Grid>
-          </MetaInfoFormStyled>
+          </TrackInfoFormStyled>
         </Grid>
       </Container>
     </>

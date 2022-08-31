@@ -120,6 +120,7 @@ export default function CreateTrack() {
   // formData.append("kcal", kcal);
 
   const submitTrackInfo = async (e) => {
+    console.log("triger1");
     e.preventDefault();
     const response = await createNewTrack(formData);
 
@@ -128,6 +129,7 @@ export default function CreateTrack() {
         buttons: false,
         timer: 1000,
       }).then((value) => {
+        console.log("triger2");
         localStorage.removeItem("geoJSONPointLocal");
         localStorage.setItem("currentTrackId", response.data.id);
         localStorage.setItem("currentTrackName", response.data.name);
@@ -136,7 +138,9 @@ export default function CreateTrack() {
     } else {
       swal("Oops!", response.error, "error", {
         buttons: true,
-      }).then((value) => {});
+      }).then((value) => {
+        console.log("triger3");
+      });
     }
   };
 
@@ -223,6 +227,7 @@ export default function CreateTrack() {
           }}
         >
           <TrackCreationNav />
+
           <TrackInfoFormStyled noValidate onSubmit={submitTrackInfo}>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="gpxFileUpload">

@@ -1,6 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 
 export default function PinList(props) {
+  const updatedformValuesLocal =
+    JSON.parse(localStorage.getItem("formValuesLocal")) ||
+    props.localFormValues;
+
   return (
     <>
       <ul className="pin_items">
@@ -14,11 +18,15 @@ export default function PinList(props) {
             <span>
               <span> {index + 1} </span>
             </span>
-            PIN ID: {lngLat.id}
+
+            {updatedformValuesLocal.findIndex((x) => x.id === lngLat.id) === -1
+              ? `PIN ID:  ${lngLat.id}`
+              : updatedformValuesLocal[
+                  updatedformValuesLocal.findIndex((x) => x.id === lngLat.id)
+                ].name}
           </li>
         ))}
       </ul>
-      {/* <pre>{JSON.stringify(props.data, null, 2)}</pre> */}
     </>
   );
 }
