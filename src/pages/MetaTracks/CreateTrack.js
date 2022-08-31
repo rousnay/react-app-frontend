@@ -95,8 +95,6 @@ export default function CreateTrack() {
     LocalLineCentralCoordinate
   );
 
-  useEffect(() => {}, []);
-
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [tags, setTags] = useState([]);
@@ -299,7 +297,7 @@ export default function CreateTrack() {
                 id="tags"
                 name="tags"
                 maxRows={4}
-                onChange={(e) => setTags(e.target.value)}
+                onChange={(e) => setTags(e.target.value.split(/[ ,]+/))}
               />
               <div className="previewImageUpload">
                 <h4>Preview Image</h4>

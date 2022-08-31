@@ -200,4 +200,13 @@ export const MetaInfoFormStyled = styled("div")`
       margin: 10px 0;
     }
   }
+
+  .track_info_container {
+    > * {
+      margin: 10px 0;
+    }
+    img {
+      max-width: 100%;
+    }
+  }
 `;

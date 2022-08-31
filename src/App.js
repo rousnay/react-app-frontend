@@ -24,9 +24,9 @@ const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Channel = lazy(() => import("./pages/Channel/Channel"));
 const ChannelProfile = lazy(() => import("./pages/Channel/ChannelProfile"));
 const CreateTrack = lazy(() => import("./pages/MetaTracks/CreateTrack"));
-const TrackInfo = lazy(() => import("./pages/MetaTracks/TrackInfo"));
 const MetaInfo = lazy(() => import("./pages/MetaTracks/MetaInfo"));
 const TrackReview = lazy(() => import("./pages/MetaTracks/TrackReview"));
+const ManageTracks = lazy(() => import("./pages/MetaTracks/ManageTracks"));
 const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
 const Tool = lazy(() => import("./pages/Tool/Tool"));
 const Guide = lazy(() => import("./pages/Guide/Guide"));
@@ -56,9 +56,9 @@ function App() {
               <Route path="/Channel" element={<Channel />} />
               <Route path="/ChannelProfile" element={<ChannelProfile />} />
               <Route path="/CreateTrack" element={<CreateTrack />} />
-              <Route path="/TrackInfo" element={<TrackInfo />} />
               <Route path="/MetaInfo" element={<MetaInfo />} />
               <Route path="/TrackReview" element={<TrackReview />} />
+              <Route path="/ManageTracks" element={<ManageTracks />} />
               <Route path="/MetaTracks" element={<MetaTracks />} />
               <Route path="/Tool" element={<Tool />} />
               <Route path="/Guide" element={<Guide />} />
