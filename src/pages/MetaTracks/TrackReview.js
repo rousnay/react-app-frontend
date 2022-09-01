@@ -22,6 +22,7 @@ import swal from "sweetalert";
 import toGeoJson from "@mapbox/togeojson";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
 import TrackReviewPinList from "./TrackReviewPinList";
+import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -65,7 +66,7 @@ const localLineCentralCoordinate = JSON.parse(
 const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
 const theMiddle = Math.floor(GeoCoordinates.length / 2);
 const theMiddleCoordinates = GeoCoordinates[theMiddle];
-var line = turf.lineString(GeoCoordinates);
+
 // console.log(line);
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
@@ -77,6 +78,8 @@ export default function TrackReview() {
   // ===============================
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
+  const [pointFeatures, setPointFeatures] = useState([]);
+  const [pointFeaturesCollection, setPointFeaturesCollection] = useState({});
 
   const getTrackInfo = async () => {
     const response = await fetch(
@@ -102,8 +105,9 @@ export default function TrackReview() {
           timer: 1000,
         }).then((value) => {
           setTrackInfoData(res.data);
-          convertToGeoJSON(res.data.rawGpx);
           setTrackingTags(res.data.tags.split(","));
+          convertToGeoJSON(res.data.rawGpx);
+          convertToPointFeatures(res.data.pinPoints.pinPointArray);
         });
       })
       .catch((e) => {
@@ -144,57 +148,55 @@ export default function TrackReview() {
     }
   };
 
+  const convertToPointFeatures = (pinPointPayload) => {
+    const featureArray = pinPointPayload.map((pinPoint, index) => {
+      const featuresId = pinPoint.id;
+      const featuresCoords = [pinPoint.lon, pinPoint.lat];
+      const featureAdd = {
+        type: "Feature",
+        id: featuresId,
+        properties: {
+          name: pinPoint.name,
+          text: pinPoint.text,
+          image: pinPoint.image,
+          pointNumber: index + 1,
+        },
+        geometry: { type: "Point", coordinates: featuresCoords },
+      };
+      return featureAdd;
+    });
+    setPointFeatures(featureArray.reverse());
+    setPointFeaturesCollection(turf.featureCollection([...featureArray]));
+  };
+
   useEffect(() => {
     console.log(geoJSONLine);
     console.log(centralLineCoordinate);
-    // trackInfoData.pinPoints.pinPointArray
-    // // setNewFeatures ==================
-    // const updatedLocalGeofeatures = updatedLocalGeo.features.map(
-    //   (features) => features
-    // );
-    // const featureArray = updatedLocalGeofeatures.map((features, index) => {
-    //   const featuresId = features.id;
-    //   const featuresCoords = features.geometry.coordinates;
-    //   const featureAdd = {
-    //     type: "Feature",
-    //     id: featuresId,
-    //     properties: { name: "a name", pointNumber: index + 1 },
-    //     geometry: { type: "Point", coordinates: featuresCoords },
-    //   };
-
-    //   return featureAdd;
-    // });
-    // setNewFeatures(featureArray);
+    console.log(pointFeatures);
+    console.log(pointFeaturesCollection);
   }, [geoJSONLine, trackInfoData]);
 
-  // console.log(trackInfoData.description);
-  // console.log(trackInfoData.tags);
-  // console.log(trackInfoData.previewImage);
-  // console.log(trackInfoData.privacy);
-  // console.log(trackInfoData.pinPoints.pinPointArray);
-  // console.log(trackInfoData.rawGpx);
+  const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
+  const theMiddle = Math.floor(GeoCoordinates.length / 2);
+  const theMiddleCoordinates = GeoCoordinates[theMiddle];
+  var line = turf.lineString(GeoCoordinates);
 
-  // const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
-  // const theMiddle = Math.floor(GeoCoordinates.length / 2);
-  // const theMiddleCoordinates = GeoCoordinates[theMiddle];
-  // var line = turf.lineString(GeoCoordinates);
+  const currentCoordinates = pointFeatures.map(
+    (features) => features.geometry.coordinates
+  );
 
-  //   const currentCoordinates = geoJSONPoint.features.map(
-  //     (features) => features.geometry.coordinates
-  //   );
-
-  //   const pointMarkerLocal = currentCoordinates.map((lngLat, index) => (
-  //     <Marker
-  //       key={index}
-  //       longitude={lngLat[0]}
-  //       latitude={lngLat[1]}
-  //       onClick={(e) => markerClickHandler(e, index)}
-  //       // draggable
-  //       // onDragEnd={onDragEnd}
-  //     >
-  //       <PinPoint ids={index + 1} />
-  //     </Marker>
-  // ));
+  const pointMarkerFromApi = currentCoordinates.map((lngLat, index) => (
+    <Marker
+      key={index}
+      longitude={lngLat[0]}
+      latitude={lngLat[1]}
+      // onClick={(e) => markerClickHandler(e, index)}
+      // draggable
+      // onDragEnd={onDragEnd}
+    >
+      <TrackReviewPinPoint ids={index + 1} pinData={pointFeatures[index]} />
+    </Marker>
+  ));
 
   return (
     <>
@@ -237,7 +239,8 @@ export default function TrackReview() {
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
-                  {/* {pointMarkerLocal} */}
+
+                  {pointMarkerFromApi}
                   <NavigationControl />
                 </MapGL>
               </div>
@@ -245,11 +248,11 @@ export default function TrackReview() {
                 <h3>Pins</h3>
               </Stack>
               <div className="pin_list">
-                {/* <TrackReviewPinList
-                data={geoJSONPoint}
-                localFormValues={initialFormValuesLocal}
-                cuttentPinIndex={selectedPinIndex}
-                /> */}
+                <TrackReviewPinList
+                  data={pointFeatures}
+                  // localFormValues={initialFormValuesLocal}
+                  // cuttentPinIndex={selectedPinIndex}
+                />
               </div>
             </Grid>
 
@@ -262,15 +265,6 @@ export default function TrackReview() {
               <TrackReviewContent
                 data={trackInfoData}
                 trackingTags={trackingTags}
-                // pinId={pinId}
-                // pinLon={pinLon}
-                // pinLat={pinLat}
-                // pinName={pinName}
-                // distanceInKm={distanceInKm}
-                // pinFeature={pinFeature}
-                // localFormValues={initialFormValuesLocal}
-                // formVisibility={formVisibility}
-                // selectedPinIndex={selectedPinIndex}
               />
 
               <Stack direction="row" sx={{ justifyContent: "space-around" }}>
@@ -282,7 +276,7 @@ export default function TrackReview() {
                     color="themepurple"
                     className="backToTrackInfo"
                   >
-                    Back
+                    Add another pin
                   </Button>
                 </Link>
 
@@ -298,13 +292,11 @@ export default function TrackReview() {
                       "Meta-track production capabilities are in the testing phase and will be reviewed by the operations to determine whether or not they are finalised to the user. Please note that contents that cause disgust to users, tracks that have problems with their use, and metadata that violates copyright can be returned after review.",
                       "success",
                       {
-                        buttons: ["Create another track", "Manage Tracks"],
+                        buttons: ["Cancel", "Manage Tracks"],
                       }
                     ).then((maangeTrack) => {
                       if (maangeTrack) {
                         window.location.href = "/ManageTracks";
-                      } else {
-                        window.location.href = "/CreateTrack";
                       }
                     });
                   }}

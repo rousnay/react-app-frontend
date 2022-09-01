@@ -22,7 +22,7 @@ import swal from "sweetalert";
 import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
 import Uploader from "./uploader";
 import MetaInfoPinList from "./MetaInfoPinList";
-import PinPoint from "./PinPoint";
+import MetaInfoPinPoint from "./MetaInfoPinPoint";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -237,7 +237,7 @@ export default function MetaInfo() {
       // draggable
       // onDragEnd={onDragEnd}
     >
-      <PinPoint ids={index + 1} />
+      <MetaInfoPinPoint ids={index + 1} />
     </Marker>
   ));
 

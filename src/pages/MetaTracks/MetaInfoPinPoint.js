@@ -7,7 +7,7 @@ import React from "react";
 //   border: "2px solid #eee"
 // };
 
-export default function CityPin(props) {
+export default function MetaInfoPinPoint(props) {
   // const { ids, size = 20, onClick } = this.props;
   return (
     <>
