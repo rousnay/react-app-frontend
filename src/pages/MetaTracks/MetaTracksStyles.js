@@ -208,5 +208,17 @@ export const MetaInfoFormStyled = styled("div")`
     img {
       max-width: 100%;
     }
+    ul {
+      list-style: none;
+      li {
+        display: inline-block;
+        margin-right: 5px;
+        background: rgba(141, 79, 208, 0.08);
+        color: #8d4fd0;
+        padding: 2px 20px;
+        border-radius: 24px;
+        text-transform: capitalize;
+      }
+    }
   }
 `;

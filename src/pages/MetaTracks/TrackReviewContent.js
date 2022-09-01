@@ -21,9 +21,9 @@ export default function TrackReviewContent(props) {
         <h4>{props.data.name}</h4>
         <p>{props.data.description}</p>
         <ul>
-          {/* {props.data.tags.map((tag, i) => {
-          <li key={i}>{tag}</li>;
-        })} */}
+          {props.trackingTags.map((tag, i) => {
+            return <li key={i}>{tag}</li>;
+          })}
         </ul>
         <img src={props.data.previewImage} alt="Track Preview" />
       </div>

@@ -76,6 +76,8 @@ export default function TrackReview() {
   // Async GET REQ
   // ===============================
   const [trackInfoData, setTrackInfoData] = useState({});
+  const [trackingTags, setTrackingTags] = useState([]);
+
   const getTrackInfo = async () => {
     const response = await fetch(
       `${baseURL}/track/${localCurrentTrackId}/info`,
@@ -101,6 +103,7 @@ export default function TrackReview() {
         }).then((value) => {
           setTrackInfoData(res.data);
           convertToGeoJSON(res.data.rawGpx);
+          setTrackingTags(res.data.tags.split(","));
         });
       })
       .catch((e) => {
@@ -144,8 +147,6 @@ export default function TrackReview() {
   useEffect(() => {
     console.log(geoJSONLine);
     console.log(centralLineCoordinate);
-    console.log(trackInfoData);
-
     // trackInfoData.pinPoints.pinPointArray
     // // setNewFeatures ==================
     // const updatedLocalGeofeatures = updatedLocalGeo.features.map(
@@ -260,6 +261,7 @@ export default function TrackReview() {
             >
               <TrackReviewContent
                 data={trackInfoData}
+                trackingTags={trackingTags}
                 // pinId={pinId}
                 // pinLon={pinLon}
                 // pinLat={pinLat}
