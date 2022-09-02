@@ -51,15 +51,26 @@ const theMiddle = Math.floor(GeoCoordinates.length / 2);
 const theMiddleCoordinates = GeoCoordinates[theMiddle];
 var line = turf.lineString(GeoCoordinates);
 
+var initialPinId = (len, bits) => {
+  bits = bits || 36;
+  var outStr = "",
+    newStr;
+  while (outStr.length < len) {
+    newStr = Math.random().toString(bits).slice(2);
+    outStr += newStr.slice(0, Math.min(newStr.length, len - outStr.length));
+  }
+  return outStr;
+};
+
 const initialFeatureCollection = {
   type: "FeatureCollection",
   features: [
     {
-      id: "Initial_pin_ID",
+      id: initialPinId(32),
       type: "Feature",
       properties: {},
       geometry: {
-        coordinates: theMiddleCoordinates,
+        coordinates: GeoCoordinates[0],
         type: "Point",
       },
     },
@@ -176,7 +187,7 @@ export default function MetaInfo() {
     setPinId(pinId);
     setPinName2(
       getTheNameValue === -1
-        ? `PIN ID: ${pinId.slice(0, 7)}...`
+        ? `PIN ID: ${pinId.slice(0, 5)}...`
         : updatedformValuesLocal[getTheNameValue].name
     );
     // setPinName(formDataHolder[0].name);
@@ -279,7 +290,7 @@ export default function MetaInfo() {
                   longitude={localLineCentralCoordinate[0]}
                   latitude={localLineCentralCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.8}
+                  zoom={11.7}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />

@@ -79,8 +79,8 @@ export default function MetaInfoForm(props) {
     setPinName(props.pinName);
   }, [props.pinName]);
 
-  const [name, setPinName] = useState("");
-  const [text, setPinText] = useState("");
+  const [name, setPinName] = useState(" ");
+  const [text, setPinText] = useState(" ");
   const [sound, setPinSound] = useState([]);
   const [image, setPinImage] = useState([]);
 
@@ -177,6 +177,7 @@ export default function MetaInfoForm(props) {
           <TextField
             variant="outlined"
             label="Text"
+            value={text}
             multiline
             fullWidth
             id="pinText"
