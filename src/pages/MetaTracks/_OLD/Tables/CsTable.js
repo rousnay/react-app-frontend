@@ -87,75 +87,77 @@ function CsTable() {
 
   return (
     <>
-      <Container className="content">
-        <div className="row">
-          <ManageTrackStyled>
-            <h2>My Tracks</h2>
+      <Container
+        className="content"
+        sx={{
+          backgroundColor: `var(--themebg)!important`,
+          padding: "0!important",
+        }}
+      >
+        <ManageTrackStyled>
+          {/* <h2>My Tracks</h2> */}
 
-            <h5 className="text-danger">{delmsg} </h5>
+          {/* <h5 className="text-danger">{delmsg} </h5> */}
 
-            <Button className="btn btn-danger" onClick={alldelete}>
+          {/* <Button className="btn btn-danger" onClick={alldelete}>
               Delete
-            </Button>
+            </Button> */}
 
-            <CsTableOptions
-              query={query}
-              onQueryChange={(myQuery) => setQuery(myQuery)}
-              orderBy={orderBy}
-              onOrderByChange={(mySort) => setOrderBy(mySort)}
-              sortBy={sortBy}
-              onSortByChange={(mySort) => setSortBy(mySort)}
-            />
+          <CsTableOptions
+            query={query}
+            onQueryChange={(myQuery) => setQuery(myQuery)}
+            orderBy={orderBy}
+            onOrderByChange={(mySort) => setOrderBy(mySort)}
+            sortBy={sortBy}
+            onSortByChange={(mySort) => setSortBy(mySort)}
+          />
 
-            <table className="table track-table">
-              <thead>
-                <tr>
-                  <th scope="col">
-                    <input type="checkbox" />
-                  </th>
-                  <th scope="col" style={{ width: "50%" }}>
-                    Track
-                  </th>
-                  <th scope="col">Comments</th>
-                  <th scope="col">Users</th>
-                  <th scope="col">Creation Date</th>
-                  <th scope="col">Privacy</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTrackData.map((trackItem, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        value={trackItem.id}
-                        checked={trackItem.isChecked}
-                        onChange={(e) => handlecheckbox(e)}
+          <table className="table track-table">
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" />
+                </th>
+                <th style={{ width: "50%" }}>Track</th>
+                <th>Comments</th>
+                <th>Users</th>
+                <th>Creation Date</th>
+                <th>Privacy</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTrackData.map((trackItem, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      value={trackItem.id}
+                      checked={trackItem.isChecked}
+                      onChange={(e) => handlecheckbox(e)}
+                    />
+                  </td>
+                  <td>
+                    <div className="trackInfo">
+                      <img
+                        className="trackImg"
+                        src={trackItem.previewImage}
+                        alt="Track Preview"
                       />
-                    </td>
-                    <td>
-                      <div className="trackInfo">
-                        <img
-                          className="trackImg"
-                          src={trackItem.previewImage}
-                          alt="Track Preview"
-                        />
-                        <div className="trackText">
-                          <h4>{trackItem.name}</h4>
-                          <p>{trackItem.description}</p>
-                        </div>
+                      <div className="trackText">
+                        <h4>{trackItem.name}</h4>
+                        <p>{trackItem.description}</p>
                       </div>
-                    </td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>{trackItem.createdAt.slice(0, 10)}</td>
-                    <td>0</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </ManageTrackStyled>
-        </div>
+                    </div>
+                  </td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>{trackItem.createdAt.slice(0, 10)}</td>
+                  <td>0</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </ManageTrackStyled>
       </Container>
     </>
   );
