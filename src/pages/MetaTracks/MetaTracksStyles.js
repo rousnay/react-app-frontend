@@ -222,3 +222,22 @@ export const MetaInfoFormStyled = styled("div")`
     }
   }
 `;
+
+export const ManageTrackStyled = styled("div")`
+  img.trackImg {
+    width: 176px;
+    max-width: 50%;
+  }
+  .trackText {
+    width: 50%;
+    display: inline-block;
+    padding: 0 15px;
+    h4 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+`;

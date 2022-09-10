@@ -8,24 +8,20 @@ import {
   Typography,
   TextField,
   Button,
+  Box,
 } from "@mui/material";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 
-import * as turf from "@turf/turf";
 import swal from "sweetalert";
-import toGeoJson from "@mapbox/togeojson";
-import TrackReviewPinList from "./TrackReviewPinList";
-import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
-import TrackReviewContent from "./TrackReviewContent";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import "mapbox-gl/dist/mapbox-gl.css";
 
-import "./style.css";
+import Example from "./Tables/Example";
+import ExampleRemote from "./Tables/ExampleRemote";
+import EnhancedTable from "./Tables/EnhancedTable";
+import CsTable from "./Tables/CsTable";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
@@ -45,7 +41,6 @@ const theMiddleCoordinates = GeoCoordinates[theMiddle];
 // console.log(line);
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-const baseURL = "https://api.finutss.com";
 
 export default function ManageTracks() {
   // ===============================
@@ -56,6 +51,7 @@ export default function ManageTracks() {
   const [pointFeatures, setPointFeatures] = useState([]);
   const [pointFeaturesCollection, setPointFeaturesCollection] = useState({});
 
+  const baseURL = "https://api.finutss.com";
   const getTrackInfo = async () => {
     const response = await fetch(
       `${baseURL}/track/${localCurrentTrackId}/info`,
@@ -72,25 +68,25 @@ export default function ManageTracks() {
       return response.json();
     }
   };
-  useEffect(() => {
-    // getTrackInfo()
-    //   .then((res) => {
-    //     swal("Success", "Pin point lists loaded", "success", {
-    //       buttons: false,
-    //       timer: 1000,
-    //     }).then((value) => {
-    //       setTrackInfoData(res.data);
-    //       setTrackingTags(res.data.tags.split(","));
-    //       convertToGeoJSON(res.data.rawGpx);
-    //       convertToPointFeatures(res.data.pinPoints.pinPointArray);
-    //     });
-    //   })
-    //   .catch((e) => {
-    //     swal("Oops!", e.message, "error", {
-    //       buttons: true,
-    //     }).then((value) => {});
-    //   });
-  }, []);
+  // useEffect(() => {
+  //   getTrackInfo()
+  //     .then((res) => {
+  //       swal("Success", "Pin point lists loaded", "success", {
+  //         buttons: false,
+  //         timer: 1000,
+  //       }).then((value) => {
+  //         setTrackInfoData(res.data);
+  //         setTrackingTags(res.data.tags.split(","));
+  //         convertToGeoJSON(res.data.rawGpx);
+  //         convertToPointFeatures(res.data.pinPoints.pinPointArray);
+  //       });
+  //     })
+  //     .catch((e) => {
+  //       swal("Oops!", e.message, "error", {
+  //         buttons: true,
+  //       }).then((value) => {});
+  //     });
+  // }, []);
 
   // ===============================
   // Convert GET RES to Map data
@@ -99,15 +95,48 @@ export default function ManageTracks() {
   // ===============================
   // Data grid
   // ===============================
-  const rows: GridRowsProp = [
-    { id: 1, col1: "Hello", col2: "World" },
-    { id: 2, col1: "DataGridPro", col2: "is Awesome" },
-    { id: 3, col1: "MUI", col2: "is Amazing" },
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "firstName",
+      headerName: "First name",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "lastName",
+      headerName: "Last name",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "age",
+      headerName: "Age",
+      type: "number",
+      width: 110,
+      editable: true,
+    },
+    {
+      field: "fullName",
+      headerName: "Full name",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      width: 160,
+      valueGetter: (params) =>
+        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
+    },
   ];
 
-  const columns: GridColDef[] = [
-    { field: "col1", headerName: "Column 1", width: 150 },
-    { field: "col2", headerName: "Column 2", width: 150 },
+  const rows = [
+    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
   ];
 
   return (
@@ -134,12 +163,24 @@ export default function ManageTracks() {
             display: "flex",
           }}
         >
-          <TrackCreationNav />
+          <MetaInfoFormStyled style={{ flexDirection: "column" }}>
+            {/* <Example /> */}
+            {/* <ExampleRemote /> */}
+            {/* <EnhancedTable /> */}
+            <CsTable />
 
-          <MetaInfoFormStyled>
-            <div style={{ height: 300, width: "100%" }}>
-              <DataGrid rows={rows} columns={columns} />
-            </div>
+            {/* <div>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                checkboxSelection
+                disableSelectionOnClick
+                experimentalFeatures={{ newEditingApi: true }}
+              />
+            </div> */}
+            <div></div>
           </MetaInfoFormStyled>
         </Grid>
       </Container>
