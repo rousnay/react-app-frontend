@@ -158,7 +158,7 @@ export default function ManageTracks() {
                   <tbody>
                     {filteredTrackData.map((trackItem, index) => (
                       <tr key={index}>
-                        <td>
+                        <td style={{ textAlign: "center" }}>
                           <input
                             type="checkbox"
                             value={trackItem.id}
@@ -179,10 +179,12 @@ export default function ManageTracks() {
                             </div>
                           </div>
                         </td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>{trackItem.createdAt.slice(0, 10)}</td>
-                        <td>0</td>
+                        <td style={{ textAlign: "center" }}>0</td>
+                        <td style={{ textAlign: "center" }}>0</td>
+                        <td style={{ textAlign: "center" }}>
+                          {trackItem.createdAt.slice(0, 10)}
+                        </td>
+                        <td style={{ textAlign: "center" }}>0</td>
                       </tr>
                     ))}
                   </tbody>
