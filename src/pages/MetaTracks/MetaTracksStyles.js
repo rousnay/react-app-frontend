@@ -224,6 +224,9 @@ export const MetaInfoFormStyled = styled("div")`
 `;
 
 export const ManageTrackStyled = styled("div")`
+  .trackInfo {
+    // width: fit-content;
+  }
   img.trackImg {
     width: 176px;
     max-width: 50%;

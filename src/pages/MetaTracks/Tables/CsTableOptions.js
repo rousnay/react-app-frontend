@@ -26,21 +26,14 @@ const DropDown = ({
           className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-between cursor-pointer"
           role="menuitem"
         >
-          Pet Name {sortBy === "name" && "C"}
+          Name {sortBy === "name" && "C"}
         </div>
         <div
-          onClick={() => onSortByChange("description")}
+          onClick={() => onSortByChange("createdAt")}
           className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-between cursor-pointer"
           role="menuitem"
         >
-          Owner Name {sortBy === "description" && "C"}
-        </div>
-        <div
-          onClick={() => onSortByChange("type")}
-          className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 flex justify-between cursor-pointer"
-          role="menuitem"
-        >
-          Date {sortBy === "type" && "C"}
+          Date {sortBy === "createdAt" && "C"}
         </div>
         <div
           onClick={() => onOrderByChange("asc")}

@@ -26,15 +26,14 @@ function CsTable() {
   const localUserToken = localStorage.token;
 
   let [query, setQuery] = useState("");
-  let [sortBy, setSortBy] = useState("name");
+  let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
 
   const filteredTrackData = trackData
     .filter((item) => {
       return (
         item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase()) ||
-        item.type.toLowerCase().includes(query.toLowerCase())
+        item.description.toLowerCase().includes(query.toLowerCase())
       );
     })
     .sort((a, b) => {
@@ -90,7 +89,7 @@ function CsTable() {
     <>
       <Container className="content">
         <div className="row">
-          <ManageTrackStyled className="col-sm-12 mt-2">
+          <ManageTrackStyled>
             <h2>My Tracks</h2>
 
             <h5 className="text-danger">{delmsg} </h5>
@@ -114,7 +113,9 @@ function CsTable() {
                   <th scope="col">
                     <input type="checkbox" />
                   </th>
-                  <th scope="col">Track</th>
+                  <th scope="col" style={{ width: "50%" }}>
+                    Track
+                  </th>
                   <th scope="col">Comments</th>
                   <th scope="col">Users</th>
                   <th scope="col">Creation Date</th>
@@ -148,7 +149,7 @@ function CsTable() {
                     <td>0</td>
                     <td>0</td>
                     <td>{trackItem.createdAt.slice(0, 10)}</td>
-                    <td>{trackItem.privacy}</td>
+                    <td>0</td>
                   </tr>
                 ))}
               </tbody>
