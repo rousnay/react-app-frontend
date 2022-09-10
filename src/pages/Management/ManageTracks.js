@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { ManageTrackStyled } from "./MetaTracksStyles";
-import ManageTracksOption from "./ManageTracksOption";
 import {
   Container,
   Grid,
@@ -15,17 +13,14 @@ import {
 } from "@mui/material";
 
 import swal from "sweetalert";
-import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
+import { ManageTrackStyled } from "./ManagementStyles";
+import ManageTrackOptions from "./ManageTrackOptions";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
-
-// console.log(line);
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
 export default function ManageTracks() {
   const [trackData, setUserdata] = useState([]);
@@ -116,7 +111,9 @@ export default function ManageTracks() {
             display: "flex",
           }}
         >
-          <MetaInfoFormStyled style={{ flexDirection: "column" }}>
+          <div
+            style={{ display: "flex", width: "100%", flexDirection: "column" }}
+          >
             <Container
               className="content"
               sx={{
@@ -133,7 +130,7 @@ export default function ManageTracks() {
               Delete
             </Button> */}
 
-                <ManageTracksOption
+                <ManageTrackOptions
                   query={query}
                   onQueryChange={(myQuery) => setQuery(myQuery)}
                   orderBy={orderBy}
@@ -191,7 +188,7 @@ export default function ManageTracks() {
                 </table>
               </ManageTrackStyled>
             </Container>
-          </MetaInfoFormStyled>
+          </div>
         </Grid>
       </Container>
     </>

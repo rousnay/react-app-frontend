@@ -71,19 +71,12 @@ export default function Home() {
                 <ListItem>
                   <Link to="/CreateTrack">Create Track</Link>
                 </ListItem>
-
-                {/* <ListItem>
-                  <Link to="/ReactMapDraw">React Map Draw</Link>
+                <ListItem>
+                  <Link to="Management/ManageTracks">Manage Tracks</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/GPXupload">GPXupload</Link>
+                  <Link to="Management/ManageComments">Manage Comments</Link>
                 </ListItem>
-                <ListItem>
-                  <Link to="/ReactMapGLView">React-Map-GL-View</Link>
-                </ListItem>
-                <ListItem>
-                  <Link to="/Draw">Draw</Link>
-                </ListItem> */}
               </ul>
             </Grid>
           </Grid>

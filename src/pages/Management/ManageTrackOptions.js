@@ -1,5 +1,4 @@
 import { React, useState } from "react";
-// import { styled, alpha } from "@mui/material/styles";
 import {
   Box,
   Typography,
@@ -120,7 +119,7 @@ const DropDown = ({
   );
 };
 
-const ManageTracksOption = ({
+const ManageTrackOptions = ({
   query,
   onQueryChange,
   sortBy,
@@ -185,4 +184,4 @@ const ManageTracksOption = ({
   );
 };
 
-export default ManageTracksOption;
+export default ManageTrackOptions;
