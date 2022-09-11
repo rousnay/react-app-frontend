@@ -23,7 +23,7 @@ const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageTracks() {
-  const [trackData, setUserdata] = useState([]);
+  const [trackData, setTrackData] = useState([]);
   const [isChecked, setisChecked] = useState([]);
   const [delmsg, setDelmsg] = useState("");
 
@@ -46,7 +46,7 @@ export default function ManageTracks() {
     });
 
   useEffect(() => {
-    const getUser = async () => {
+    const getTracks = async () => {
       const reqData = await fetch(`${baseURL}/track/user/listing`, {
         method: "GET",
         headers: {
@@ -55,9 +55,9 @@ export default function ManageTracks() {
       });
       const resData = await reqData.json();
       console.log(resData.data.tracksArray);
-      setUserdata(resData.data.tracksArray);
+      setTrackData(resData.data.tracksArray);
     };
-    getUser();
+    getTracks();
   }, []);
 
   const handlecheckbox = (e) => {

@@ -10,6 +10,7 @@ import {
   Button,
   Box,
   Table,
+  Divider,
 } from "@mui/material";
 
 import swal from "sweetalert";
@@ -23,15 +24,13 @@ const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageComments() {
-  const [trackData, setUserdata] = useState([]);
-  const [isChecked, setisChecked] = useState([]);
-  const [delmsg, setDelmsg] = useState("");
+  const [trackCommentReaction, setTrackCommentReaction] = useState([]);
 
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
 
-  const filteredTrackData = trackData
+  const filteredTrackData = trackCommentReaction
     .filter((item) => {
       return (
         item.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -46,46 +45,75 @@ export default function ManageComments() {
     });
 
   useEffect(() => {
-    const getUser = async () => {
-      const reqData = await fetch(`${baseURL}/track/user/listing`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + localUserToken,
-        },
-      });
-      const resData = await reqData.json();
-      console.log(resData.data.tracksArray);
-      setUserdata(resData.data.tracksArray);
-    };
-    getUser();
+    console.log(trackCommentReaction);
+  }, [trackCommentReaction]);
+
+  useEffect(() => {
+    (async function () {
+      await getAllReaction();
+    })();
   }, []);
 
-  const handlecheckbox = (e) => {
-    const { value, checked } = e.target;
-    console.log(value);
-    if (checked) {
-      setisChecked([...isChecked, value]);
-    } else {
-      setisChecked(isChecked.filter((e) => e !== value));
-    }
-  };
+  // TrackData ==================
+  async function getTracks() {
+    const reqData = await fetch(`${baseURL}/track/user/listing`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localUserToken,
+      },
+    });
+    const resData = await reqData.json();
+    return resData.data.tracksArray;
+  }
 
-  const alldelete = async () => {
-    //console.log(isChecked);
-    if (isChecked.length !== 0) {
-      const responce = await axios.post(
-        `http://localhost/devopsdeveloper/user/deletecheckboxuser`,
-        JSON.stringify(isChecked)
-      );
-      setDelmsg(responce.data.msg);
-      setTimeout(() => {
-        // history.push("/user");
-        console.log("timeout");
-      }, 2000);
-    } else {
-      alert("please Select at least one check box !");
+  // CommentsData ==================
+  async function getAllComments() {
+    try {
+      const trackAsyncData = await getTracks();
+      const commentsPromises = trackAsyncData.map(async (trackItem) => {
+        const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localUserToken,
+          },
+        });
+        const resComment = await reqComment.json();
+        return Object.assign(trackItem, {
+          commentArray: resComment.data.commentArray,
+        });
+      });
+      let responseArr = (await Promise.all(commentsPromises)).map((obj) => obj);
+      return responseArr;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
-  };
+  }
+
+  // ReactionData ==================
+  async function getAllReaction() {
+    try {
+      const trackWithCommentsData = await getAllComments();
+      const reactionPromises = trackWithCommentsData.map(async (trackItem) => {
+        const reqReaction = await fetch(`${baseURL}/reaction/${trackItem.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localUserToken,
+          },
+        });
+        const resReaction = await reqReaction.json();
+        return Object.assign(trackItem, {
+          reactionArray: resReaction.data.reactionArray,
+        });
+      });
+      let responseArr = (await Promise.all(reactionPromises)).map((obj) => obj);
+      setTrackCommentReaction(responseArr);
+      return responseArr;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
   return (
     <>
@@ -122,14 +150,6 @@ export default function ManageComments() {
               }}
             >
               <ManageTrackStyled>
-                {/* <h2>My Tracks</h2> */}
-
-                {/* <h5 className="text-danger">{delmsg} </h5> */}
-
-                {/* <Button className="btn btn-danger" onClick={alldelete}>
-              Delete
-            </Button> */}
-
                 <ManageCommentOptions
                   query={query}
                   onQueryChange={(myQuery) => setQuery(myQuery)}
@@ -142,9 +162,6 @@ export default function ManageComments() {
                 <table className="table track-table">
                   <thead>
                     <tr>
-                      <th>
-                        <input type="checkbox" />
-                      </th>
                       <th style={{ width: "50%" }}>Track</th>
                       <th>Comments</th>
                       <th>Users</th>
@@ -155,14 +172,6 @@ export default function ManageComments() {
                   <tbody>
                     {filteredTrackData.map((trackItem, index) => (
                       <tr key={index}>
-                        <td style={{ textAlign: "center" }}>
-                          <input
-                            type="checkbox"
-                            value={trackItem.id}
-                            checked={trackItem.isChecked}
-                            onChange={(e) => handlecheckbox(e)}
-                          />
-                        </td>
                         <td>
                           <div className="trackInfo">
                             <img
@@ -170,9 +179,15 @@ export default function ManageComments() {
                               src={trackItem.previewImage}
                               alt="Track Preview"
                             />
+                            {/* <Divider
+                              orientation="vertical"
+                              variant="middle"
+                              flexItem
+                            /> */}
                             <div className="trackText">
                               <h4>{trackItem.name}</h4>
-                              <p>{trackItem.description}</p>
+                              <p>{trackItem.commentArray.length}</p>
+                              <p>{trackItem.reactionArray.length}</p>
                             </div>
                           </div>
                         </td>
