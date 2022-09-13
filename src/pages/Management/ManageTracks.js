@@ -23,7 +23,7 @@ const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageTracks() {
-  const [trackData, setTrackData] = useState([]);
+  const [trackComments, setTrackComments] = useState([]);
   const [isChecked, setisChecked] = useState([]);
   const [delmsg, setDelmsg] = useState("");
 
@@ -31,7 +31,7 @@ export default function ManageTracks() {
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
 
-  const filteredTrackData = trackData
+  const filteredTrackData = trackComments
     .filter((item) => {
       return (
         item.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -45,8 +45,9 @@ export default function ManageTracks() {
         : 1 * order;
     });
 
-  useEffect(() => {
-    const getTracks = async () => {
+  // TrackData ==================
+  async function getTracks() {
+    try {
       const reqData = await fetch(`${baseURL}/track/user/listing`, {
         method: "GET",
         headers: {
@@ -54,10 +55,47 @@ export default function ManageTracks() {
         },
       });
       const resData = await reqData.json();
-      console.log(resData.data.tracksArray);
-      setTrackData(resData.data.tracksArray);
-    };
-    getTracks();
+      return resData.data.tracksArray;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  // CommentsData ==================
+  async function getTrackComments() {
+    try {
+      const trackAsyncData = await getTracks();
+      const commentsPromises = trackAsyncData.map(async (trackItem) => {
+        const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localUserToken,
+          },
+        });
+        const resComment = await reqComment.json();
+        return Object.assign(trackItem, {
+          commentArray: resComment.data.commentArray,
+        });
+      });
+      let trackWithCommentsArray = (await Promise.all(commentsPromises)).map(
+        (obj) => obj
+      );
+      setTrackComments(trackWithCommentsArray);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    console.log(trackComments);
+  }, [trackComments]);
+
+  useEffect(() => {
+    (async function () {
+      await getTrackComments();
+    })();
   }, []);
 
   const handlecheckbox = (e) => {
@@ -176,12 +214,16 @@ export default function ManageTracks() {
                             </div>
                           </div>
                         </td>
-                        <td style={{ textAlign: "center" }}>0</td>
+                        <td style={{ textAlign: "center" }}>
+                          {trackItem.commentArray?.length}
+                        </td>
                         <td style={{ textAlign: "center" }}>0</td>
                         <td style={{ textAlign: "center" }}>
                           {trackItem.createdAt.slice(0, 10)}
                         </td>
-                        <td style={{ textAlign: "center" }}>0</td>
+                        <td style={{ textAlign: "center" }}>
+                          {trackItem.privacy}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
