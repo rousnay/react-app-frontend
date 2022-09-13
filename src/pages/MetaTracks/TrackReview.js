@@ -294,9 +294,9 @@ export default function TrackReview() {
                       {
                         buttons: ["Cancel", "Manage Tracks"],
                       }
-                    ).then((maangeTrack) => {
-                      if (maangeTrack) {
-                        window.location.href = "/ManageTracks";
+                    ).then((manageTrack) => {
+                      if (manageTrack) {
+                        window.location.href = "Management/ManageTracks";
                       }
                     });
                   }}

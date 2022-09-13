@@ -49,4 +49,80 @@ export const ManageTrackStyled = styled("div")`
   }
 `;
 
-export const ManageCommentsStyled = styled("div")``;
+export const ManageCommentsStyled = styled("div")`
+  ul.MuiList-root {
+    svg {
+      font-size: 20px;
+      color: red;
+      margin-left: 10px;
+    }
+  }
+
+  ul.trc-data-list {
+    padding: 0;
+    li {
+      display: flex;
+      justify-content: flex-start;
+      margin: 10px 0;
+      padding: 15px;
+      background-color: white;
+      border-radius: 5px;
+      > div {
+        width: 50%;
+      }
+      &:hover {
+        background-color: #edf7fe;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .trackInfo {
+    // width: fit-content;
+  }
+
+  .commentInfo {
+  }
+
+  .commentMeta {
+    h4 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+  img.trackImg {
+    width: 176px;
+    max-width: 50%;
+  }
+  .trackText {
+    width: 50%;
+    display: inline-block;
+    padding: 0 15px;
+    h4 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  .cr-counter {
+    span {
+      display: inline-flex;
+      margin-right: 3em;
+      svg {
+        margin-right: 10px;
+      }
+      &:first-of-type svg {
+        color: var(--themered);
+      }
+      &:last-of-type svg {
+        color: var(--themeblue);
+      }
+    }
+  }
+`;
