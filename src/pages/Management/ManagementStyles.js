@@ -34,6 +34,7 @@ export const ManageTrackStyled = styled("div")`
   img.trackImg {
     width: 176px;
     max-width: 50%;
+    border-radius: 5px;
   }
   .trackText {
     width: 50%;
@@ -58,56 +59,19 @@ export const ManageCommentsStyled = styled("div")`
     }
   }
 
-  ul.trc-data-list {
-    padding: 0;
-    li {
-      display: flex;
-      justify-content: flex-start;
-      margin: 10px 0;
-      padding: 15px;
-      background-color: white;
-      border-radius: 5px;
-      > div {
-        width: 50%;
-      }
-      &:hover {
-        background-color: #edf7fe;
-        cursor: pointer;
-      }
+  .comments-accordion {
+    margin: 10px 0;
+    background-color: white;
+    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    &.Mui-expanded {
+      border: 2px solid #4caff6;
     }
   }
 
-  .trackInfo {
-    // width: fit-content;
-  }
-
+  .trackInfo,
   .commentInfo {
-  }
-
-  .commentMeta {
-    h4 {
-      margin: 0;
-    }
-    p {
-      margin: 0;
-      font-size: 12px;
-    }
-  }
-  img.trackImg {
-    width: 176px;
-    max-width: 50%;
-  }
-  .trackText {
     width: 50%;
-    display: inline-block;
-    padding: 0 15px;
-    h4 {
-      margin: 0;
-    }
-    p {
-      margin: 0;
-      font-size: 12px;
-    }
   }
 
   .cr-counter {
@@ -122,6 +86,61 @@ export const ManageCommentsStyled = styled("div")`
       }
       &:last-of-type svg {
         color: var(--themeblue);
+      }
+    }
+  }
+
+  .comments-summary {
+    &:hover,
+    &.Mui-expanded {
+      background-color: #edf7fe;
+    }
+  }
+
+  .commentMeta {
+    h4 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+  img.trackImg {
+    width: 176px;
+    max-width: 50%;
+    border-radius: 5px;
+  }
+  .trackText {
+    width: 50%;
+    display: inline-block;
+    padding: 0 15px;
+    h4 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+
+  .comments-list-sub {
+    list-style: none;
+    textarea {
+      width: 100% !important;
+      min-height: 50px !important;
+      background: #f0f4f8;
+      border: none;
+      border-radius: 3px;
+      &:focus-visible {
+        outline: 1px solid #dadee3;
+      }
+    }
+    li {
+      padding: 0 15px;
+      > div {
+        padding: 25px 0;
+        border-bottom: 1px solid #e9edf5;
       }
     }
   }

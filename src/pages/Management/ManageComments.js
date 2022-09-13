@@ -1,27 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Table,
-  Divider,
-  Avatar,
-  Skeleton,
-} from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import MessageIcon from "@mui/icons-material/Message";
+import { Container, Grid } from "@mui/material";
 
 import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
 import ManageCommentOptions from "./ManageCommentOptions";
+import CommentList from "./CommentList";
+import CommentAccordion from "./CommentAccordion";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
@@ -168,69 +156,8 @@ export default function ManageComments() {
                   onSortByChange={(mySort) => setSortBy(mySort)}
                 />
 
-                <ul className="trc-data-list">
-                  {filteredTCRData.map((trackItem, index) => (
-                    <li key={index}>
-                      <div className="trackInfo">
-                        <Stack direction="row" spacing={2}>
-                          <img
-                            className="trackImg"
-                            src={trackItem.previewImage}
-                            alt="Track Preview"
-                          />
-
-                          <div className="trackText">
-                            <h4>{trackItem.name}</h4>
-                            <div className="cr-counter">
-                              <span>
-                                <FavoriteIcon /> {trackItem.commentArray.length}
-                              </span>
-                              <span>
-                                <MessageIcon /> {trackItem.reactionArray.length}
-                              </span>
-                            </div>
-                          </div>
-                        </Stack>
-                      </div>
-
-                      <div className="commentInfo">
-                        <Stack direction="row" spacing={2}>
-                          <img
-                            className="trackImg"
-                            src="https://via.placeholder.com/1024x395?text=Preview+Image"
-                            alt="Comment preview"
-                          />
-
-                          <Avatar
-                            alt="Remy Sharp"
-                            src={
-                              trackItem.commentArray[
-                                trackItem.commentArray.length - 1
-                              ]?.user.profilePhoto
-                            }
-                          />
-
-                          <div className="commentMeta">
-                            <h4>
-                              {
-                                trackItem.commentArray[
-                                  trackItem.commentArray.length - 1
-                                ]?.user.firstName
-                              }
-                            </h4>
-                            <p>
-                              {
-                                trackItem.commentArray[
-                                  trackItem.commentArray.length - 1
-                                ]?.text
-                              }
-                            </p>
-                          </div>
-                        </Stack>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                {/* <CommentList commentsData={filteredTCRData} /> */}
+                <CommentAccordion commentsData={filteredTCRData} />
               </ManageCommentsStyled>
             </Container>
           </div>
