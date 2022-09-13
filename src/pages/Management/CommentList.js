@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import swal from "sweetalert";
 import {
   Container,
   Grid,
@@ -9,20 +10,97 @@ import {
   Box,
   Avatar,
   Skeleton,
+  IconButton,
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextareaAutosize,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
+import TelegramIcon from "@mui/icons-material/Telegram";
 
+const localUserToken = localStorage.token;
+const baseURL = "https://api.finutss.com";
+
+async function addNewComment(payloadData) {
+  console.log("__________s_________");
+
+  // for (const pair of payloadData.entries()) {
+  //   console.log(`${pair[0]}: ${pair[1]}`);
+  // }
+
+  for (const value of payloadData.values()) {
+    console.log(value);
+  }
+  // payloadData.forEach((element) => {
+  //   console.log(element);
+  // });
+  console.log("__________e_________");
+
+  return fetch(`${baseURL}/comment`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + localUserToken,
+    },
+    body: payloadData,
+  }).then((data) => data.json());
+}
 export default function CommentList(props) {
+  const [expanded, setExpanded] = useState(false);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  const [commentList, setCommentList] = useState([]);
+  const handleCommentInputChange = (e, index) => {
+    const list = [...commentList];
+    list[index] = e.target.value;
+    setCommentList(list);
+  };
+
+  useEffect(() => {
+    console.log(commentList);
+  }, [commentList]);
+
+  const submitNewComment = async (e, i, selectedTrackId) => {
+    e.preventDefault();
+
+    var formData = new FormData();
+    formData.append("trackId", selectedTrackId);
+    formData.append("text", commentList[i]);
+
+    const response = await addNewComment(formData);
+    if (response.message === "Success") {
+      swal("Success", "Comment has been add", "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        console.log("Comment added");
+      });
+    } else {
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+      }).then((value) => {});
+    }
+  };
+
   return (
     <>
-      <ul className="trc-data-list">
-        {props.commentsData.map((trackItem, index) => (
-          <li key={index}>
+      {props.commentsData.map((trackItem, index) => (
+        <Accordion
+          className="comments-accordion"
+          expanded={expanded === index}
+          onChange={handleChange(index)}
+          key={index}
+        >
+          <AccordionSummary
+            className="comments-summary"
+            id={`${index}-header`}
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`${index}-content`}
+          >
             <div className="trackInfo">
               <Stack direction="row" spacing={2}>
                 <img
@@ -35,16 +113,15 @@ export default function CommentList(props) {
                   <h4>{trackItem.name}</h4>
                   <div className="cr-counter">
                     <span>
-                      <FavoriteIcon /> {trackItem.commentArray.length}
+                      <FavoriteIcon /> {trackItem.reactionArray?.length}
                     </span>
                     <span>
-                      <MessageIcon /> {trackItem.reactionArray.length}
+                      <MessageIcon /> {trackItem.commentArray?.length}
                     </span>
                   </div>
                 </div>
               </Stack>
             </div>
-
             <div className="commentInfo">
               <Stack direction="row" spacing={2}>
                 <img
@@ -54,7 +131,10 @@ export default function CommentList(props) {
                 />
 
                 <Avatar
-                  alt="Remy Sharp"
+                  alt={
+                    trackItem.commentArray[trackItem.commentArray.length - 1]
+                      ?.user.firstName
+                  }
                   src={
                     trackItem.commentArray[trackItem.commentArray.length - 1]
                       ?.user.profilePhoto
@@ -77,9 +157,52 @@ export default function CommentList(props) {
                 </div>
               </Stack>
             </div>
-          </li>
-        ))}
-      </ul>
+          </AccordionSummary>
+
+          <AccordionDetails>
+            <ul className="comments-list-sub">
+              <Stack direction="row" spacing={2}>
+                <Avatar
+                  alt={props.currentUser?.firstName}
+                  src={props.currentUser?.profilePhoto}
+                />
+
+                <TextareaAutosize
+                  aria-label="empty textarea"
+                  placeholder="Write a replay."
+                  onChange={(e) => handleCommentInputChange(e, index)}
+                />
+
+                <IconButton
+                  color="primary"
+                  aria-label="send the comment"
+                  onClick={(e) => submitNewComment(e, index, trackItem.id)}
+                >
+                  <TelegramIcon fontSize="large" color={`var(--themeblue)`} />
+                </IconButton>
+              </Stack>
+
+              {trackItem.commentArray
+                .slice(0)
+                .reverse()
+                .map((commentItem, index) => (
+                  <li key={index}>
+                    <Stack direction="row" spacing={2}>
+                      <Avatar
+                        alt={commentItem.user.firstName}
+                        src={commentItem.user.profilePhoto}
+                      />
+                      <div className="commentMeta">
+                        <h4>{commentItem.user.firstName}</h4>
+                        <p>{commentItem.text}</p>
+                      </div>
+                    </Stack>
+                  </li>
+                ))}
+            </ul>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </>
   );
 }

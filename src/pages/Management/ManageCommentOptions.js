@@ -153,7 +153,7 @@ const ManageCommentOptions = ({
               My Tracks
             </Typography>
 
-            <DropDown
+            {/* <DropDown
               toggle={toggleSort}
               sortBy={sortBy}
               onSortByChange={(mySort) => onSortByChange(mySort)}
@@ -176,7 +176,7 @@ const ManageCommentOptions = ({
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
               />
-            </Search>
+            </Search> */}
           </Toolbar>
         </AppBar>
       </Box>

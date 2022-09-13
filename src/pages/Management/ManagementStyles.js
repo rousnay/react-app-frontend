@@ -132,6 +132,7 @@ export const ManageCommentsStyled = styled("div")`
       background: #f0f4f8;
       border: none;
       border-radius: 3px;
+      padding: 10px;
       &:focus-visible {
         outline: 1px solid #dadee3;
       }

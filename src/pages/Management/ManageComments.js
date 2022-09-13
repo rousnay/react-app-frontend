@@ -9,13 +9,13 @@ import PrivetHeader from "../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
 import ManageCommentOptions from "./ManageCommentOptions";
 import CommentList from "./CommentList";
-import CommentAccordion from "./CommentAccordion";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageComments() {
+  const [userData, setUserData] = useState(false);
   const [trackCommentReaction, setTrackCommentReaction] = useState([]);
 
   let [query, setQuery] = useState("");
@@ -39,9 +39,28 @@ export default function ManageComments() {
 
   useEffect(() => {
     (async function () {
+      await getUserInfo();
       await getAllReaction();
     })();
   }, []);
+
+  // getUserData ==================
+  async function getUserInfo() {
+    try {
+      const reqData = await fetch(`${baseURL}/user/info`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localUserToken,
+        },
+      });
+      const resData = await reqData.json();
+      setUserData(resData.data);
+      return resData.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
   // TrackData ==================
   async function getTracks() {
@@ -156,8 +175,10 @@ export default function ManageComments() {
                   onSortByChange={(mySort) => setSortBy(mySort)}
                 />
 
-                {/* <CommentList commentsData={filteredTCRData} /> */}
-                <CommentAccordion commentsData={filteredTCRData} />
+                <CommentList
+                  currentUser={userData}
+                  commentsData={filteredTCRData}
+                />
               </ManageCommentsStyled>
             </Container>
           </div>
