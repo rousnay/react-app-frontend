@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Grid, Button, TextField } from "@mui/material";
+import { Container, Grid, Button, TextField, Stack } from "@mui/material";
 import swal from "sweetalert";
 import { useToken } from "../../auth/useToken";
 import logo from "../../assets/logo.svg";
@@ -27,10 +27,11 @@ export default function SignUp() {
 
   const [countryCode, setCountryCode] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
+  const [otp, setOTP] = useState();
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
 
-  const handleSubmit = async (e) => {
+  const submitMobileNumber = async (e) => {
     e.preventDefault();
     const response = await userSignUp({
       countryCode,
@@ -42,10 +43,9 @@ export default function SignUp() {
     if (response.message === "Success") {
       swal("Success", response.message, "success", {
         buttons: false,
-        timer: 2000,
+        timer: 1000,
       }).then((value) => {
         localStorage.setItem("userData", JSON.stringify(response.data));
-        navigate("/MobileVerification");
       });
     } else if (response.statusCode === 400) {
       swal("Failed", response.error, "error");
@@ -53,6 +53,8 @@ export default function SignUp() {
       swal("Failed", response.message, "error");
     }
   };
+
+  const handleSubmit = async (e) => {};
 
   useEffect(() => {
     if (token) {
@@ -91,29 +93,47 @@ export default function SignUp() {
             </p>
             <div className="formHolder">
               <form className="" noValidate onSubmit={handleSubmit}>
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    sx={{ width: "50%" }}
+                    variant="outlined"
+                    required
+                    id="countryCode"
+                    name="countryCode"
+                    label="Country Code"
+                    type="text"
+                    onChange={(e) => setCountryCode(e.target.value)}
+                  />
+                  <TextField
+                    sx={{ width: "50%" }}
+                    variant="outlined"
+                    required
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    label="Mobile Number"
+                    type="text"
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    color="logoblue"
+                    onClick={(e) => submitMobileNumber(e)}
+                  >
+                    SEND
+                  </Button>
+                </Stack>
                 <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
-                  id="countryCode"
-                  name="countryCode"
-                  label="Country Code"
+                  id="OPT"
+                  name="OTP"
+                  label="OTP"
                   type="text"
-                  onChange={(e) => setCountryCode(e.target.value)}
+                  onChange={(e) => setOTP(e.target.value)}
                 />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  label="Mobile Number"
-                  type="text"
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                />
-
                 <p style={{ fontStyle: "italic" }}>
                   The verification code is valid upto 10 minutes. If the input
                   time is exceeded, press resend to receive a new verification
