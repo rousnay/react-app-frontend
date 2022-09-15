@@ -26,8 +26,6 @@ registerPlugin(
   //   FilePondPluginFileValidateSize,
 );
 
-// export default FilePond;
-
 export default function Uploader(props) {
   return (
     <>

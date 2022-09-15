@@ -23,8 +23,8 @@ import TrackReviewController from "./TrackReviewController";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
-const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //localStorage.currentTrackId;
-
+const localCurrentTrackId = localStorage.currentTrackId;
+//"9472a6ce-cd91-4828-8a66-91b3e7b30c1d";
 const initialLineData = {
   type: "FeatureCollection",
   features: [
