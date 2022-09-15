@@ -1,43 +1,28 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-// import map from "mapbox-gl";
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
+import { useState, useEffect } from "react";
 import MapGL, {
   Source,
   Layer,
   Marker,
-  ScaleControl,
   NavigationControl,
 } from "@urbica/react-map-gl";
-import Draw from "@urbica/react-map-gl-draw";
 import * as turf from "@turf/turf";
-import swal from "sweetalert";
 import toGeoJson from "@mapbox/togeojson";
-import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
-import TrackReviewPinList from "./TrackReviewPinList";
-import TrackReviewPinPoint from "./TrackReviewPinPoint";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { Container, Grid, Stack } from "@mui/material";
+import { LayerStyle1 } from "./LayerStyle";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
+import TrackReviewPinList from "./TrackReviewPinList";
+import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import "mapbox-gl/dist/mapbox-gl.css";
-
-import "./style.css";
+import TrackReviewController from "./TrackReviewController";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserToken = localStorage.token;
-const localCurrentTrackId = localStorage.currentTrackId;
-const localCurrentTrackName = localStorage.currentTrackName;
+const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //localStorage.currentTrackId;
 
 const initialLineData = {
   type: "FeatureCollection",
@@ -80,41 +65,42 @@ export default function TrackReview() {
   const [trackingTags, setTrackingTags] = useState([]);
   const [pointFeatures, setPointFeatures] = useState([]);
   const [pointFeaturesCollection, setPointFeaturesCollection] = useState({});
+  const [privacy, setPrivacy] = useState("");
 
-  const getTrackInfo = async () => {
-    const response = await fetch(
-      `${baseURL}/track/${localCurrentTrackId}/info`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + localUserToken,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Data coud not be fetched!");
-    } else {
-      return response.json();
+  // ===============================
+  // GET TrackInfo
+  // ===============================
+  async function getTrackInfo() {
+    try {
+      const reqData = await fetch(
+        `${baseURL}/track/${localCurrentTrackId}/info`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localUserToken,
+          },
+        }
+      );
+      const resData = await reqData.json();
+      return resData.data;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
-  };
+  }
+
+  // ===============================
+  // Get TrackInfo Data
+  // ===============================
   useEffect(() => {
-    getTrackInfo()
-      .then((res) => {
-        swal("Success", "Pin point lists loaded", "success", {
-          buttons: false,
-          timer: 1000,
-        }).then((value) => {
-          setTrackInfoData(res.data);
-          setTrackingTags(res.data.tags.split(","));
-          convertToGeoJSON(res.data.rawGpx);
-          convertToPointFeatures(res.data.pinPoints.pinPointArray);
-        });
-      })
-      .catch((e) => {
-        swal("Oops!", e.message, "error", {
-          buttons: true,
-        }).then((value) => {});
-      });
+    (async function () {
+      const trackData = await getTrackInfo();
+      setTrackInfoData(trackData);
+      setPrivacy(trackData.privacy);
+      setTrackingTags(trackData.tags.split(","));
+      convertToGeoJSON(trackData.rawGpx);
+      convertToPointFeatures(trackData.pinPoints.pinPointArray);
+    })();
   }, []);
 
   // ===============================
@@ -169,13 +155,9 @@ export default function TrackReview() {
     setPointFeaturesCollection(turf.featureCollection([...featureArray]));
   };
 
-  useEffect(() => {
-    console.log(geoJSONLine);
-    console.log(centralLineCoordinate);
-    console.log(pointFeatures);
-    console.log(pointFeaturesCollection);
-  }, [geoJSONLine, trackInfoData]);
-
+  // ===============================
+  // Painting map Marker
+  // ===============================
   const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
   const theMiddle = Math.floor(GeoCoordinates.length / 2);
   const theMiddleCoordinates = GeoCoordinates[theMiddle];
@@ -223,7 +205,6 @@ export default function TrackReview() {
           }}
         >
           <TrackCreationNav />
-          {/* <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}> */}
           <MetaInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
@@ -248,11 +229,7 @@ export default function TrackReview() {
                 <h3>Pins</h3>
               </Stack>
               <div className="pin_list">
-                <TrackReviewPinList
-                  data={pointFeatures}
-                  // localFormValues={initialFormValuesLocal}
-                  // cuttentPinIndex={selectedPinIndex}
-                />
+                <TrackReviewPinList data={pointFeatures} />
               </div>
             </Grid>
 
@@ -267,43 +244,7 @@ export default function TrackReview() {
                 trackingTags={trackingTags}
               />
 
-              <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-                <Link to="/MetaInfo">
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="outlined"
-                    color="themepurple"
-                    className="backToTrackInfo"
-                  >
-                    Add another pin
-                  </Button>
-                </Link>
-
-                <Button
-                  type="button"
-                  size="small"
-                  variant="contained"
-                  color="themepurple"
-                  className="metaInfoSubmit"
-                  onClick={() => {
-                    swal(
-                      "Track Creation Completed!",
-                      "Meta-track production capabilities are in the testing phase and will be reviewed by the operations to determine whether or not they are finalised to the user. Please note that contents that cause disgust to users, tracks that have problems with their use, and metadata that violates copyright can be returned after review.",
-                      "success",
-                      {
-                        buttons: ["Cancel", "Manage Tracks"],
-                      }
-                    ).then((manageTrack) => {
-                      if (manageTrack) {
-                        window.location.href = "Management/ManageTracks";
-                      }
-                    });
-                  }}
-                >
-                  Next
-                </Button>
-              </Stack>
+              <TrackReviewController data={trackInfoData} privacy={privacy} />
             </Grid>
           </MetaInfoFormStyled>
         </Grid>

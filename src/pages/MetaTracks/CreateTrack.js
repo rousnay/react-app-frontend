@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-// import mapboxgl from "!mapbox-gl";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
-import { LayerStyle1 } from "./LayerStyle";
+import toGeoJson from "@mapbox/togeojson";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./style.css";
 
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
 import * as turf from "@turf/turf";
+import { Container, Grid, Stack, TextField, Button } from "@mui/material";
+import { LayerStyle1 } from "./LayerStyle";
 import swal from "sweetalert";
 import Uploader from "./uploader";
-import toGeoJson from "@mapbox/togeojson";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
-
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 
 const initialLineData = {
   type: "FeatureCollection",
@@ -44,9 +33,6 @@ const initialLineData = {
   ],
 };
 
-const LocalUserData = JSON.parse(localStorage.getItem("userData"));
-const localUserToken = localStorage.token;
-const localChannelId = localStorage.channelId;
 const LocalGeoJSONLineData =
   JSON.parse(localStorage.getItem("geoJSONLineLocal")) || initialLineData;
 
@@ -54,10 +40,13 @@ const LocalLineCentralCoordinate = JSON.parse(
   localStorage.getItem("centralLineCoordinateLocal")
 ) || [0, 0];
 
+const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
+const localUserToken = localStorage.token;
+const localChannelId = localStorage.channelId;
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-
 const baseURL = "https://api.finutss.com";
+
 async function createNewTrack(payloadData) {
   for (const value of payloadData.values()) {
     console.log(value);
@@ -65,7 +54,6 @@ async function createNewTrack(payloadData) {
   return fetch(`${baseURL}/track/info`, {
     method: "POST",
     headers: {
-      // "Content-Type": "multipart/form-data",
       Authorization: "Bearer " + localUserToken,
     },
     body: payloadData,
@@ -85,9 +73,7 @@ export default function CreateTrack() {
   }, [localUserToken]);
 
   const [geoJSONLine, setGeoJSON] = useState(LocalGeoJSONLineData);
-  const [trackName, setTrackName] = useState(
-    LocalGeoJSONLineData.features[0].properties.name
-  );
+  const [trackName, setTrackName] = useState();
   const [trackCoordinates, setTrackCoordinates] = useState(
     LocalGeoJSONLineData.features[0].geometry.coordinates
   );
@@ -101,24 +87,17 @@ export default function CreateTrack() {
   const [previewImage, setPreviewImage] = useState([]);
   const [type, setType] = useState("loop");
   const [gpxFile, setGpxFile] = useState([]);
-  // const [distanceInMetres, setDistanceInMetres] = useState();
-  // const [durationInSeconds, setDurationInSeconds] = useState();
-  // const [kcal, setKcal] = useState();
 
   var formData = new FormData();
   formData.append("channelId", localChannelId);
   formData.append("name", name);
   formData.append("description", description);
-  formData.append("tags", tags);
+  formData.append("tags", ["france"]);
   formData.append("previewImage", previewImage[0]);
   formData.append("type", type);
   formData.append("gpxFile", gpxFile[0]);
-  // formData.append("distanceInMetres", distanceInMetres);
-  // formData.append("durationInSeconds", durationInSeconds);
-  // formData.append("kcal", kcal);
 
   const submitTrackInfo = async (e) => {
-    console.log("triger1");
     e.preventDefault();
     const response = await createNewTrack(formData);
 
@@ -127,7 +106,6 @@ export default function CreateTrack() {
         buttons: false,
         timer: 1000,
       }).then((value) => {
-        console.log("triger2");
         localStorage.removeItem("geoJSONPointLocal");
         localStorage.setItem("currentTrackId", response.data.id);
         localStorage.setItem("currentTrackName", response.data.name);
@@ -136,9 +114,7 @@ export default function CreateTrack() {
     } else {
       swal("Oops!", response.error, "error", {
         buttons: true,
-      }).then((value) => {
-        console.log("triger3");
-      });
+      }).then((value) => {});
     }
   };
 
@@ -166,7 +142,13 @@ export default function CreateTrack() {
         var geoJSONLineData = toGeoJson.gpx(
           new DOMParser().parseFromString(fileReader.result, "text/xml")
         );
-        const LineCollectionName = geoJSONLineData.features[0].properties.name;
+
+        const indexOfName = geoJSONLineData.features.findIndex((object) => {
+          return object.properties.hasOwnProperty("name");
+        });
+
+        const LineCollectionName =
+          geoJSONLineData.features[indexOfName].properties.name;
 
         const allLineGeoCoordinates =
           geoJSONLineData.features[0].geometry.coordinates;
@@ -289,7 +271,6 @@ export default function CreateTrack() {
                 onChange={(e) => setDescription(e.target.value)}
               />
               <TextField
-                // id="standard-multiline-flexible"
                 variant="outlined"
                 label="Tags"
                 multiline

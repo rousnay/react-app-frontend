@@ -1,18 +1,3 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-// import map from "mapbox-gl";
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
-import Uploader from "./uploader";
-import swal from "sweetalert";
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
-import "./style.css";
-
 export default function TrackReviewContent(props) {
   return (
     <>

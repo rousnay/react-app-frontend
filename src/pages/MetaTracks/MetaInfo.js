@@ -1,19 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-// import map from "mapbox-gl";
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Container, Grid, Stack, Button } from "@mui/material";
 import MapGL, {
   Source,
   Layer,
   Marker,
-  ScaleControl,
   NavigationControl,
 } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
@@ -31,9 +22,6 @@ import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
 import MetaInfoForm from "./MetaInfoForm";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-import "./style.css";
-import { CloseFullscreenOutlined } from "@mui/icons-material";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserData = JSON.parse(localStorage.getItem("userData"));
