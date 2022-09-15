@@ -1,32 +1,21 @@
-import React, { useState, useEffect } from "react";
-// import { useState } from "react";
-import { Container, Grid, Card, Box } from "@mui/material";
-// import { styled } from "@mui/material/styles";
-import TreadmillBg from "../../assets/treadmill-bg.svg";
+import { useState, useEffect } from "react";
+import { Container, Grid, Card } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import UserInfo from "./UserInfo";
-import swal from "sweetalert";
 
-const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
 
 export default function Dashboard() {
+  const [userInfo, setUserInfo] = useState({});
+
   useEffect(() => {
-    if (!userToken) {
-      swal("Oops!", "Please sign in first", "error", {
-        buttons: false,
-        timer: 1500,
-      }).then((value) => {
-        window.location.href = "/SignIn";
-      });
-    }
-  }, [userToken]);
+    (async function () {
+      await getUserInfo();
+    })();
+  }, []);
 
-  const [userInformation, setInformation] = useState();
-
-  // Function to collect data
-  const getApiData = async () => {
+  async function getUserInfo() {
     const response = await fetch("https://api.finutss.com/user/info", {
       method: "GET",
       headers: {
@@ -35,21 +24,14 @@ export default function Dashboard() {
       },
     }).then((data) => data.json());
 
-    // update the state
-    if (response.status === 200) {
-      console.log(response);
-      setInformation(response);
-      localStorage.setItem("userData", JSON.stringify(response.data));
+    if (response.message === "Success") {
+      setUserInfo(response.data);
     }
-  };
-
-  useEffect(() => {
-    getApiData();
-  }, []);
+  }
 
   return (
     <>
-      <PrivetHeader loginInfo={userData} />
+      <PrivetHeader loginInfo={userInfo} />
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
           container
@@ -72,8 +54,8 @@ export default function Dashboard() {
           <Grid item sm={12} sx={{ padding: "30px" }}>
             <h2>Profile information </h2>
             <Card className="">
-              {userData ? (
-                <UserInfo loginInfo={userData} />
+              {userInfo ? (
+                <UserInfo loginInfo={userInfo} />
               ) : (
                 <h1>You are not logged in</h1>
               )}

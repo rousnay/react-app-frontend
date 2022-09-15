@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -10,35 +10,17 @@ import {
 } from "@mui/material";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
 import swal from "sweetalert";
-// Import React FilePond
 import Uploader from "./uploader";
 import "./Channel.css";
 
-// const userData = JSON.parse(localStorage.getItem("userData"));
 const userToken = localStorage.getItem("token");
 const userData = JSON.parse(localStorage.getItem("userData"));
-console.log(userToken);
-console.log(userData);
-
-// const userToken =
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQxYWY0ZWJiLTk1NWEtNDY1ZS05YzJjLTFiYWFlYzdjNjkzNSIsImVtYWlsIjoibXIucm91c25heUBnbWFpbC5jb20iLCJ1c2VyVHlwZSI6InVzZXIiLCJkZXZpY2VUeXBlIjoiaW9zIiwiZGV2aWNlVG9rZW4iOiJzdHJpbmciLCJpYXQiOjE2NTkzNjY4ODYsImV4cCI6MTY1OTM2Njk0Nn0.mAJadfoBmtF_rvFf4u7D_omcAAw6gz2n9Mkp-WmCtYA";
-// const channelId = "aaafb550-6ef9-45cf-a8a1-2cf853410577";
 
 const baseURL = "https://api.finutss.com";
 async function createChannel(payloadData) {
-  // console.log(payloadData);
-
-  for (const pair of payloadData.entries()) {
-    console.log(`${pair[0]}:, ${pair[1]}`);
-  }
-
-  for (const value of payloadData.values()) {
-    console.log(value);
-  }
   return fetch(`${baseURL}/channel`, {
     method: "POST",
     headers: {
-      //   "Content-Type": "multipart/form-data",
       Authorization: "Bearer " + userToken,
     },
     body: payloadData,
@@ -46,28 +28,7 @@ async function createChannel(payloadData) {
 }
 
 export default function Channel() {
-  useEffect(() => {
-    if (!userData) {
-      swal("Oops!", "Please sign in first", "error", {
-        buttons: false,
-        timer: 1500,
-      }).then((value) => {
-        window.location.href = "/SignIn";
-      });
-    } else if (userData.channelId) {
-      swal("Oops!", `You already have a channel`, "info", {
-        buttons: ["Back to dashboard", "View your channel"],
-        // buttons: true,
-      }).then((goToChannel) => {
-        if (goToChannel) {
-          window.location.href = "/ChannelProfile";
-        } else {
-          window.location.href = "/Dashboard";
-        }
-      });
-    } else {
-    }
-  }, []);
+  const navigate = useNavigate();
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -111,10 +72,31 @@ export default function Channel() {
     const _BannerImageFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
     console.log(_BannerImageFileItem[0]);
     setBannerImage(_BannerImageFileItem);
   }
+
+  useEffect(() => {
+    if (!userData) {
+      swal("Oops!", "Please sign in first", "error", {
+        buttons: false,
+        timer: 1500,
+      }).then((value) => {
+        window.location.href = "/SignIn";
+      });
+    } else if (userData.channelId) {
+      swal("Channel exist!", `You already have a channel`, "info", {
+        buttons: ["Back to dashboard", "View your channel"],
+      }).then((goToChannel) => {
+        if (goToChannel) {
+          navigate("/ChannelProfile");
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    } else {
+    }
+  });
 
   return (
     <>

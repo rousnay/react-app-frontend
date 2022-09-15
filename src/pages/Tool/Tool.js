@@ -2,8 +2,6 @@ import { React, useState, useEffect, useRef } from "react";
 import { Container, Grid, Typography, Button } from "@mui/material";
 import swal from "sweetalert";
 
-import Login from "../../components/Login";
-
 export default function Tool() {
   const textTitle = useRef();
 
@@ -79,10 +77,6 @@ export default function Tool() {
                 Submit
               </Button>
             </form>
-          </Grid>
-
-          <Grid item sm={12}>
-            <Login />
           </Grid>
         </Grid>
       </Container>
