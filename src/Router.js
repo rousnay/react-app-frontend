@@ -4,15 +4,15 @@ import { PrivateRoutes } from "./auth/PrivateRoutes";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const Landing = lazy(() => import("./pages/Home/Landing"));
-const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
-const SignUpForm = lazy(() => import("./pages/SignUp/SignUpForm"));
-const MobileVerification = lazy(() =>
-  import("./pages/SignUp/MobileVerification")
-);
-const AddUserInformation = lazy(() =>
-  import("./pages/SignUp/AddUserInformation")
-);
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
+const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
+const EmailSignUp = lazy(() => import("./pages/SignUp/EmailSignUp"));
+const EmailVerification = lazy(() =>
+  import("./pages/SignUp/EmailVerification")
+);
+const UpdateUserInformation = lazy(() =>
+  import("./pages/SignUp/UpdateUserInformation")
+);
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const Channel = lazy(() => import("./pages/Channel/Channel"));
 const ChannelProfile = lazy(() => import("./pages/Channel/ChannelProfile"));
@@ -29,18 +29,14 @@ export const Router = () => {
         <Routes>
           <Route path="/" element={<Home />} exact />
           <Route path="/Landing" element={<Landing />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/SignUpForm" element={<SignUpForm />} />
           <Route path="/SignIn" element={<SignIn />} />
-
+          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/EmailSignUp" element={<EmailSignUp />} />
+          <Route path="/EmailVerification" element={<EmailVerification />} />
           <Route element={<PrivateRoutes />}>
             <Route
-              path="/MobileVerification"
-              element={<MobileVerification />}
-            />
-            <Route
-              path="/AddUserInformation"
-              element={<AddUserInformation />}
+              path="/UpdateUserInformation"
+              element={<UpdateUserInformation />}
             />
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Channel" element={<Channel />} />

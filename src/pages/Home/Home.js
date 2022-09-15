@@ -54,12 +54,6 @@ export default function Home() {
                   <Link to="/SignUp">Sign Up</Link>
                 </ListItem>
                 <ListItem>
-                  <Link to="/MobileVerification">OTP Verification</Link>
-                </ListItem>
-                <ListItem>
-                  <Link to="/AddUserInformation">Add User Information</Link>
-                </ListItem>
-                <ListItem>
                   <Link to="/SignIn">Sing In</Link>
                 </ListItem>
                 <ListItem>

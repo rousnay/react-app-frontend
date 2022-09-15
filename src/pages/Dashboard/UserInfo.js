@@ -15,7 +15,10 @@ export default function UserInfo(props) {
           src={userData.profilePhoto}
           alt={userData.firstName}
         />
-
+        <p>
+          <span style={{ fontWeight: "bold" }}>Name: </span>
+          {userData.firstName} {userData.lastName}
+        </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Username: </span>
           {userData.username}
@@ -23,11 +26,6 @@ export default function UserInfo(props) {
         <p>
           <span style={{ fontWeight: "bold" }}>Email: </span>
           {userData.email}
-        </p>
-        <p>
-          <span style={{ fontWeight: "bold" }}>Mobile: </span>
-          {userData.countryCode}
-          {userData.phoneNumber}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Address: </span>
@@ -44,19 +42,21 @@ export default function UserInfo(props) {
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Channel ID: </span>
-          {userData.channelId}
+          {userData.channelId ? (
+            userData.channelId
+          ) : (
+            <Link to="/Channel">
+              <Button
+                // fullWidth
+                // variant="contained"
+                color="themegreen"
+                className="channelSubmit"
+              >
+                Create Channel
+              </Button>
+            </Link>
+          )}
         </p>
-        <Link to="/Channel">
-          {" "}
-          <Button
-            // fullWidth
-            variant="contained"
-            color="themegreen"
-            className="channelSubmit"
-          >
-            Create Channel
-          </Button>
-        </Link>
       </CardContent>
     </>
   );

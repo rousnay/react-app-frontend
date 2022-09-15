@@ -8,16 +8,16 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import LogoSquareBlack from "../../assets/logo-square-black.svg";
 import swal from "sweetalert";
-import Uploader from "./uploader";
+import { useToken } from "../../auth/useToken";
+import Uploader from "../../components/uploader";
 import "./Channel.css";
+import LogoSquareBlack from "../../assets/logo-square-black.svg";
 
-const userToken = localStorage.getItem("token");
 const userData = JSON.parse(localStorage.getItem("userData"));
 
 const baseURL = "https://api.finutss.com";
-async function createChannel(payloadData) {
+async function createChannel(userToken, payloadData) {
   return fetch(`${baseURL}/channel`, {
     method: "POST",
     headers: {
@@ -28,6 +28,7 @@ async function createChannel(payloadData) {
 }
 
 export default function Channel() {
+  const [token, setToken] = useToken();
   const navigate = useNavigate();
 
   const [name, setName] = useState();
@@ -36,7 +37,6 @@ export default function Channel() {
   const [bannerImage, setBannerImage] = useState([]);
 
   var formData = new FormData();
-  // formData.append("id", channelId);
   formData.append("name", name);
   formData.append("description", description);
   formData.append("image", image[0]);
@@ -45,16 +45,18 @@ export default function Channel() {
   const submitChannelInfo = async (e) => {
     e.preventDefault();
 
-    const response = await createChannel(formData);
+    const response = await createChannel(token, formData);
     console.log(response);
 
     if (response.message === "Success") {
-      swal("Success", response.message, "success", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
-        // localStorage.setItem("userData", JSON.stringify(response.data));
-        // window.location.href = "/AddUserInformation";
+      swal("Success", "Channel has been created", "success", {
+        buttons: ["Back to dashboard", "Create MetaTrack"],
+      }).then((createChannel) => {
+        if (createChannel) {
+          navigate("/CreateTrack");
+        } else {
+          navigate("/Dashboard");
+        }
       });
     } else {
       swal("Failed", response.error, "error");
@@ -77,7 +79,7 @@ export default function Channel() {
   }
 
   useEffect(() => {
-    if (!userData) {
+    if (!token) {
       swal("Oops!", "Please sign in first", "error", {
         buttons: false,
         timer: 1500,

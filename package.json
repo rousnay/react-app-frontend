@@ -29,6 +29,7 @@
     "formik": "^2.2.9",
     "gpxparser": "^3.0.8",
     "html-react-parser": "^3.0.4",
+    "lodash": "^4.17.21",
     "map-gl-utils": "^0.43.0",
     "mapbox-gl": "^2.9.2",
     "mapbox-gl-utils": "^0.39.0",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TextField, Button } from "@mui/material";
-import Uploader from "./uploader";
+import Uploader from "../../components/uploader";
 import swal from "sweetalert";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;

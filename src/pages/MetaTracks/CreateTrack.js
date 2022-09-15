@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -9,7 +9,7 @@ import * as turf from "@turf/turf";
 import { Container, Grid, Stack, TextField, Button } from "@mui/material";
 import { LayerStyle1 } from "./LayerStyle";
 import swal from "sweetalert";
-import Uploader from "./uploader";
+import Uploader from "../../components/uploader";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -61,6 +61,7 @@ async function createNewTrack(payloadData) {
 }
 
 export default function CreateTrack() {
+  const navigate = useNavigate();
   useEffect(() => {
     if (!localUserToken) {
       swal("Oops!", "Please sign in first", "error", {
@@ -68,6 +69,18 @@ export default function CreateTrack() {
         timer: 2000,
       }).then((value) => {
         window.location.href = "/SignIn";
+      });
+    }
+    if (!localChannelId) {
+      swal("No channel exist!", "Please create a channel first", "error", {
+        // buttons: false,
+        buttons: ["Back to dashboard", "Create channel"],
+      }).then((createChannel) => {
+        if (createChannel) {
+          navigate("/Channel");
+        } else {
+          navigate("/Dashboard");
+        }
       });
     }
   }, [localUserToken]);
