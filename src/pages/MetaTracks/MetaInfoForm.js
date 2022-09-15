@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { TextField, Button } from "@mui/material";
 import Uploader from "./uploader";
 import swal from "sweetalert";
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserData = JSON.parse(localStorage.getItem("userData"));
@@ -11,25 +10,8 @@ const localChannelId = localUserData.channelId;
 const localCurrentTrackId = localStorage.currentTrackId;
 const localCurrentTrackName = localStorage.currentTrackName;
 
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-
 const baseURL = "https://api.finutss.com";
 async function addNewPin(payloadData) {
-  // console.log("__________s_________");
-
-  // for (const pair of payloadData.entries()) {
-  //   console.log(`${pair[0]}: ${pair[1]}`);
-  // }
-
-  // for (const value of payloadData.values()) {
-  //   console.log(value);
-  // }
-  // payloadData.forEach((element) => {
-  //   console.log(element);
-  // });
-  // console.log("__________e_________");
-
   return fetch(`${baseURL}/track/${localCurrentTrackId}/pin-point`, {
     method: "POST",
     headers: {
@@ -132,16 +114,6 @@ export default function MetaInfoForm(props) {
       <form noValidate onSubmit={submitMetaInfo} style={props.formVisibility}>
         <h4>Metadata</h4>
         <div className="meta_input_wrapper">
-          {/* {inputFields.map((input, index) => {
-            return (
-              <div key={index}> */}
-
-          {/* <input type="hidden" name="id" value={props.id} />
-          <input type="hidden" name="lon" value={props.lon} />
-          <input type="hidden" name="lat" value={props.lat} />
-          <input type="hidden" name="distanceInKm" value={props.distanceInKm} />
-          <input type="hidden" name="feature" value={props.feature} /> */}
-
           <TextField
             variant="outlined"
             label="Name"
@@ -163,7 +135,6 @@ export default function MetaInfoForm(props) {
             fullWidth
             id="pinDistance"
             name="pinDistance"
-            // onChange={(e) => setPinDistance(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -196,13 +167,7 @@ export default function MetaInfoForm(props) {
               labelIdle='Drop Image for pin or <span class="filepond--label-action">Browse</span>'
             />
           </div>
-
-          {/* </div>
-            );
-          })} */}
         </div>
-
-        {/* <button onClick={submit}>Submit</button> */}
         <Button
           type="submit"
           fullWidth

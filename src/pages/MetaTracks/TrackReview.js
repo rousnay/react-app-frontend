@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MapGL, {
   Source,
   Layer,
@@ -42,34 +43,24 @@ const initialLineData = {
   ],
 };
 
-const localGeoJSONLineData = JSON.parse(
-  localStorage.getItem("geoJSONLineLocal")
-);
-const localLineCentralCoordinate = JSON.parse(
-  localStorage.getItem("centralLineCoordinateLocal")
-);
-const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
-const theMiddle = Math.floor(GeoCoordinates.length / 2);
-const theMiddleCoordinates = GeoCoordinates[theMiddle];
-
-// console.log(line);
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 const baseURL = "https://api.finutss.com";
 
 export default function TrackReview() {
-  // ===============================
-  // Async GET REQ
-  // ===============================
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localCurrentTrackId) navigate("/CreateTrack");
+  });
+
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
-  const [pointFeatures, setPointFeatures] = useState([]);
-  const [pointFeaturesCollection, setPointFeaturesCollection] = useState({});
   const [privacy, setPrivacy] = useState("");
+  const [geoJSONLine, setGeoJSON] = useState(initialLineData);
+  const [pointFeatures, setPointFeatures] = useState([]);
+  const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
 
-  // ===============================
-  // GET TrackInfo
-  // ===============================
+  // GET TrackInfo ==================
   async function getTrackInfo() {
     try {
       const reqData = await fetch(
@@ -89,51 +80,28 @@ export default function TrackReview() {
     }
   }
 
-  // ===============================
-  // Get TrackInfo Data
-  // ===============================
-  useEffect(() => {
-    (async function () {
-      const trackData = await getTrackInfo();
-      setTrackInfoData(trackData);
-      setPrivacy(trackData.privacy);
-      setTrackingTags(trackData.tags.split(","));
-      convertToGeoJSON(trackData.rawGpx);
-      convertToPointFeatures(trackData.pinPoints.pinPointArray);
-    })();
-  }, []);
+  // GET Converted GeoJSON data ==================
+  async function convertToGeoJSON() {
+    const trackAsyncData = await getTrackInfo();
+    const trackAsyncGpx = await trackAsyncData.rawGpx;
+    var geoJSONLineData = toGeoJson.gpx(
+      new DOMParser().parseFromString(trackAsyncGpx, "text/xml")
+    );
+    return geoJSONLineData;
+  }
 
-  // ===============================
-  // Convert GET RES to Map data
-  // ===============================
-  const [geoJSONLine, setGeoJSON] = useState([]);
-  const [trackName, setTrackName] = useState([]);
-  const [trackCoordinates, setTrackCoordinates] = useState([]);
-  const [centralLineCoordinate, setCentralCoordinate] = useState([]);
+  // GET CentralCoordinate ==================
+  async function centralCoordinate() {
+    const trackAsyncGeoJson = await convertToGeoJSON();
+    const allLineGeoCoordinates =
+      trackAsyncGeoJson.features[0].geometry.coordinates;
+    const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
+    const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
+    const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
+    return centralLineCoordinates;
+  }
 
-  const convertToGeoJSON = (gpxPayload) => {
-    if (gpxPayload) {
-      var geoJSONLineData = toGeoJson.gpx(
-        new DOMParser().parseFromString(gpxPayload, "text/xml")
-      );
-      const LineCollectionName = geoJSONLineData.features[0].properties.name;
-      const allLineGeoCoordinates =
-        geoJSONLineData.features[0].geometry.coordinates;
-
-      const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
-      const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
-      const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
-
-      setGeoJSON(geoJSONLineData);
-      setTrackName(LineCollectionName);
-      setTrackCoordinates(allLineGeoCoordinates);
-      setCentralCoordinate(centralLineCoordinates);
-    } else {
-      setGeoJSON(initialLineData);
-      setCentralCoordinate([0, 0]);
-    }
-  };
-
+  // GET PointFeatures ==================
   const convertToPointFeatures = (pinPointPayload) => {
     const featureArray = pinPointPayload.map((pinPoint, index) => {
       const featuresId = pinPoint.id;
@@ -152,17 +120,24 @@ export default function TrackReview() {
       return featureAdd;
     });
     setPointFeatures(featureArray.reverse());
-    setPointFeaturesCollection(turf.featureCollection([...featureArray]));
   };
 
-  // ===============================
-  // Painting map Marker
-  // ===============================
-  const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
-  const theMiddle = Math.floor(GeoCoordinates.length / 2);
-  const theMiddleCoordinates = GeoCoordinates[theMiddle];
-  var line = turf.lineString(GeoCoordinates);
+  // Get TrackInfo Data ==================
+  useEffect(() => {
+    (async function () {
+      const trackData = await getTrackInfo();
+      const geoJSONData = await convertToGeoJSON();
+      const centralCoordinates = await centralCoordinate();
+      setTrackInfoData(trackData);
+      setGeoJSON(geoJSONData);
+      setCentralCoordinate(centralCoordinates);
+      setPrivacy(trackData.privacy);
+      setTrackingTags(trackData.tags.split(","));
+      convertToPointFeatures(trackData.pinPoints.pinPointArray);
+    })();
+  }, []);
 
+  // Painting map Marker ==================
   const currentCoordinates = pointFeatures.map(
     (features) => features.geometry.coordinates
   );
@@ -214,8 +189,8 @@ export default function TrackReview() {
                   style={{ width: "100%", height: "500px" }}
                   mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
                   accessToken={MAPBOX_ACCESS_TOKEN}
-                  longitude={localLineCentralCoordinate[0]}
-                  latitude={localLineCentralCoordinate[1]}
+                  longitude={centralLineCoordinate[0]}
+                  latitude={centralLineCoordinate[1]}
                   zoom={11.8}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
@@ -243,7 +218,6 @@ export default function TrackReview() {
                 data={trackInfoData}
                 trackingTags={trackingTags}
               />
-
               <TrackReviewController data={trackInfoData} privacy={privacy} />
             </Grid>
           </MetaInfoFormStyled>

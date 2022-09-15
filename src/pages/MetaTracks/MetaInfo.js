@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Stack, Button } from "@mui/material";
 import MapGL, {
   Source,
@@ -8,23 +8,24 @@ import MapGL, {
   NavigationControl,
 } from "@urbica/react-map-gl";
 import Draw from "@urbica/react-map-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
 import swal from "sweetalert";
-import { LayerStyle1, LayerStyle2, LayerStyle3 } from "./LayerStyle";
-import Uploader from "./uploader";
-import MetaInfoPinList from "./MetaInfoPinList";
-import MetaInfoPinPoint from "./MetaInfoPinPoint";
+import { LayerStyle1 } from "./LayerStyle";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import TrackCreationNav from "./TrackCreationNav";
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
+import MetaInfoPinList from "./MetaInfoPinList";
+import MetaInfoPinPoint from "./MetaInfoPinPoint";
 import MetaInfoForm from "./MetaInfoForm";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import "mapbox-gl/dist/mapbox-gl.css";
+
+import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
 
 const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
 const localUserData = JSON.parse(localStorage.getItem("userData"));
+const localCurrentTrackId = localStorage.currentTrackId;
 const localCurrentTrackName = localStorage.currentTrackName;
 
 const localGeoJSONLineData = JSON.parse(
@@ -73,6 +74,13 @@ const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
 
 export default function MetaInfo() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localCurrentTrackId) {
+      navigate("/CreateTrack");
+    }
+  });
+
   const initialFormValues = [
     {
       id: "",
@@ -311,7 +319,7 @@ export default function MetaInfo() {
                 </MapGL>
               </div>
               <Stack className="pinInfoHeader">
-                <h3>Pins</h3>
+                <h3 style={{ margin: 0 }}>Pins</h3>
                 <Button
                   type="button"
                   size="small"

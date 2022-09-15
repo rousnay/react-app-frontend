@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import {
   Stack,
@@ -63,7 +63,12 @@ export default function TrackReviewController(props) {
         }
       ).then((manageTrack) => {
         if (manageTrack) {
-          navigate("Management/ManageTracks");
+          localStorage.removeItem("formValuesLocal");
+          localStorage.removeItem("currentTrackId");
+          localStorage.removeItem("geoJSONPointLocal");
+          localStorage.removeItem("geoJSONLineLocal");
+          localStorage.removeItem("centralLineCoordinateLocal");
+          navigate("/Management/ManageTracks");
         }
       });
     } else {
@@ -104,7 +109,7 @@ export default function TrackReviewController(props) {
         </Box>
       </Stack>
       <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-        <Link to="/MetaInfo">
+        {/* <Link to="/MetaInfo">
           <Button
             type="button"
             size="small"
@@ -112,12 +117,13 @@ export default function TrackReviewController(props) {
             color="themepurple"
             className="backToTrackInfo"
           >
-            Add another pin
+            Back
           </Button>
-        </Link>
+        </Link> */}
 
         <Button
           type="button"
+          fullWidth
           size="small"
           variant="contained"
           color="themepurple"
@@ -126,7 +132,7 @@ export default function TrackReviewController(props) {
             submitUpdatedTrackInfo(e);
           }}
         >
-          Next
+          Submit
         </Button>
       </Stack>
     </>
