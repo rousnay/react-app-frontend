@@ -21,10 +21,6 @@ const MetaInfo = lazy(() => import("./pages/MetaTracks/MetaInfo"));
 const TrackReview = lazy(() => import("./pages/MetaTracks/TrackReview"));
 const ManageTracks = lazy(() => import("./pages/Management/ManageTracks"));
 const ManageComments = lazy(() => import("./pages/Management/ManageComments"));
-const MetaTracks = lazy(() => import("./pages/MetaTracks/MetaTracks"));
-const Tool = lazy(() => import("./pages/Tool/Tool"));
-const Guide = lazy(() => import("./pages/Guide/Guide"));
-const Support = lazy(() => import("./pages/Support/Support"));
 
 export const Router = () => {
   return (
@@ -58,11 +54,6 @@ export const Router = () => {
               element={<ManageComments />}
             />
           </Route>
-
-          <Route path="/MetaTracks" element={<MetaTracks />} />
-          <Route path="/Tool" element={<Tool />} />
-          <Route path="/Guide" element={<Guide />} />
-          <Route path="/Support" element={<Support />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

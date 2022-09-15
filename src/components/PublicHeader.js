@@ -61,16 +61,16 @@ export default function PublicHeader() {
                 <Link to="/">Home</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/MetaTracks">Meta Tracks</Link>
+                <Link to="#">Meta Tracks</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/Tool">Tool</Link>
+                <Link to="#">Tool</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/Guide">Guide</Link>
+                <Link to="#">Guide</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/Support">Support</Link>
+                <Link to="#">Support</Link>
               </MenuItem>
               <MenuItem>
                 <Link to="/SignIn" style={SigninStyles}>

@@ -34,7 +34,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (token) {
-      swal("Oops!", "You are already signed in with another account", "info", {
+      swal("Oops!", "You are already signed in with an account", "info", {
         buttons: ["Go to dashboard", "Logout"],
         dangerMode: true,
       }).then((willLoggedOut) => {
@@ -47,7 +47,7 @@ export default function SignUp() {
             window.location.reload();
           });
         } else {
-          window.location.href = "/Dashboard";
+          navigate("/Dashboard");
         }
       });
     }

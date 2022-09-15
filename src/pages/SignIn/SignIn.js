@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
@@ -7,7 +7,6 @@ import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function loginUser(credentials) {
-  // console.log(credentials);
   return fetch("https://api.finutss.com/user/login", {
     method: "POST",
     headers: {
@@ -25,6 +24,26 @@ export default function SignIn() {
   const [token, setToken] = useToken();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (token) {
+      swal("Oops!", "You are already signed in with an account", "info", {
+        buttons: ["Go to dashboard", "Logout"],
+        dangerMode: true,
+      }).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            localStorage.clear();
+            window.location.reload();
+          });
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
+  }, []);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   // const [deviceType, setDeviceType] = useState();
