@@ -55,6 +55,34 @@ export default function EmailSignUp() {
     }
   };
 
+  const signUpWithGoogle = async (e) => {
+    e.preventDefault();
+    async function getGoogle() {
+      return fetch(`${API_URL}/user/auth/google`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((data) => data.json());
+    }
+
+    const response = await getGoogle();
+
+    if (response.message === "Success") {
+      swal("Success", "Going for email verification...", "success", {
+        buttons: false,
+        timer: 1000,
+      }).then((value) => {
+        console.log(response);
+        // setToken(response.data.token);
+        // setUser(response.data);
+        // navigate("/EmailVerification");
+      });
+    } else {
+      swal("Failed", response.error, "error");
+    }
+  };
+
   useEffect(() => {
     if (token) {
       swal("Oops!", "You are already signed in with an account", "info", {
@@ -135,6 +163,16 @@ export default function EmailSignUp() {
                 </Button>
               </form>
             </div>
+
+            <Button
+              style={{ marginTop: "50px" }}
+              type="submit"
+              variant="contained"
+              // color="logoGreen"
+              onClick={(e) => signUpWithGoogle(e)}
+            >
+              login with google
+            </Button>
           </Grid>
 
           <Grid
