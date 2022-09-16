@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { Container, Grid } from "@mui/material";
-
-import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
@@ -72,7 +68,7 @@ export default function ManageComments() {
         },
       });
       const resData = await reqData.json();
-      return resData.data.tracksArray;
+      return resData.data?.tracksArray;
     } catch (error) {
       console.log(error);
       return null;

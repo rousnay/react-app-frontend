@@ -10,27 +10,13 @@ import {
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/useToken";
+import { useToken } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
-async function userSignUp(payloadData) {
-  console.log(payloadData);
-  return fetch("https://api.finutss.com/user/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payloadData),
-  }).then((data) => data.json());
-}
-
 export default function SignUp() {
-  const [token, setToken] = useToken();
+  const [token] = useToken();
   const navigate = useNavigate();
-
-  const [countryCode, setCountryCode] = useState();
-  const [phoneNumber, setPhoneNumber] = useState();
 
   useEffect(() => {
     if (token) {
@@ -72,7 +58,6 @@ export default function SignUp() {
         return prevState.map((item) => {
           return { ...item, checked: !prevState[0].checked };
         });
-
         // if 'New', 'In Progress' or 'Complete' clicked revert thir value from true to false or false to true.
       } else {
         const modifiedPrevState = prevState.map((item) => {
@@ -82,7 +67,6 @@ export default function SignUp() {
             return item;
           }
         });
-
         // for each user click other than 'All'; modify 'All' button's checked value.
         // If  'New', 'In Progress' and 'Complete' checked, check 'All' else uncheck 'All'
         modifiedPrevState[0].checked =

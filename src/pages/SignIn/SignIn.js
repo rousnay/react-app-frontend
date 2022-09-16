@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/useToken";
+import { useToken, useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
@@ -22,6 +22,7 @@ const genDeviceToken = (() => {
 
 export default function SignIn() {
   const [token, setToken] = useToken();
+  const [, setUser] = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,8 +47,6 @@ export default function SignIn() {
   }, []);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  // const [deviceType, setDeviceType] = useState();
-  // const [deviceToken, setDeviceToken] = useState();
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
 
@@ -69,10 +68,8 @@ export default function SignIn() {
           timer: 2000,
         }
       ).then((value) => {
-        localStorage.setItem("userData", JSON.stringify(response.data));
-        localStorage.setItem("channelId", response.data.channelId);
-
         setToken(response.data.token);
+        setUser(response.data);
         navigate("/Dashboard");
       });
     } else if (response.statusCode === 400) {

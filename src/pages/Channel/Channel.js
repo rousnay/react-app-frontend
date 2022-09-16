@@ -9,7 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/useToken";
+import { useToken, useUser } from "../../auth/userAuth";
 import Uploader from "../../components/uploader";
 import "./Channel.css";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";

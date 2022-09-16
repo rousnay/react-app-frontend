@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import swal from "sweetalert";
 import {
-  Container,
-  Grid,
   Stack,
-  Typography,
-  TextField,
-  Button,
-  Box,
   Avatar,
-  Skeleton,
   IconButton,
   Accordion,
   AccordionSummary,
@@ -25,20 +18,6 @@ const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 async function addNewComment(payloadData) {
-  console.log("__________s_________");
-
-  // for (const pair of payloadData.entries()) {
-  //   console.log(`${pair[0]}: ${pair[1]}`);
-  // }
-
-  for (const value of payloadData.values()) {
-    console.log(value);
-  }
-  // payloadData.forEach((element) => {
-  //   console.log(element);
-  // });
-  console.log("__________e_________");
-
   return fetch(`${baseURL}/comment`, {
     method: "POST",
     headers: {

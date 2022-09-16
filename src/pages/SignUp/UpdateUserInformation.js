@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/useToken";
+import { useToken, useUser } from "../../auth/userAuth";
 import Uploader from "../../components/uploader";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";

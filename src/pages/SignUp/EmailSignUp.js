@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/useToken";
+import { useToken, useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
@@ -22,29 +22,9 @@ const genDeviceToken = (() => {
 })();
 
 export default function EmailSignUp() {
-  const [token, setToken] = useToken();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (token) {
-      swal("Oops!", "You are already signed in with an account", "info", {
-        buttons: ["Go to dashboard", "Logout"],
-        dangerMode: true,
-      }).then((willLoggedOut) => {
-        if (willLoggedOut) {
-          swal("You have been logged out!", {
-            icon: "success",
-            timer: 1000,
-          }).then((value) => {
-            localStorage.clear();
-            window.location.reload();
-          });
-        } else {
-          navigate("/Dashboard");
-        }
-      });
-    }
-  }, []);
-
+  const [token, setToken] = useToken();
+  const [, setUser] = useUser();
   const [email, setEmail] = useState();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -68,7 +48,7 @@ export default function EmailSignUp() {
         timer: 1000,
       }).then((value) => {
         setToken(response.data.token);
-        localStorage.setItem("userData", JSON.stringify(response.data));
+        setUser(response.data);
         navigate("/EmailVerification");
       });
     } else {
@@ -76,6 +56,26 @@ export default function EmailSignUp() {
     }
   };
 
+  useEffect(() => {
+    if (token) {
+      swal("Oops!", "You are already signed in with an account", "info", {
+        buttons: ["Go to dashboard", "Logout"],
+        dangerMode: true,
+      }).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            localStorage.clear();
+            window.location.reload();
+          });
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
+  }, []);
   return (
     <>
       <Container maxWidth="xl" sx={{}}>

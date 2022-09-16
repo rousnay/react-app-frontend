@@ -2,32 +2,28 @@ import { useState, useEffect } from "react";
 import { Container, Grid, Card } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
+import { useToken } from "../../auth/userAuth";
 import UserInfo from "./UserInfo";
 
-const userToken = localStorage.getItem("token");
-
 export default function Dashboard() {
+  const [token] = useToken();
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
     (async function () {
-      await getUserInfo();
+      const response = await fetch("https://api.finutss.com/user/info", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }).then((data) => data.json());
+
+      if (response.message === "Success") {
+        setUserInfo(response.data);
+      }
     })();
   }, []);
-
-  async function getUserInfo() {
-    const response = await fetch("https://api.finutss.com/user/info", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + userToken,
-      },
-    }).then((data) => data.json());
-
-    if (response.message === "Success") {
-      setUserInfo(response.data);
-    }
-  }
 
   return (
     <>

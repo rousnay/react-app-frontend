@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
+import { useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
@@ -18,12 +19,32 @@ async function emailVerification(payloadData) {
 
 export default function EmailVerification() {
   const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  const [user, setUser] = useUser();
   const [email, setEmail] = useState("");
   const [otp, setOTP] = useState();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await emailVerification({
+      email,
+      otp,
+    });
+
+    if (response.message === "Success") {
+      swal("Verified", "your email has been verified successfully", "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        setUser(response.data);
+        navigate("/UpdateUserInformation");
+      });
+    } else {
+      swal("Failed", response.message[0], "error");
+    }
+  };
+
   useEffect(() => {
-    if (!userData) {
+    if (!user) {
       swal("Oops!", "Please sign up with an email first", "error", {
         buttons: true,
         buttons: ["Back to the home page", "Sing Up"],
@@ -39,8 +60,8 @@ export default function EmailVerification() {
           navigate("/");
         }
       });
-    } else if (userData.firstName) {
-      swal("Oops!", `You are already verified with ${userData.email}`, "info", {
+    } else if (user.firstName) {
+      swal("Oops!", `You are already verified with ${user.email}`, "info", {
         buttons: ["Go to dashboard", "Logout"],
         dangerMode: true,
       }).then((willLoggedOut) => {
@@ -51,36 +72,15 @@ export default function EmailVerification() {
           }).then((value) => {
             localStorage.clear();
             navigate("/SignUp");
-            window.location.href = "/SignUp";
           });
         } else {
           navigate("/Dashboard");
         }
       });
     } else {
-      setEmail(userData.email);
+      setEmail(user.email);
     }
-  }, [userData]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const response = await emailVerification({
-      email,
-      otp,
-    });
-
-    if (response.message === "Success") {
-      swal("Verified", "your email has been verified successfully", "success", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
-        localStorage.setItem("userData", JSON.stringify(response.data));
-        navigate("/UpdateUserInformation");
-      });
-    } else {
-      swal("Failed", response.message[0], "error");
-    }
-  };
+  }, [user]);
 
   return (
     <>
