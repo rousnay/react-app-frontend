@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken, useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 async function userSignUp(payloadData) {
-  console.log(payloadData);
   return fetch("https://api.finutss.com/user/signup", {
     method: "POST",
     headers: {
@@ -40,7 +39,6 @@ export default function EmailSignUp() {
       deviceType,
       deviceToken,
     });
-    console.log(response);
 
     if (response.message === "Success") {
       swal("Success", "Going for email verification...", "success", {

@@ -1,11 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Container, Grid, Button, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import PublicHeader from "../../components/PublicHeader";
 import LandingBgImage from "../../assets/landing-bg-black.jpg";
 import LogoSquareWhite from "../../assets/logo-square-white.png";
-import AppPreview from "../../assets/app-preview.png";
-import PublicHeader from "../../components/PublicHeader";
 
 const LandingContainer = styled("div")`
   background-image: url(${LandingBgImage});

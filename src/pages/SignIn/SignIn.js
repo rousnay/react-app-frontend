@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken, useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 

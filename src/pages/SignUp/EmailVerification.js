@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../../auth/userAuth";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useUser } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 async function emailVerification(payloadData) {
-  console.log(payloadData);
   return fetch("https://api.finutss.com/user/verify/email", {
     method: "POST",
     headers: {

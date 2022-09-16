@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useToken } from "../../auth/userAuth";
 import swal from "sweetalert";
 import {
   Stack,
@@ -14,19 +15,20 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 import TelegramIcon from "@mui/icons-material/Telegram";
 
-const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
-async function addNewComment(payloadData) {
+async function addNewComment(authToken, payloadData) {
   return fetch(`${baseURL}/comment`, {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + localUserToken,
+      Authorization: "Bearer " + authToken,
     },
     body: payloadData,
   }).then((data) => data.json());
 }
+
 export default function CommentList(props) {
+  const [token] = useToken();
   const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -39,10 +41,6 @@ export default function CommentList(props) {
     setCommentList(list);
   };
 
-  useEffect(() => {
-    console.log(commentList);
-  }, [commentList]);
-
   const submitNewComment = async (e, i, selectedTrackId) => {
     e.preventDefault();
 
@@ -50,7 +48,7 @@ export default function CommentList(props) {
     formData.append("trackId", selectedTrackId);
     formData.append("text", commentList[i]);
 
-    const response = await addNewComment(formData);
+    const response = await addNewComment(token, formData);
     if (response.message === "Success") {
       swal("Success", "Comment has been add", "success", {
         buttons: false,

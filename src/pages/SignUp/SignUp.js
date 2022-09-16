@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToken } from "../../auth/userAuth";
 import {
   Container,
   Grid,
@@ -10,7 +11,6 @@ import {
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
-import { useToken } from "../../auth/userAuth";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 

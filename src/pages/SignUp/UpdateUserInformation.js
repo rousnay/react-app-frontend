@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import { useToken, useUser } from "../../auth/userAuth";
 import Uploader from "../../components/uploader";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function addUserInfo(authToken, payloadData) {
-  for (const pair of payloadData.entries()) {
-    console.log(`${pair[0]}: ${pair[1]}`);
-  }
-
   return fetch("https://api.finutss.com/user", {
     method: "PUT",
     headers: {
@@ -22,15 +18,16 @@ async function addUserInfo(authToken, payloadData) {
 }
 
 export default function UpdateUserInformation() {
-  const [token, setToken] = useToken();
+  const [token] = useToken();
+  const [, setUser] = useUser();
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [addressLine1, setaddressLine1] = useState("");
-  const [state, setState] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [country, setCountry] = useState("");
+  const [firstName, setFirstName] = useState(" ");
+  const [lastName, setLastName] = useState(" ");
+  const [addressLine1, setaddressLine1] = useState(" ");
+  const [state, setState] = useState(" ");
+  const [zipCode, setZipCode] = useState(" ");
+  const [country, setCountry] = useState(" ");
   const [profilePhoto, setProfilePhoto] = useState([]);
 
   var formData = new FormData();
@@ -56,6 +53,7 @@ export default function UpdateUserInformation() {
           timer: 2000,
         }
       ).then((value) => {
+        setUser(response.data);
         navigate("/Dashboard");
       });
     } else {
@@ -87,15 +85,13 @@ export default function UpdateUserInformation() {
   useEffect(() => {
     (async function () {
       const userData = await getUserInfo();
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
-      setaddressLine1(userData.addressLine1);
-      setState(userData.state);
-      setZipCode(userData.zipCode);
-      setCountry(userData.country);
-      setProfilePhoto(userData.profilePhoto);
-
-      console.log(userData);
+      setFirstName(userData.firstName || " ");
+      setLastName(userData.lastName || " ");
+      setaddressLine1(userData.addressLine1 || " ");
+      setState(userData.state || " ");
+      setZipCode(userData.zipCode || " ");
+      setCountry(userData.country || " ");
+      setProfilePhoto(userData.profilePhoto || []);
     })();
   }, []);
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToken, useUser } from "../../auth/userAuth";
 import {
   Container,
   Grid,
@@ -9,12 +10,9 @@ import {
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
-import { useToken, useUser } from "../../auth/userAuth";
 import Uploader from "../../components/uploader";
-import "./Channel.css";
+import { ChannelStyles } from "./ChannelStyles";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
-
-const userData = JSON.parse(localStorage.getItem("userData"));
 
 const baseURL = "https://api.finutss.com";
 async function createChannel(userToken, payloadData) {
@@ -28,8 +26,9 @@ async function createChannel(userToken, payloadData) {
 }
 
 export default function Channel() {
-  const [token, setToken] = useToken();
   const navigate = useNavigate();
+  const [token] = useToken();
+  const [user, setUser] = useUser();
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -49,6 +48,7 @@ export default function Channel() {
     console.log(response);
 
     if (response.message === "Success") {
+      setUser(response.data);
       swal("Success", "Channel has been created", "success", {
         buttons: ["Back to dashboard", "Create MetaTrack"],
       }).then((createChannel) => {
@@ -79,14 +79,7 @@ export default function Channel() {
   }
 
   useEffect(() => {
-    if (!token) {
-      swal("Oops!", "Please sign in first", "error", {
-        buttons: false,
-        timer: 1500,
-      }).then((value) => {
-        window.location.href = "/SignIn";
-      });
-    } else if (userData.channelId) {
+    if (user.channelId) {
       swal("Channel exist!", `You already have a channel`, "info", {
         buttons: ["Back to dashboard", "View your channel"],
       }).then((goToChannel) => {
@@ -104,100 +97,101 @@ export default function Channel() {
     <>
       <Container maxWidth="xl" sx={{}}>
         <Grid container sx={{ marginTop: "30px" }}>
-          <Grid item sm={12} md={6}>
-            <Box sm={6} sx={{ flexGrow: 1 }}>
-              <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
-                Channel Information
-              </Typography>
-              <p>
-                Please enter information about your channel. Most of the channel
-                information can be re-edited at any time. If the image is not
-                set, it is exposed as the default.
-              </p>
-            </Box>
-          </Grid>
-
-          <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
-            <Link to="/" style={{ height: "fit-content" }}>
-              <img src={LogoSquareBlack} alt="Logo" />
-            </Link>
-          </Grid>
-          <form
-            style={{ width: "100%" }}
-            noValidate
-            onSubmit={submitChannelInfo}
-          >
-            <Grid container>
-              <Grid item sm={12} md={5} className="channelTextInput">
-                <TextField
-                  variant="outlined"
-                  label="Channel Name"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="name"
-                  name="name"
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <TextField
-                  // id="standard-multiline-flexible"
-                  variant="outlined"
-                  label="Description"
-                  multiline
-                  fullWidth
-                  id="description"
-                  name="description"
-                  maxRows={4}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </Grid>
-
-              <Grid
-                item
-                sm={12}
-                md={7}
-                sx={{
-                  display: "flex",
-                  flexFlow: "column",
-                  alignItems: "center",
-                }}
-              >
-                <div className="channelImageUpload">
-                  <div className="thumImageUpload">
-                    <h4>Channel Image</h4>
-                    <Uploader
-                      files={image}
-                      name={"image"}
-                      onupdatefiles={(fileItems) => setImagedata(fileItems)}
-                      labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                    />
-                  </div>
-
-                  <div className="bannerImageUpload">
-                    <h4>Banner Image</h4>
-                    <Uploader
-                      files={bannerImage}
-                      name={"bannerImage"}
-                      onupdatefiles={(fileItems) =>
-                        setBannerImagedata(fileItems)
-                      }
-                      labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="logoblue"
-                  className="channelSubmit"
-                >
-                  Save
-                </Button>
-              </Grid>
+          <ChannelStyles>
+            <Grid item sm={12} md={6}>
+              <Box sm={6} sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
+                  Channel Information
+                </Typography>
+                <p>
+                  Please enter information about your channel. Most of the
+                  channel information can be re-edited at any time. If the image
+                  is not set, it is exposed as the default.
+                </p>
+              </Box>
             </Grid>
-          </form>
+
+            <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
+              <Link to="/" style={{ height: "fit-content" }}>
+                <img src={LogoSquareBlack} alt="Logo" />
+              </Link>
+            </Grid>
+            <form
+              style={{ width: "100%" }}
+              noValidate
+              onSubmit={submitChannelInfo}
+            >
+              <Grid container>
+                <Grid item sm={12} md={5} className="channelTextInput">
+                  <TextField
+                    variant="outlined"
+                    label="Channel Name"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="name"
+                    name="name"
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <TextField
+                    variant="outlined"
+                    label="Description"
+                    multiline
+                    fullWidth
+                    id="description"
+                    name="description"
+                    maxRows={4}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </Grid>
+
+                <Grid
+                  item
+                  sm={12}
+                  md={7}
+                  sx={{
+                    display: "flex",
+                    flexFlow: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="channelImageUpload">
+                    <div className="thumImageUpload">
+                      <h4>Channel Image</h4>
+                      <Uploader
+                        files={image}
+                        name={"image"}
+                        onupdatefiles={(fileItems) => setImagedata(fileItems)}
+                        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                      />
+                    </div>
+
+                    <div className="bannerImageUpload">
+                      <h4>Banner Image</h4>
+                      <Uploader
+                        files={bannerImage}
+                        name={"bannerImage"}
+                        onupdatefiles={(fileItems) =>
+                          setBannerImagedata(fileItems)
+                        }
+                        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="logoblue"
+                    className="channelSubmit"
+                  >
+                    Save
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </ChannelStyles>
         </Grid>
       </Container>
     </>

@@ -1,31 +1,22 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import {
-  Container,
-  Grid,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Table,
-} from "@mui/material";
+import { useState, useEffect } from "react";
+import { useToken, useUser } from "../../auth/userAuth";
+// import axios from "axios";
+import { Container, Grid } from "@mui/material";
 
-import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
-import { ManageTrackStyled } from "./ManagementStyles";
 import ManageTrackOptions from "./ManageTrackOptions";
+import { ManageTrackStyled } from "./ManagementStyles";
 
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageTracks() {
+  const [token] = useToken();
+  const [user] = useUser();
+
   const [trackComments, setTrackComments] = useState([]);
   const [isChecked, setisChecked] = useState([]);
-  const [delmsg, setDelmsg] = useState("");
+  // const [delmsg, setDelmsg] = useState("");
 
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
@@ -51,7 +42,7 @@ export default function ManageTracks() {
       const reqData = await fetch(`${baseURL}/track/user/listing`, {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + localUserToken,
+          Authorization: "Bearer " + token,
         },
       });
       const resData = await reqData.json();
@@ -70,7 +61,7 @@ export default function ManageTracks() {
         const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + localUserToken,
+            Authorization: "Bearer " + token,
           },
         });
         const resComment = await reqComment.json();
@@ -89,10 +80,6 @@ export default function ManageTracks() {
   }
 
   useEffect(() => {
-    console.log(trackComments);
-  }, [trackComments]);
-
-  useEffect(() => {
     (async function () {
       await getTrackComments();
     })();
@@ -108,26 +95,31 @@ export default function ManageTracks() {
     }
   };
 
-  const alldelete = async () => {
-    //console.log(isChecked);
-    if (isChecked.length !== 0) {
-      const responce = await axios.post(
-        `http://localhost/devopsdeveloper/user/deletecheckboxuser`,
-        JSON.stringify(isChecked)
-      );
-      setDelmsg(responce.data.msg);
-      setTimeout(() => {
-        // history.push("/user");
-        console.log("timeout");
-      }, 2000);
-    } else {
-      alert("please Select at least one check box !");
-    }
-  };
+  // delete Track ==================
+  // const alldelete = async () => {
+  //   //console.log(isChecked);
+  //   if (isChecked.length !== 0) {
+  //     const responce = await axios.post(
+  //       `http://localhost/devopsdeveloper/user/deletecheckboxuser`,
+  //       JSON.stringify(isChecked)
+  //     );
+  //     setDelmsg(responce.data.msg);
+  //     setTimeout(() => {
+  //       // history.push("/user");
+  //       console.log("timeout");
+  //     }, 2000);
+  //   } else {
+  //     alert("please Select at least one check box !");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   console.log(trackComments);
+  // }, [trackComments]);
 
   return (
     <>
-      <PrivetHeader loginInfo={userInfo} />
+      <PrivetHeader loginInfo={user} />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -6,14 +7,13 @@ import { ManageCommentsStyled } from "./ManagementStyles";
 import ManageCommentOptions from "./ManageCommentOptions";
 import CommentList from "./CommentList";
 
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserToken = localStorage.token;
 const baseURL = "https://api.finutss.com";
 
 export default function ManageComments() {
-  const [userData, setUserData] = useState(false);
-  const [trackCommentReaction, setTrackCommentReaction] = useState([]);
+  const [token] = useToken();
+  const [user] = useUser();
 
+  const [trackCommentReaction, setTrackCommentReaction] = useState([]);
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
@@ -29,42 +29,13 @@ export default function ManageComments() {
         : 1 * order;
     });
 
-  useEffect(() => {
-    console.log(trackCommentReaction);
-  }, [trackCommentReaction]);
-
-  useEffect(() => {
-    (async function () {
-      await getUserInfo();
-      await getAllReaction();
-    })();
-  }, []);
-
-  // getUserData ==================
-  async function getUserInfo() {
-    try {
-      const reqData = await fetch(`${baseURL}/user/info`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + localUserToken,
-        },
-      });
-      const resData = await reqData.json();
-      setUserData(resData.data);
-      return resData.data;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
-
   // TrackData ==================
   async function getTracks() {
     try {
       const reqData = await fetch(`${baseURL}/track/user/listing`, {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + localUserToken,
+          Authorization: "Bearer " + token,
         },
       });
       const resData = await reqData.json();
@@ -83,7 +54,7 @@ export default function ManageComments() {
         const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + localUserToken,
+            Authorization: "Bearer " + token,
           },
         });
         const resComment = await reqComment.json();
@@ -109,7 +80,7 @@ export default function ManageComments() {
         const reqReaction = await fetch(`${baseURL}/reaction/${trackItem.id}`, {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + localUserToken,
+            Authorization: "Bearer " + token,
           },
         });
         const resReaction = await reqReaction.json();
@@ -127,9 +98,38 @@ export default function ManageComments() {
     }
   }
 
+  useEffect(() => {
+    (async function () {
+      await getAllReaction();
+      // await getUserInfo();
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(trackCommentReaction);
+  // }, [trackCommentReaction]);
+
+  // getUserData ==================
+  // async function getUserInfo() {
+  //   try {
+  //     const reqData = await fetch(`${baseURL}/user/info`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: "Bearer " + token,
+  //       },
+  //     });
+  //     const resData = await reqData.json();
+  //     setUserData(resData.data);
+  //     return resData.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return null;
+  //   }
+  // }
+
   return (
     <>
-      <PrivetHeader loginInfo={userInfo} />
+      <PrivetHeader loginInfo={user} />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
@@ -172,7 +172,7 @@ export default function ManageComments() {
                 />
 
                 <CommentList
-                  currentUser={userData}
+                  currentUser={user}
                   commentsData={filteredTCRData}
                 />
               </ManageCommentsStyled>
