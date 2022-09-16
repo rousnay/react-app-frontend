@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
-import { Container, Grid, Button, TextField } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Button,
+  TextField,
+  Stack,
+  Divider,
+} from "@mui/material";
 import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
@@ -17,16 +24,25 @@ async function userSignUp(payloadData) {
   }).then((data) => data.json());
 }
 
+async function oauthSignUp(provider) {
+  return fetch(`${API_URL}/user/auth/${provider}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((data) => data.json());
+}
+
 const genDeviceToken = (() => {
   return Math.random().toString(36).substring(2, 8);
 })();
 
 export default function EmailSignUp() {
   const navigate = useNavigate();
-  const [token, setToken] = useToken();
+  const [, setToken] = useToken();
   const [, setUser] = useUser();
-  const [email, setEmail] = useState();
   const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
@@ -34,8 +50,8 @@ export default function EmailSignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await userSignUp({
-      email,
       username,
+      email,
       password,
       deviceType,
       deviceToken,
@@ -55,54 +71,24 @@ export default function EmailSignUp() {
     }
   };
 
-  const signUpWithGoogle = async (e) => {
+  const signUpWithOAuth = async (e, provider) => {
     e.preventDefault();
-    async function getGoogle() {
-      return fetch(`${API_URL}/user/auth/google`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((data) => data.json());
-    }
-
-    const response = await getGoogle();
-
+    const response = await oauthSignUp(provider);
+    console.log(provider, response);
     if (response.message === "Success") {
-      swal("Success", "Going for email verification...", "success", {
+      swal("Success", `Signup with ${provider}`, "success", {
         buttons: false,
         timer: 1000,
       }).then((value) => {
-        console.log(response);
         // setToken(response.data.token);
         // setUser(response.data);
-        // navigate("/EmailVerification");
+        // navigate("/UpdateUserInformation");
       });
     } else {
       swal("Failed", response.error, "error");
     }
   };
 
-  useEffect(() => {
-    if (token) {
-      swal("Oops!", "You are already signed in with an account", "info", {
-        buttons: ["Go to dashboard", "Logout"],
-        dangerMode: true,
-      }).then((willLoggedOut) => {
-        if (willLoggedOut) {
-          swal("You have been logged out!", {
-            icon: "success",
-            timer: 1000,
-          }).then((value) => {
-            localStorage.clear();
-            window.location.reload();
-          });
-        } else {
-          navigate("/Dashboard");
-        }
-      });
-    }
-  }, []);
   return (
     <>
       <Container maxWidth="xl" sx={{}}>
@@ -121,22 +107,22 @@ export default function EmailSignUp() {
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
-                  name="email"
-                  label="Email Address"
-                  type="email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="username"
+                  name="username"
+                  label="Username"
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
-                  id="username"
-                  name="username"
-                  label="Username"
-                  type="text"
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  name="email"
+                  label="Email Address"
+                  type="email"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
                   variant="outlined"
@@ -163,16 +149,36 @@ export default function EmailSignUp() {
                 </Button>
               </form>
             </div>
-
-            <Button
-              style={{ marginTop: "50px" }}
-              type="submit"
-              variant="contained"
-              // color="logoGreen"
-              onClick={(e) => signUpWithGoogle(e)}
+            <Stack
+              style={{ marginTop: "50px", justifyContent: "center" }}
+              direction="row"
+              spacing={2}
+              divider={<Divider orientation="vertical" flexItem />}
             >
-              login with google
-            </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="themegreen"
+                onClick={(e) => signUpWithOAuth(e, "google")}
+              >
+                login with Google
+              </Button>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="themeyellow"
+                onClick={(e) => signUpWithOAuth(e, "kakao")}
+              >
+                login with Kakao
+              </Button>
+            </Stack>
+            <p style={{ textAlign: "center", marginTop: "40px" }}>
+              Already have an account?{" "}
+              <Link to="/SignIn">
+                <span style={{ color: "var(--logored)" }}>Sign In</span>
+              </Link>
+            </p>
           </Grid>
 
           <Grid
