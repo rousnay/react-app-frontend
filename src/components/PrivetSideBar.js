@@ -1,27 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Avatar,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  Divider,
-  IconButton,
-  Tooltip,
-  styled,
-} from "@mui/material";
-// import { styled } from "@mui/material/styles";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
-import Logout from "@mui/icons-material/Logout";
+import { Grid, Button, styled } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import LogoSquareWhite from "../assets/logo-square-white.svg";
 
 const ListItem = styled("li")`
   list-style: none;
@@ -55,14 +34,9 @@ export default function PrivetSideBar() {
         md={12}
         sx={{
           height: "calc(100vh - 68px)",
-          // width: "230px",
-          // display: "flex",
           justifyContent: "center",
         }}
       >
-        {/* <Link to="/">
-          <img src={LogoSquareWhite} alt="Logo" />
-        </Link> */}
         <Link to="/CreateTrack">
           <Button
             startIcon={<AddIcon />}
@@ -93,13 +67,10 @@ export default function PrivetSideBar() {
             <Link to="/Dashboard">Dashboard</Link>
           </ListItem>
           <ListItem>
-            <Link to="#">Management</Link>
+            <Link to="/Management/ManageTracks">ManageTracks</Link>
           </ListItem>
           <ListItem>
-            <Link to="#">Statistics</Link>
-          </ListItem>
-          <ListItem>
-            <Link to="#">Customer</Link>
+            <Link to="/Management/ManageComments">ManageComments</Link>
           </ListItem>
         </ul>
       </Grid>

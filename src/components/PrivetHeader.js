@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -11,11 +11,12 @@ import {
   Menu,
   MenuItem,
   Avatar,
-  styled,
 } from "@mui/material";
 import LogoWidthWhite from "../assets/logo-width-white.svg";
 
 export default function PrivetHeader(props) {
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.body.classList.remove("hasPublicHeader");
     document.body.classList.add("hasPrivetHeader");
@@ -24,7 +25,7 @@ export default function PrivetHeader(props) {
   const userData = props.loginInfo;
   let totalBalance = "$99,000";
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,10 +35,10 @@ export default function PrivetHeader(props) {
   };
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/Landing";
+    navigate("/Landing");
   };
   const handleSignIn = () => {
-    window.location.href = "/SignIn";
+    navigate("/SignIn");
   };
 
   let loginButton;
