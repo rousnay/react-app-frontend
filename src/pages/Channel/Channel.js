@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 import {
   Container,
@@ -14,9 +15,8 @@ import Uploader from "../../components/uploader";
 import { ChannelStyles } from "./ChannelStyles";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
 
-const baseURL = "https://api.finutss.com";
 async function createChannel(userToken, payloadData) {
-  return fetch(`${baseURL}/channel`, {
+  return fetch(`${API_URL}/channel`, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + userToken,

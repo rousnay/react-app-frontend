@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 // import axios from "axios";
 import { Container, Grid } from "@mui/material";
@@ -7,8 +8,6 @@ import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import ManageTrackOptions from "./ManageTrackOptions";
 import { ManageTrackStyled } from "./ManagementStyles";
-
-const baseURL = "https://api.finutss.com";
 
 export default function ManageTracks() {
   const [token] = useToken();
@@ -39,7 +38,7 @@ export default function ManageTracks() {
   // TrackData ==================
   async function getTracks() {
     try {
-      const reqData = await fetch(`${baseURL}/track/user/listing`, {
+      const reqData = await fetch(`${API_URL}/track/user/listing`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
@@ -58,7 +57,7 @@ export default function ManageTracks() {
     try {
       const trackAsyncData = await getTracks();
       const commentsPromises = trackAsyncData.map(async (trackItem) => {
-        const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
+        const reqComment = await fetch(`${API_URL}/comment/${trackItem.id}`, {
           method: "GET",
           headers: {
             Authorization: "Bearer " + token,
@@ -100,7 +99,7 @@ export default function ManageTracks() {
   //   //console.log(isChecked);
   //   if (isChecked.length !== 0) {
   //     const responce = await axios.post(
-  //       `http://localhost/devopsdeveloper/user/deletecheckboxuser`,
+  //       `fetch(`${API_URL}/tracks`,
   //       JSON.stringify(isChecked)
   //     );
   //     setDelmsg(responce.data.msg);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
@@ -7,7 +8,7 @@ import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 async function loginUser(credentials) {
-  return fetch("https://api.finutss.com/user/login", {
+  return fetch(`${API_URL}/user/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../../utils/Constants";
 import { useToken } from "../../auth/userAuth";
 import swal from "sweetalert";
 import {
@@ -15,10 +16,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 import TelegramIcon from "@mui/icons-material/Telegram";
 
-const baseURL = "https://api.finutss.com";
-
 async function addNewComment(authToken, payloadData) {
-  return fetch(`${baseURL}/comment`, {
+  return fetch(`${API_URL}/comment`, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + authToken,

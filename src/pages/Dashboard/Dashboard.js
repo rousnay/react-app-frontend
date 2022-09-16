@@ -1,4 +1,5 @@
 // import { useState, useEffect } from "react";
+// import { API_URL } from "../../utils/Constants";
 // import { useToken, useUser } from "../../auth/userAuth";
 import { useUser } from "../../auth/userAuth";
 import { Container, Grid, Card } from "@mui/material";
@@ -13,7 +14,7 @@ export default function Dashboard() {
   // const [userData, setUserData] = useState({});
   // useEffect(() => {
   //   (async function () {
-  //     const response = await fetch("https://api.finutss.com/user/info", {
+  //     const response = await fetch(`${API_URL}/user/info`, {
   //       method: "GET",
   //       headers: {
   //         "Content-Type": "application/json",

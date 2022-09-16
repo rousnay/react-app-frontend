@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
@@ -6,8 +7,6 @@ import PrivetHeader from "../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
 import ManageCommentOptions from "./ManageCommentOptions";
 import CommentList from "./CommentList";
-
-const baseURL = "https://api.finutss.com";
 
 export default function ManageComments() {
   const [token] = useToken();
@@ -32,7 +31,7 @@ export default function ManageComments() {
   // TrackData ==================
   async function getTracks() {
     try {
-      const reqData = await fetch(`${baseURL}/track/user/listing`, {
+      const reqData = await fetch(`${API_URL}/track/user/listing`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + token,
@@ -51,7 +50,7 @@ export default function ManageComments() {
     try {
       const trackAsyncData = await getTracks();
       const commentsPromises = trackAsyncData.map(async (trackItem) => {
-        const reqComment = await fetch(`${baseURL}/comment/${trackItem.id}`, {
+        const reqComment = await fetch(`${API_URL}/comment/${trackItem.id}`, {
           method: "GET",
           headers: {
             Authorization: "Bearer " + token,
@@ -77,7 +76,7 @@ export default function ManageComments() {
     try {
       const trackWithCommentsData = await getAllComments();
       const reactionPromises = trackWithCommentsData.map(async (trackItem) => {
-        const reqReaction = await fetch(`${baseURL}/reaction/${trackItem.id}`, {
+        const reqReaction = await fetch(`${API_URL}/reaction/${trackItem.id}`, {
           method: "GET",
           headers: {
             Authorization: "Bearer " + token,
