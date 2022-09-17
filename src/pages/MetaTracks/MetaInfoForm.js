@@ -1,31 +1,26 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "../../utils/Constants";
+import { useToken } from "../../auth/userAuth";
 import { TextField, Button } from "@mui/material";
 import Uploader from "../../components/uploader";
 import swal from "sweetalert";
 
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserData = JSON.parse(localStorage.getItem("userData"));
-const localUserToken = localStorage.token;
-const localChannelId = localUserData.channelId;
 const localCurrentTrackId = localStorage.currentTrackId;
-const localCurrentTrackName = localStorage.currentTrackName;
 
-const baseURL = "https://api.finutss.com";
-async function addNewPin(payloadData) {
-  return fetch(`${baseURL}/track/${localCurrentTrackId}/pin-point`, {
+async function addNewPin(authToken, payloadData) {
+  return fetch(`${API_URL}/track/${localCurrentTrackId}/pin-point`, {
     method: "POST",
     headers: {
-      // "Content-Type": "multipart/form-data",
-      Authorization: "Bearer " + localUserToken,
+      Authorization: "Bearer " + authToken,
     },
     body: payloadData,
   }).then((data) => data.json());
 }
 
 export default function MetaInfoForm(props) {
-  // ===============================
-  // dynamic input setup STARTs
-  // ===============================
+  const [token] = useToken();
+
+  // Dynamic input setup ==================
   const [formValues, setFormValues] = useState(props.localFormValues);
 
   const newFormSubmit = (pin_id, pin_name, pin_save) => {
@@ -43,10 +38,7 @@ export default function MetaInfoForm(props) {
 
   const foundIndex = formValues.findIndex((x) => x.id === props.pinId);
 
-  // ===============================
-  // dynamic input setup ENDs
-  // ===============================
-
+  // Setting form variables ===================
   useEffect(() => {
     console.log(props.pinName);
     setPinName(props.pinName);
@@ -70,10 +62,10 @@ export default function MetaInfoForm(props) {
 
   const formValueSet = [props.pinId, name, "saved"];
 
+  // MetaInfo (PIN) submission handler  ==================
   const submitMetaInfo = async (e) => {
     e.preventDefault();
-
-    const response = await addNewPin(formData);
+    const response = await addNewPin(token, formData);
     if (response.message === "Success") {
       swal("Success", "Pin has been add", "success", {
         buttons: false,
@@ -95,6 +87,7 @@ export default function MetaInfoForm(props) {
     }
   };
 
+  // Setting PIN files for upload  ==================
   function setPinSoundFile(fileItems) {
     const _pinSoundFileItem = fileItems.map((fileItem) => {
       return fileItem.file;

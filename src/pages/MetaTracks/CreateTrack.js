@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/Constants";
+import { useToken, useUser } from "../../auth/userAuth";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -27,34 +29,20 @@ const initialLineData = {
           [0, 0],
           [0, 0],
         ],
-        type: "Point",
+        type: "LineString",
       },
     },
   ],
 };
 
-const LocalGeoJSONLineData =
-  JSON.parse(localStorage.getItem("geoJSONLineLocal")) || initialLineData;
-
-const LocalLineCentralCoordinate = JSON.parse(
-  localStorage.getItem("centralLineCoordinateLocal")
-) || [0, 0];
-
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserToken = localStorage.token;
-const localChannelId = localStorage.channelId;
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-const baseURL = "https://api.finutss.com";
-
-async function createNewTrack(payloadData) {
+async function createNewTrack(authToken, payloadData) {
   for (const value of payloadData.values()) {
     console.log(value);
   }
-  return fetch(`${baseURL}/track/info`, {
+  return fetch(`${API_URL}/track/info`, {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + localUserToken,
+      Authorization: "Bearer " + authToken,
     },
     body: payloadData,
   }).then((data) => data.json());
@@ -62,67 +50,40 @@ async function createNewTrack(payloadData) {
 
 export default function CreateTrack() {
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!localUserToken) {
-      swal("Oops!", "Please sign in first", "error", {
-        buttons: false,
-        timer: 2000,
-      }).then((value) => {
-        window.location.href = "/SignIn";
-      });
-    }
-    if (!localChannelId) {
-      swal("No channel exist!", "Please create a channel first", "error", {
-        // buttons: false,
-        buttons: ["Back to dashboard", "Create channel"],
-      }).then((createChannel) => {
-        if (createChannel) {
-          navigate("/Channel");
-        } else {
-          navigate("/Dashboard");
-        }
-      });
-    }
-  }, [localUserToken]);
+  const [token] = useToken();
+  const [user] = useUser();
+  const [trackName, setTrackName] = useState(" ");
+  const [geoJSONLine, setGeoJSON] = useState(initialLineData);
+  const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
 
-  const [geoJSONLine, setGeoJSON] = useState(LocalGeoJSONLineData);
-  const [trackName, setTrackName] = useState();
-  const [trackCoordinates, setTrackCoordinates] = useState(
-    LocalGeoJSONLineData.features[0].geometry.coordinates
-  );
-  const [centralLineCoordinate, setCentralCoordinate] = useState(
-    LocalLineCentralCoordinate
-  );
-
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
+  const [name, setName] = useState(" ");
+  const [description, setDescription] = useState(" ");
   const [tags, setTags] = useState([]);
   const [previewImage, setPreviewImage] = useState([]);
   const [type, setType] = useState("loop");
   const [gpxFile, setGpxFile] = useState([]);
 
   var formData = new FormData();
-  formData.append("channelId", localChannelId);
+  formData.append("channelId", user.channelId);
   formData.append("name", name);
   formData.append("description", description);
-  formData.append("tags", ["france"]);
+  formData.append("tags", tags);
   formData.append("previewImage", previewImage[0]);
   formData.append("type", type);
   formData.append("gpxFile", gpxFile[0]);
 
+  // TrackInfo form submission handler  ==================
   const submitTrackInfo = async (e) => {
     e.preventDefault();
-    const response = await createNewTrack(formData);
+    const response = await createNewTrack(token, formData);
 
     if (response.message === "Success") {
       swal("Success", "Track information has been add", "success", {
         buttons: false,
         timer: 1000,
       }).then((value) => {
-        localStorage.removeItem("geoJSONPointLocal");
         localStorage.setItem("currentTrackId", response.data.id);
-        localStorage.setItem("currentTrackName", response.data.name);
-        window.location.href = "/MetaInfo";
+        navigate("/MetaInfo");
       });
     } else {
       swal("Oops!", response.error, "error", {
@@ -131,11 +92,11 @@ export default function CreateTrack() {
     }
   };
 
+  // Setting files for upload  ==================
   function setPreviewImagedata(fileItems) {
     const _previewImageFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
-    //the line below is called twice, I guess this is the reason why it sometimes the server accepts duplicated files
     setPreviewImage(_previewImageFileItem);
   }
 
@@ -147,6 +108,7 @@ export default function CreateTrack() {
     convertToGeoJSON(_gpxFileItem[0]);
   }
 
+  // Convert GPX data to GeoJSON ==================
   const convertToGeoJSON = (gpxPayload) => {
     if (gpxPayload) {
       const fileReader = new FileReader();
@@ -173,32 +135,33 @@ export default function CreateTrack() {
 
         setGeoJSON(geoJSONLineData);
         setTrackName(LineCollectionName);
-        setTrackCoordinates(allLineGeoCoordinates);
         setCentralCoordinate(centralLineCoordinates);
-        localStorage.setItem(
-          "geoJSONLineLocal",
-          JSON.stringify(geoJSONLineData)
-        );
-        localStorage.setItem(
-          "centralLineCoordinateLocal",
-          JSON.stringify(centralLineCoordinates)
-        );
       };
     } else {
+      setTrackName(" ");
       setGeoJSON(initialLineData);
       setCentralCoordinate([0, 0]);
-      localStorage.setItem("geoJSONLineLocal", JSON.stringify(initialLineData));
-      localStorage.setItem(
-        "centralLineCoordinateLocal",
-        JSON.stringify([0, 0])
-      );
     }
   };
 
+  // Checkpoint for channel existence ==================
+  useEffect(() => {
+    if (!user.channelId) {
+      swal("No channel exist!", "Please create a channel first", "error", {
+        buttons: ["Back to dashboard", "Create channel"],
+      }).then((createChannel) => {
+        if (createChannel) {
+          navigate("/Channel");
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
+  }, []);
+
   return (
     <>
-      <PrivetHeader loginInfo={userInfo} />
-
+      <PrivetHeader loginInfo={user} />
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
           container
@@ -249,8 +212,8 @@ export default function CreateTrack() {
                 <h4>GPX Name: {trackName}</h4>
                 <MapGL
                   style={{ width: "100%", height: "500px" }}
-                  mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
-                  accessToken={MAPBOX_ACCESS_TOKEN}
+                  accessToken={MAP_BOX_TOKEN}
+                  mapStyle={MAP_BOX_STYLE}
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
                   zoom={11.5}

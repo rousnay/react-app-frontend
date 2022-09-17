@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/Constants";
+import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid, Stack, Button } from "@mui/material";
 import MapGL, {
   Source,
@@ -7,11 +9,11 @@ import MapGL, {
   Marker,
   NavigationControl,
 } from "@urbica/react-map-gl";
+import toGeoJson from "@mapbox/togeojson";
 import Draw from "@urbica/react-map-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
-import swal from "sweetalert";
 import { LayerStyle1 } from "./LayerStyle";
 import { MetaInfoFormStyled } from "./MetaTracksStyles";
 import PrivetSideBar from "../../components/PrivetSideBar";
@@ -22,23 +24,9 @@ import MetaInfoPinPoint from "./MetaInfoPinPoint";
 import MetaInfoForm from "./MetaInfoForm";
 
 import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
+//const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
 
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserData = JSON.parse(localStorage.getItem("userData"));
 const localCurrentTrackId = localStorage.currentTrackId;
-const localCurrentTrackName = localStorage.currentTrackName;
-
-const localGeoJSONLineData = JSON.parse(
-  localStorage.getItem("geoJSONLineLocal")
-);
-const localLineCentralCoordinate = JSON.parse(
-  localStorage.getItem("centralLineCoordinateLocal")
-);
-
-const GeoCoordinates = localGeoJSONLineData.features[0].geometry.coordinates;
-const theMiddle = Math.floor(GeoCoordinates.length / 2);
-const theMiddleCoordinates = GeoCoordinates[theMiddle];
-var line = turf.lineString(GeoCoordinates);
 
 var initialPinId = (len, bits) => {
   bits = bits || 36;
@@ -51,7 +39,7 @@ var initialPinId = (len, bits) => {
   return outStr;
 };
 
-const initialFeatureCollection = {
+const initialPointCollection = {
   type: "FeatureCollection",
   features: [
     {
@@ -59,54 +47,116 @@ const initialFeatureCollection = {
       type: "Feature",
       properties: {},
       geometry: {
-        coordinates: GeoCoordinates[0],
+        coordinates: [0, 0],
         type: "Point",
       },
     },
   ],
 };
 
-const localGeoJSONPointData =
-  JSON.parse(localStorage.getItem("geoJSONPointLocal")) ||
-  initialFeatureCollection;
-
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-
 export default function MetaInfo() {
-  const navigate = useNavigate();
   useEffect(() => {
     if (!localCurrentTrackId) {
       navigate("/CreateTrack");
     }
   });
 
-  const initialFormValues = [
-    {
-      id: "",
-      name: "",
-      save: "not_saved",
+  // Initialization ==================
+  const navigate = useNavigate();
+  const [token] = useToken();
+  const [user] = useUser();
+  const [trackInfoData, setTrackInfoData] = useState({});
+  const [geoJSONLine, setGeoJSONLine] = useState([]);
+  const [geoJSONPoint, setGeoJSONPoint] = useState(initialPointCollection);
+  const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
+  const [line, setLine] = useState({
+    type: "Feature",
+    properties: {},
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [0, 0],
+        [0, 0],
+      ],
     },
-  ];
+  });
 
-  const initialFormValuesLocal =
-    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
+  /******************************************/
+  //  Get Track Data from API
+  /******************************************/
+  // GET TrackInfo ==================
+  async function getTrackInfo() {
+    try {
+      const reqData = await fetch(
+        `${API_URL}/track/${localCurrentTrackId}/info`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      const resData = await reqData.json();
+      setTrackInfoData(resData.data);
+      return resData.data.rawGpx;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
-  const [geoJSONLine, setGeoJSONLine] = useState(localGeoJSONLineData);
-  const [geoJSONPoint, setGeoJSONPoint] = useState(localGeoJSONPointData);
+  // GET Converted GeoJSON data ==================
+  async function convertToGeoJSON() {
+    const trackAsyncGpx = await getTrackInfo();
+    var geoJSONLineData = await toGeoJson.gpx(
+      new DOMParser().parseFromString(trackAsyncGpx, "text/xml")
+    );
+    console.log(geoJSONLineData);
+    return geoJSONLineData;
+  }
 
+  // GET CentralCoordinate ==================
+  async function centralCoordinate() {
+    const trackAsyncGeoJson = await convertToGeoJSON();
+    const allLineGeoCoordinates =
+      trackAsyncGeoJson.features[0]?.geometry.coordinates;
+    const turfLine = await turf.lineString(allLineGeoCoordinates);
+    const createInitialPoint = {
+      type: "FeatureCollection",
+      features: [
+        {
+          id: initialPinId(32),
+          type: "Feature",
+          properties: {},
+          geometry: {
+            coordinates: allLineGeoCoordinates[0],
+            type: "Point",
+          },
+        },
+      ],
+    };
+    const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
+    const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
+    const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
+
+    setLine(turfLine);
+    setGeoJSONPoint(createInitialPoint);
+    return centralLineCoordinates;
+  }
+
+  // Get TrackInfo Data ==================
   useEffect(() => {
-    localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
-    setPinFeature(JSON.stringify(geoJSONPoint));
-    setPinId(geoJSONPoint.features[0].id);
-    setPinLon(geoJSONPoint.features[0].geometry.coordinates[0]);
-    setPinLat(geoJSONPoint.features[0].geometry.coordinates[1]);
-  }, [geoJSONPoint]);
+    (async function () {
+      const geoJSONData = await convertToGeoJSON();
+      const centralCoordinates = await centralCoordinate();
+      setGeoJSONLine(geoJSONData);
+      setCentralCoordinate(centralCoordinates);
+    })();
+  }, []);
 
-  // const dataReset = () => {
-  //   setGeoJSONPoint(initialFeatureCollection);
-  // };
-
+  /******************************************/
+  //  Drawing mode manipulation
+  /******************************************/
   const [mode, setMode] = useState("simple_select");
   const [currentMode, setCurrentMode] = useState("draw_point");
   const prevMode = useRef(mode);
@@ -123,6 +173,9 @@ export default function MetaInfo() {
     })();
   }, [mode]);
 
+  /******************************************/
+  //  Form value of with dynamic PIN info
+  /******************************************/
   const [pinId, setPinId] = useState("");
   const [pinName, setPinName2] = useState("");
   const [pinLon, setPinLon] = useState("");
@@ -131,23 +184,41 @@ export default function MetaInfo() {
   const [pinFeature, setPinFeature] = useState({});
 
   const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
-  const [newCollection, setNewCollection] = useState(initialFeatureCollection);
+  const [newCollection, setNewCollection] = useState([initialPointCollection]);
   const [newFeatures, setNewFeatures] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
+    setPinFeature(JSON.stringify(geoJSONPoint));
+    setPinId(geoJSONPoint.features[0].id);
+    setPinLon(geoJSONPoint.features[0].geometry.coordinates[0]);
+    setPinLat(geoJSONPoint.features[0].geometry.coordinates[1]);
+  }, [geoJSONPoint]);
 
   useEffect(() => {
     const turfFeaturesCollection = turf.featureCollection([...newFeatures]);
     setNewCollection(turfFeaturesCollection);
   }, [newFeatures]);
 
-  useEffect(() => {
-    // console.log(newCollection);
-  }, [newCollection]);
-
   const formVisibility = {
     opacity: selectedPinIndex + 1 < 1 ? 0.3 : 1,
     pointerEvents: selectedPinIndex + 1 < 1 ? "none" : "initial",
   };
 
+  const initialFormValues = [
+    {
+      id: "",
+      name: "",
+      save: "not_saved",
+    },
+  ];
+
+  const initialFormValuesLocal =
+    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
+
+  /******************************************/
+  //  Marker Click Handler
+  /******************************************/
   const getPointId = (pin, geoJson) => {
     return geoJson.features[pin].id;
   };
@@ -160,6 +231,7 @@ export default function MetaInfo() {
     document.querySelector(`.pin-number-${pin}`).classList.add("selected-pin");
   };
 
+  // markerClickHandler function ==================
   const markerClickHandler = (event, pinIndex) => {
     const updatedLocalGeo = JSON.parse(
       localStorage.getItem("geoJSONPointLocal")
@@ -178,7 +250,7 @@ export default function MetaInfo() {
       updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
     );
 
-    // set form values ==================
+    // set Metadata form values ==================
     setSelectedPinIndex(pinIndex);
     setPinId(pinId);
     setPinName2(
@@ -231,6 +303,9 @@ export default function MetaInfo() {
     event.stopPropagation();
   };
 
+  /******************************************/
+  //  Painting map Marker
+  /******************************************/
   const currentCoordinates = geoJSONPoint.features.map(
     (features) => features.geometry.coordinates
   );
@@ -241,8 +316,6 @@ export default function MetaInfo() {
       longitude={lngLat[0]}
       latitude={lngLat[1]}
       onClick={(e) => markerClickHandler(e, index)}
-      // draggable
-      // onDragEnd={onDragEnd}
     >
       <MetaInfoPinPoint ids={index + 1} />
     </Marker>
@@ -250,7 +323,7 @@ export default function MetaInfo() {
 
   return (
     <>
-      <PrivetHeader loginInfo={userInfo} />
+      <PrivetHeader loginInfo={user} />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
@@ -277,14 +350,13 @@ export default function MetaInfo() {
           <MetaInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
-                <h4>Track Name: {localCurrentTrackName}</h4>
-
+                <h4>Track Name: {trackInfoData.name}</h4>
                 <MapGL
                   style={{ width: "100%", height: "500px" }}
-                  mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
-                  accessToken={MAPBOX_ACCESS_TOKEN}
-                  longitude={localLineCentralCoordinate[0]}
-                  latitude={localLineCentralCoordinate[1]}
+                  mapStyle={MAP_BOX_STYLE}
+                  accessToken={MAP_BOX_TOKEN}
+                  longitude={centralLineCoordinate[0]}
+                  latitude={centralLineCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
                   zoom={11.7}
                 >

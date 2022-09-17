@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/Constants";
+import { useToken, useUser } from "../../auth/userAuth";
 import MapGL, {
   Source,
   Layer,
   Marker,
   NavigationControl,
 } from "@urbica/react-map-gl";
-import * as turf from "@turf/turf";
 import toGeoJson from "@mapbox/togeojson";
+import * as turf from "@turf/turf";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Container, Grid, Stack } from "@mui/material";
@@ -21,34 +23,32 @@ import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
 
-const userInfo = JSON.parse(localStorage.getItem("userData")) || null;
-const localUserToken = localStorage.token;
 const localCurrentTrackId = localStorage.currentTrackId;
-//"9472a6ce-cd91-4828-8a66-91b3e7b30c1d";
-const initialLineData = {
+// const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
+// const localCurrentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
+const initialLineCollection = {
   type: "FeatureCollection",
   features: [
     {
-      id: "Initial_pin_ID",
+      id: "Initial_LineString_ID",
       type: "Feature",
       properties: {},
       geometry: {
+        type: "LineString",
         coordinates: [
           [0, 0],
           [0, 0],
         ],
-        type: "Point",
       },
     },
   ],
 };
 
-const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiZmludXRzcyIsImEiOiJja3BvdjJwdWYwcHQ3Mm9udXo4M3Nod3YzIn0.OMVZjImaogKth_ApsJTlNg";
-const baseURL = "https://api.finutss.com";
-
 export default function TrackReview() {
   const navigate = useNavigate();
+  const [token] = useToken();
+  const [user] = useUser();
+
   useEffect(() => {
     if (!localCurrentTrackId) navigate("/CreateTrack");
   });
@@ -56,23 +56,28 @@ export default function TrackReview() {
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
   const [privacy, setPrivacy] = useState("");
-  const [geoJSONLine, setGeoJSON] = useState(initialLineData);
-  const [pointFeatures, setPointFeatures] = useState([]);
+  const [geoJSONLine, setGeoJSONLine] = useState(initialLineCollection);
+  const [geoJSONPoint, setGeoJSONPoint] = useState([]);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
+  const [line, setLine] = useState([0, 0]);
 
+  useEffect(() => {
+    console.log(line);
+  }, [line]);
   // GET TrackInfo ==================
   async function getTrackInfo() {
     try {
       const reqData = await fetch(
-        `${baseURL}/track/${localCurrentTrackId}/info`,
+        `${API_URL}/track/${localCurrentTrackId}/info`,
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + localUserToken,
+            Authorization: "Bearer " + token,
           },
         }
       );
       const resData = await reqData.json();
+      // console.log(resData.data.rawGpx);
       return resData.data;
     } catch (error) {
       console.log(error);
@@ -87,14 +92,18 @@ export default function TrackReview() {
     var geoJSONLineData = toGeoJson.gpx(
       new DOMParser().parseFromString(trackAsyncGpx, "text/xml")
     );
+    console.log(geoJSONLineData);
     return geoJSONLineData;
   }
 
   // GET CentralCoordinate ==================
   async function centralCoordinate() {
     const trackAsyncGeoJson = await convertToGeoJSON();
+    console.log(trackAsyncGeoJson);
     const allLineGeoCoordinates =
-      trackAsyncGeoJson.features[0].geometry.coordinates;
+      trackAsyncGeoJson.features[0]?.geometry.coordinates;
+    const turfLine = await turf.lineString(allLineGeoCoordinates);
+    setLine(turfLine);
     const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
     const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
     const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
@@ -117,9 +126,10 @@ export default function TrackReview() {
         },
         geometry: { type: "Point", coordinates: featuresCoords },
       };
+      console.log(featureAdd);
       return featureAdd;
     });
-    setPointFeatures(featureArray.reverse());
+    setGeoJSONPoint(featureArray.reverse());
   };
 
   // Get TrackInfo Data ==================
@@ -127,9 +137,10 @@ export default function TrackReview() {
     (async function () {
       const trackData = await getTrackInfo();
       const geoJSONData = await convertToGeoJSON();
+      console.log(geoJSONData);
       const centralCoordinates = await centralCoordinate();
       setTrackInfoData(trackData);
-      setGeoJSON(geoJSONData);
+      setGeoJSONLine(geoJSONData);
       setCentralCoordinate(centralCoordinates);
       setPrivacy(trackData.privacy);
       setTrackingTags(trackData.tags.split(","));
@@ -138,26 +149,19 @@ export default function TrackReview() {
   }, []);
 
   // Painting map Marker ==================
-  const currentCoordinates = pointFeatures.map(
+  const currentCoordinates = geoJSONPoint.map(
     (features) => features.geometry.coordinates
   );
 
   const pointMarkerFromApi = currentCoordinates.map((lngLat, index) => (
-    <Marker
-      key={index}
-      longitude={lngLat[0]}
-      latitude={lngLat[1]}
-      // onClick={(e) => markerClickHandler(e, index)}
-      // draggable
-      // onDragEnd={onDragEnd}
-    >
-      <TrackReviewPinPoint ids={index + 1} pinData={pointFeatures[index]} />
+    <Marker key={index} longitude={lngLat[0]} latitude={lngLat[1]}>
+      <TrackReviewPinPoint ids={index + 1} pinData={geoJSONPoint[index]} />
     </Marker>
   ));
 
   return (
     <>
-      <PrivetHeader loginInfo={userInfo} />
+      <PrivetHeader loginInfo={user} />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
@@ -187,8 +191,8 @@ export default function TrackReview() {
 
                 <MapGL
                   style={{ width: "100%", height: "500px" }}
-                  mapStyle="mapbox://styles/finutss/ckx8kko1c51of14obluquad77"
-                  accessToken={MAPBOX_ACCESS_TOKEN}
+                  mapStyle={MAP_BOX_STYLE}
+                  accessToken={MAP_BOX_TOKEN}
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
                   zoom={11.8}
@@ -204,7 +208,7 @@ export default function TrackReview() {
                 <h3>Pins</h3>
               </Stack>
               <div className="pin_list">
-                <TrackReviewPinList data={pointFeatures} />
+                <TrackReviewPinList data={geoJSONPoint} />
               </div>
             </Grid>
 

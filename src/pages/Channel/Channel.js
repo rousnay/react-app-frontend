@@ -15,11 +15,11 @@ import Uploader from "../../components/uploader";
 import { ChannelStyles } from "./ChannelStyles";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
 
-async function createChannel(userToken, payloadData) {
+async function createChannel(authToken, payloadData) {
   return fetch(`${API_URL}/channel`, {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + userToken,
+      Authorization: "Bearer " + authToken,
     },
     body: payloadData,
   }).then((data) => data.json());
