@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { API_URL } from "../../utils/Constants";
+import { useToken } from "../../auth/userAuth";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import {
@@ -11,11 +13,9 @@ import {
   Button,
 } from "@mui/material";
 
-const localUserToken = localStorage.token;
-const baseURL = "https://api.finutss.com";
-
 export default function TrackReviewController(props) {
   const navigate = useNavigate();
+  const [token] = useToken();
   const [trackId, setTrackId] = useState("");
   const [privacy, setPrivacy] = useState("");
 
@@ -36,10 +36,10 @@ export default function TrackReviewController(props) {
   // ===============================
   async function updateTrackInfo(payloadData) {
     try {
-      const reqData = await fetch(`${baseURL}/track/${trackId}`, {
+      const reqData = await fetch(`${API_URL}/track/${trackId}`, {
         method: "PUT",
         headers: {
-          Authorization: "Bearer " + localUserToken,
+          Authorization: "Bearer " + token,
         },
         body: payloadData,
       });

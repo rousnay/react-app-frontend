@@ -2,14 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { TrackCreationNavStyled } from "./MetaTracksStyles";
 
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Grid } from "@mui/material";
 
 export default function TrackCreationNav() {
   return (

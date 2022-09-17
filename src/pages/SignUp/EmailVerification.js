@@ -46,7 +46,6 @@ export default function EmailVerification() {
   useEffect(() => {
     if (!user) {
       swal("Oops!", "Please sign up with an email first", "error", {
-        buttons: true,
         buttons: ["Back to the home page", "Sing Up"],
       }).then((willSingUp) => {
         if (willSingUp) {

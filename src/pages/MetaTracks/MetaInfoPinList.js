@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function MetaInfoPinList(props) {
   const updatedformValuesLocal =
     JSON.parse(localStorage.getItem("formValuesLocal")) ||

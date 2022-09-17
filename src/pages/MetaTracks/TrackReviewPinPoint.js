@@ -1,15 +1,6 @@
-import React from "react";
 import swal from "sweetalert";
-// const pointStyle = {
-//   hight: "25px",
-//   width: "25px",
-//   background: "red",
-//   border: "2px solid #eee"
-// };
 
 export default function TrackReviewPinPoint(props) {
-  // const { ids, size = 20, onClick } = this.props;
-
   const pinOnClick = (e, data) => {
     e.preventDefault();
     swal({

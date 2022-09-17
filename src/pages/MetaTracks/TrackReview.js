@@ -45,14 +45,13 @@ const initialLineCollection = {
 };
 
 export default function TrackReview() {
-  const navigate = useNavigate();
-  const [token] = useToken();
-  const [user] = useUser();
-
   useEffect(() => {
     if (!localCurrentTrackId) navigate("/CreateTrack");
   });
 
+  const navigate = useNavigate();
+  const [token] = useToken();
+  const [user] = useUser();
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
   const [privacy, setPrivacy] = useState("");

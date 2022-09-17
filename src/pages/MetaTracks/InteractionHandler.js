@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
 import * as turf from "@turf/turf";
 import swal from "sweetalert";
 
 export const onMapClick = (event, line, currentMode) => {
-  // console.log(currentMode);
   let NewSelectedPoint = [event.lngLat.lng, event.lngLat.lat];
   let theDistance = JSON.stringify(
     turf.pointToLineDistance(NewSelectedPoint, line, { units: "meters" })
@@ -36,8 +34,8 @@ export const onDataChange = (data, line, setData) => {
   }
 };
 
-const onMarkerClick = (event, lngLat) => {
-  event.stopPropagation();
-  let currentPoint = JSON.stringify(lngLat);
-  swal("Coordinates", currentPoint, "info");
-};
+// const onMarkerClick = (event, lngLat) => {
+//   event.stopPropagation();
+//   let currentPoint = JSON.stringify(lngLat);
+//   swal("Coordinates", currentPoint, "info");
+// };

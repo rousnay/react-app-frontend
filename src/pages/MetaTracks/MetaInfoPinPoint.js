@@ -1,12 +1,3 @@
-import React from "react";
-
-// const pointStyle = {
-//   hight: "25px",
-//   width: "25px",
-//   background: "red",
-//   border: "2px solid #eee"
-// };
-
 export default function MetaInfoPinPoint(props) {
   // const { ids, size = 20, onClick } = this.props;
   return (
