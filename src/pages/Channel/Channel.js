@@ -9,6 +9,7 @@ import {
   Typography,
   TextField,
   Button,
+  Stack,
 } from "@mui/material";
 import swal from "sweetalert";
 import Uploader from "../../components/uploader";
@@ -97,24 +98,26 @@ export default function Channel() {
       <Container maxWidth="xl" sx={{}}>
         <Grid container sx={{ marginTop: "30px" }}>
           <ChannelStyles>
-            <Grid item sm={12} md={6}>
-              <Box sm={6} sx={{ flexGrow: 1 }}>
-                <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
-                  Channel Information
-                </Typography>
-                <p>
-                  Please enter information about your channel. Most of the
-                  channel information can be re-edited at any time. If the image
-                  is not set, it is exposed as the default.
-                </p>
-              </Box>
-            </Grid>
+            <Stack direction="row" spacing={2}>
+              <Grid item sm={12} md={6}>
+                <Box sm={6} sx={{ flexGrow: 1 }}>
+                  <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
+                    Channel Information
+                  </Typography>
+                  <p>
+                    Please enter information about your channel. Most of the
+                    channel information can be re-edited at any time. If the
+                    image is not set, it is exposed as the default.
+                  </p>
+                </Box>
+              </Grid>
 
-            <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
-              <Link to="/" style={{ height: "fit-content" }}>
-                <img src={LogoSquareBlack} alt="Logo" />
-              </Link>
-            </Grid>
+              <Grid item sm={12} md={6} sx={{ textAlign: "right" }}>
+                <Link to="/" style={{ height: "fit-content" }}>
+                  <img src={LogoSquareBlack} alt="Logo" />
+                </Link>
+              </Grid>
+            </Stack>
             <form
               style={{ width: "100%" }}
               noValidate
