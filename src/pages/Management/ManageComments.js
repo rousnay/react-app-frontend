@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 import { Container, Grid } from "@mui/material";
+import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
@@ -9,6 +11,7 @@ import ManageCommentOptions from "./ManageCommentOptions";
 import CommentList from "./CommentList";
 
 export default function ManageComments() {
+  const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
 
@@ -102,6 +105,20 @@ export default function ManageComments() {
       await getAllReaction();
       // await getUserInfo();
     })();
+  }, []);
+
+  useEffect(() => {
+    if (!user.channelId || !localStorage.channelId) {
+      swal("No channel exist!", "Please create a channel first", "error", {
+        buttons: ["Back to dashboard", "Create channel"],
+      }).then((createChannel) => {
+        if (createChannel) {
+          navigate("/Channel");
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
   }, []);
 
   // useEffect(() => {

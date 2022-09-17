@@ -28,7 +28,7 @@ async function createChannel(authToken, payloadData) {
 export default function Channel() {
   const navigate = useNavigate();
   const [token] = useToken();
-  const [user, setUser] = useUser();
+  const [user] = useUser();
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -48,7 +48,7 @@ export default function Channel() {
     console.log(response);
 
     if (response.message === "Success") {
-      setUser(response.data);
+      localStorage.setItem("channelId", response.data.id);
       swal("Success", "Channel has been created", "success", {
         buttons: ["Back to dashboard", "Create MetaTrack"],
       }).then((createChannel) => {

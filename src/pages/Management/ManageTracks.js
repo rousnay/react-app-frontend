@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 // import axios from "axios";
@@ -10,6 +11,7 @@ import ManageTrackOptions from "./ManageTrackOptions";
 import { ManageTrackStyled } from "./ManagementStyles";
 
 export default function ManageTracks() {
+  const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
 
@@ -93,6 +95,20 @@ export default function ManageTracks() {
       setisChecked(isChecked.filter((e) => e !== value));
     }
   };
+
+  useEffect(() => {
+    if (!user.channelId || !localStorage.channelId) {
+      swal("No channel exist!", "Please create a channel first", "error", {
+        buttons: ["Back to dashboard", "Create channel"],
+      }).then((createChannel) => {
+        if (createChannel) {
+          navigate("/Channel");
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
+  }, []);
 
   // delete Track ==================
   // const alldelete = async () => {
