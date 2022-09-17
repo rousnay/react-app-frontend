@@ -45,10 +45,9 @@ export default function Channel() {
     e.preventDefault();
 
     const response = await createChannel(token, formData);
-    console.log(response);
-
     if (response.message === "Success") {
       localStorage.setItem("channelId", response.data.id);
+      console.log(response.data.id);
       swal("Success", "Channel has been created", "success", {
         buttons: ["Back to dashboard", "Create MetaTrack"],
       }).then((createChannel) => {

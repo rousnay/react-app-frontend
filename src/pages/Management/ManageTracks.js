@@ -4,7 +4,7 @@ import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
 // import axios from "axios";
 import { Container, Grid } from "@mui/material";
-
+import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import ManageTrackOptions from "./ManageTrackOptions";
@@ -97,7 +97,7 @@ export default function ManageTracks() {
   };
 
   useEffect(() => {
-    if (!user.channelId || !localStorage.channelId) {
+    if (!user.channelId && !localStorage.channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {

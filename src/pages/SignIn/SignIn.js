@@ -76,7 +76,7 @@ export default function SignIn() {
     } else if (response.statusCode === 400) {
       swal("Failed", response.message[0], "error");
     } else {
-      swal("Failed", response.message, "error");
+      swal("Failed", response.error, "error");
       console.log(token);
     }
   };

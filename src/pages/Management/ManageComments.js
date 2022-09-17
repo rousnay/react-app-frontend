@@ -108,7 +108,7 @@ export default function ManageComments() {
   }, []);
 
   useEffect(() => {
-    if (!user.channelId || !localStorage.channelId) {
+    if (!user.channelId && !localStorage.channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {

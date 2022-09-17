@@ -146,7 +146,7 @@ export default function CreateTrack() {
 
   // Checkpoint for channel existence ==================
   useEffect(() => {
-    if (!user.channelId || !localStorage.channelId) {
+    if (!user.channelId && !localStorage.channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {
