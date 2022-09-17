@@ -5,6 +5,7 @@ import { PrivateRoutes } from "./auth/PrivateRoutes";
 const Home = lazy(() => import("./pages/Home/Home"));
 const Landing = lazy(() => import("./pages/Home/Landing"));
 const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
+const Callback = lazy(() => import("./auth/Callback"));
 const SignUp = lazy(() => import("./pages/SignUp/SignUp"));
 const EmailSignUp = lazy(() => import("./pages/SignUp/EmailSignUp"));
 const EmailVerification = lazy(() =>
@@ -30,6 +31,7 @@ export const Router = () => {
           <Route path="/" element={<Home />} exact />
           <Route path="/Landing" element={<Landing />} />
           <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/auth/Callback" element={<Callback />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/EmailSignUp" element={<EmailSignUp />} />
           <Route path="/EmailVerification" element={<EmailVerification />} />
