@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/Constants";
 import { useToken, useUser } from "../../auth/userAuth";
+// import { useQueryParams } from "../../utils/useQueryParams";
 import {
   Container,
   Grid,
@@ -24,14 +25,14 @@ async function userSignUp(payloadData) {
   }).then((data) => data.json());
 }
 
-async function oauthSignUp(provider) {
-  return fetch(`${API_URL}/user/auth/${provider}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((data) => data.json());
-}
+// async function oauthSignUp(provider) {
+//   return fetch(`${API_URL}/user/auth/${provider}`, {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   }).then((data) => data.json());
+// }
 
 const genDeviceToken = (() => {
   return Math.random().toString(36).substring(2, 8);
@@ -71,23 +72,23 @@ export default function EmailSignUp() {
     }
   };
 
-  const signUpWithOAuth = async (e, provider) => {
-    e.preventDefault();
-    const response = await oauthSignUp(provider);
-    console.log(provider, response);
-    if (response.message === "Success") {
-      swal("Success", `Signup with ${provider}`, "success", {
-        buttons: false,
-        timer: 1000,
-      }).then((value) => {
-        // setToken(response.data.token);
-        // setUser(response.data);
-        // navigate("/UpdateUserInformation");
-      });
-    } else {
-      swal("Failed", response.error, "error");
-    }
-  };
+  // const signUpWithOAuth = async (e, provider) => {
+  //   e.preventDefault();
+  //   const response = await oauthSignUp(provider);
+  //   console.log(provider, response);
+  //   if (response.message === "Success") {
+  //     swal("Success", `Signup with ${provider}`, "success", {
+  //       buttons: false,
+  //       timer: 1000,
+  //     }).then((value) => {
+  //       setToken(response.data.token);
+  //       setUser(response.data);
+  //       navigate("/UpdateUserInformation");
+  //     });
+  //   } else {
+  //     swal("Failed", response.error, "error");
+  //   }
+  // };
 
   return (
     <>
@@ -159,7 +160,10 @@ export default function EmailSignUp() {
                 type="submit"
                 variant="contained"
                 color="themegreen"
-                onClick={(e) => signUpWithOAuth(e, "google")}
+                // onClick={(e) => signUpWithOAuth(e, "google")}
+                onClick={() => {
+                  window.location.href = `${API_URL}/user/auth/google`;
+                }}
               >
                 login with Google
               </Button>
@@ -168,7 +172,10 @@ export default function EmailSignUp() {
                 type="submit"
                 variant="contained"
                 color="themeyellow"
-                onClick={(e) => signUpWithOAuth(e, "kakao")}
+                // onClick={(e) => signUpWithOAuth(e, "kakao")}
+                onClick={() => {
+                  window.location.href = `${API_URL}/user/auth/kakao`;
+                }}
               >
                 login with Kakao
               </Button>

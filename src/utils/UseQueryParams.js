@@ -21,7 +21,7 @@ const fold = (arr) =>
     };
   }, {});
 
-export const UseQueryParams = () => {
+export const useQueryParams = () => {
   const location = useLocation();
   const currentParamsObj = new URLSearchParams(location.search);
   const params = fold([...currentParamsObj.entries()]);
