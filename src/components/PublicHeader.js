@@ -44,7 +44,7 @@ export default function PublicHeader() {
       <Container maxWidth="100%">
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
           <Grid item xs={12} md={4}>
-            <Link to="/">
+            <Link to="/Home">
               <img src={logo} alt="Logo" />
             </Link>
           </Grid>
@@ -58,7 +58,7 @@ export default function PublicHeader() {
               }}
             >
               <MenuItem>
-                <Link to="/">Home</Link>
+                <Link to="/">Landing Page</Link>
               </MenuItem>
               <MenuItem>
                 <Link to="#">Meta Tracks</Link>

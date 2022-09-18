@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/Constants";
-import { useToken, useUser } from "../../auth/userAuth";
+import { API_URL } from "../../../utils/CONSTANTS";
+import { useToken, useUser } from "../../../auth/userAuth";
 // import axios from "axios";
 import { Container, Grid } from "@mui/material";
 import swal from "sweetalert";
-import PrivetSideBar from "../../components/PrivetSideBar";
-import PrivetHeader from "../../components/PrivetHeader";
+import PrivetSideBar from "../../../components/PrivetSideBar";
+import PrivetHeader from "../../../components/PrivetHeader";
 import ManageTrackOptions from "./ManageTrackOptions";
 import { ManageTrackStyled } from "./ManagementStyles";
 

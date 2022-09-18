@@ -61,16 +61,16 @@ export default function PrivetSideBar() {
           }}
         >
           <ListItem>
-            <Link to="/">Home Page</Link>
+            <Link to="/Home">Home Page</Link>
           </ListItem>
           <ListItem>
             <Link to="/Dashboard">Dashboard</Link>
           </ListItem>
           <ListItem>
-            <Link to="/Management/ManageTracks">ManageTracks</Link>
+            <Link to="/Management/Tracks">Manage Tracks</Link>
           </ListItem>
           <ListItem>
-            <Link to="/Management/ManageComments">ManageComments</Link>
+            <Link to="/Management/Comments">Manage Comments</Link>
           </ListItem>
         </ul>
       </Grid>

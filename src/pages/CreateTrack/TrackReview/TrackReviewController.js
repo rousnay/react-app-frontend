@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { API_URL } from "../../utils/Constants";
-import { useToken } from "../../auth/userAuth";
+import { API_URL } from "../../../utils/CONSTANTS";
+import { useToken } from "../../../auth/userAuth";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import {
@@ -68,7 +68,7 @@ export default function TrackReviewController(props) {
           localStorage.removeItem("geoJSONPointLocal");
           localStorage.removeItem("geoJSONLineLocal");
           localStorage.removeItem("centralLineCoordinateLocal");
-          navigate("/Management/ManageTracks");
+          navigate("/Management/Tracks");
         }
       });
     } else {

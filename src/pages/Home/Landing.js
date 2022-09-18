@@ -1,71 +1,81 @@
 import { Link } from "react-router-dom";
-import { Container, Grid, Button, Typography, styled } from "@mui/material";
+import { Container, Grid, styled } from "@mui/material";
 import PublicHeader from "../../components/PublicHeader";
-import LandingBgImage from "../../assets/landing-bg-black.jpg";
-import LogoSquareWhite from "../../assets/logo-square-white.png";
-import AppPreview from "../../assets/app-preview.png";
+import Colors from "../../components/Colors";
+import logo from "../../assets/logo.svg";
 
-const LandingContainer = styled("div")`
-  background-image: url(${LandingBgImage});
-  height: 100%;
-  width: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+const ListItem = styled("li")`
+  list-style: none;
+  margin: 8px 4px;
+  & > a {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    color: white;
+    background-color: var(--logoblack);
+    text-decoration: none;
+    &:hover {
+      background-color: var(--logored);
+      color: white;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    // background-color: lightblue;
+  }
 `;
 
 export default function Landing() {
   return (
     <>
       <PublicHeader />
-      <LandingContainer>
-        <Container maxWidth="xl" sx={{}}>
-          <Grid container>
-            <Grid item sm={12} md={6} sx={{ padding: `100px 0` }}>
-              <img src={LogoSquareWhite} alt="Logo" />
-              <Typography
-                variant="h4"
-                sx={{
-                  color: "white",
-                  fontWeight: 500,
-                  padding: `50px`,
-                  paddingLeft: `0px`,
-                  lineHeight: "1.5em",
+      <Container>
+        <Grid container className="App">
+          <Grid item xs={12}>
+            <img src={logo} className="App-logo" alt="logo" />
+            <h3 style={{ marginTop: "50px" }}>Finutss Color Palette</h3>
+            <Colors />
+
+            <h3 style={{ marginTop: "50px" }}>Working Pages</h3>
+
+            <Grid item xs={12}>
+              <ul
+                style={{
+                  display: "flex",
+                  padding: 0,
+                  justifyContent: "center",
+                  flexWrap: "wrap",
                 }}
               >
-                Anyone can create their own Path & become a <br />{" "}
-                <span style={{ color: `var(--logored)`, fontWeight: 700 }}>
-                  CREATOR
-                </span>
-              </Typography>
-              <Link to="/SignUp">
-                <Button variant="contained" size="large" color="logoblue">
-                  GET STARTED
-                </Button>
-              </Link>
-            </Grid>
-
-            <Grid
-              item
-              sm={12}
-              md={6}
-              sx={{
-                height: "calc(100vh - 78px)",
-                display: "flex",
-                justifyContent: "right",
-              }}
-            >
-              <img
-                style={{
-                  alignSelf: "flex-end",
-                }}
-                src={AppPreview}
-                alt="App Preview"
-              />
+                <ListItem>
+                  <Link to="/Home">Home</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/SignUp">Sign Up</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/SignIn">Sing In</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/Dashboard">Dashboard</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/Channel">Channel</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="/CreateTrack">Create Track</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="Management/Tracks">Manage Tracks</Link>
+                </ListItem>
+                <ListItem>
+                  <Link to="Management/Comments">Manage Comments</Link>
+                </ListItem>
+              </ul>
             </Grid>
           </Grid>
-        </Container>
-      </LandingContainer>
+        </Grid>
+      </Container>
     </>
   );
 }

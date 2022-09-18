@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/Constants";
-import { useToken, useUser } from "../../auth/userAuth";
+import {
+  API_URL,
+  MAP_BOX_TOKEN,
+  MAP_BOX_STYLE,
+} from "../../../utils/CONSTANTS";
+import { useToken, useUser } from "../../../auth/userAuth";
 import { Container, Grid, Stack, Button } from "@mui/material";
 import MapGL, {
   Source,
@@ -14,16 +18,20 @@ import Draw from "@urbica/react-map-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
-import { LayerStyle1 } from "./LayerStyle";
-import { MetaInfoFormStyled } from "./MetaTracksStyles";
-import PrivetSideBar from "../../components/PrivetSideBar";
-import PrivetHeader from "../../components/PrivetHeader";
-import TrackCreationNav from "./TrackCreationNav";
+import PrivetSideBar from "../../../components/PrivetSideBar";
+import PrivetHeader from "../../../components/PrivetHeader";
+import MetaTrackNav from "../MetaTrackNav";
+import { LayerStyle1 } from "../MetaTrackLayerStyle";
+import { MetaInfoFormStyled } from "../MetaTracksStyles";
 import MetaInfoPinList from "./MetaInfoPinList";
 import MetaInfoPinPoint from "./MetaInfoPinPoint";
 import MetaInfoForm from "./MetaInfoForm";
 
-import { onMapClick, onDataDelete, onDataChange } from "./InteractionHandler";
+import {
+  onMapClick,
+  onDataDelete,
+  onDataChange,
+} from "./MetaInfoInteractionHandler";
 //const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
 
 const localCurrentTrackId = localStorage.currentTrackId;
@@ -55,12 +63,6 @@ const initialPointCollection = {
 };
 
 export default function MetaInfo() {
-  useEffect(() => {
-    if (!localCurrentTrackId) {
-      navigate("/CreateTrack");
-    }
-  });
-
   // Initialization ==================
   const navigate = useNavigate();
   const [token] = useToken();
@@ -321,6 +323,12 @@ export default function MetaInfo() {
     </Marker>
   ));
 
+  // Checkpoint for TrackID ==================
+  useEffect(() => {
+    if (!localCurrentTrackId) {
+      navigate("/CreateTrack");
+    }
+  });
   return (
     <>
       <PrivetHeader loginInfo={user} />
@@ -345,7 +353,7 @@ export default function MetaInfo() {
             display: "flex",
           }}
         >
-          <TrackCreationNav />
+          <MetaTrackNav />
           {/* <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}> */}
           <MetaInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
@@ -445,7 +453,7 @@ export default function MetaInfo() {
                   </Button>
                 </Link>
 
-                <Link to="/TrackReview">
+                <Link to="/CreateTrack/TrackReview">
                   <Button
                     type="button"
                     size="small"

@@ -15,7 +15,7 @@ export default function TrackCreationNav() {
             </Link>
           </li>
           <li>
-            <Link to="/MetaInfo">
+            <Link to="/CreateTrack/MetaInfo">
               <span>2</span> Meta Info
             </Link>
           </li>
@@ -25,7 +25,7 @@ export default function TrackCreationNav() {
             </Link>
           </li>
           <li>
-            <Link to="/TrackReview">
+            <Link to="/CreateTrack/TrackReview">
               <span>4</span> Review
             </Link>
           </li>

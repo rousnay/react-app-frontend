@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { API_URL } from "../../utils/Constants";
-import { useToken } from "../../auth/userAuth";
+import { API_URL } from "../../../utils/CONSTANTS";
+import { useToken } from "../../../auth/userAuth";
 import { TextField, Button } from "@mui/material";
-import Uploader from "../../components/uploader";
+import Uploader from "../../../components/uploader";
 import swal from "sweetalert";
 
 const localCurrentTrackId = localStorage.currentTrackId;

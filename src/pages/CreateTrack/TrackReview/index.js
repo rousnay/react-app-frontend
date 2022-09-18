@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/Constants";
-import { useToken, useUser } from "../../auth/userAuth";
+import {
+  API_URL,
+  MAP_BOX_TOKEN,
+  MAP_BOX_STYLE,
+} from "../../../utils/CONSTANTS";
+import { useToken, useUser } from "../../../auth/userAuth";
 import MapGL, {
   Source,
   Layer,
@@ -13,11 +17,11 @@ import * as turf from "@turf/turf";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { Container, Grid, Stack } from "@mui/material";
-import { LayerStyle1 } from "./LayerStyle";
-import { MetaInfoFormStyled } from "./MetaTracksStyles";
-import PrivetSideBar from "../../components/PrivetSideBar";
-import PrivetHeader from "../../components/PrivetHeader";
-import TrackCreationNav from "./TrackCreationNav";
+import PrivetSideBar from "../../../components/PrivetSideBar";
+import PrivetHeader from "../../../components/PrivetHeader";
+import MetaTrackNav from "../MetaTrackNav";
+import { LayerStyle1 } from "../MetaTrackLayerStyle";
+import { MetaInfoFormStyled } from "../MetaTracksStyles";
 import TrackReviewPinList from "./TrackReviewPinList";
 import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
@@ -45,10 +49,7 @@ const initialLineCollection = {
 };
 
 export default function TrackReview() {
-  useEffect(() => {
-    if (!localCurrentTrackId) navigate("/CreateTrack");
-  });
-
+  // Initialization ==================
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
@@ -158,6 +159,12 @@ export default function TrackReview() {
     </Marker>
   ));
 
+  // Checkpoint for TrackID ==================
+  useEffect(() => {
+    if (!localCurrentTrackId) {
+      navigate("/CreateTrack");
+    }
+  });
   return (
     <>
       <PrivetHeader loginInfo={user} />
@@ -182,7 +189,7 @@ export default function TrackReview() {
             display: "flex",
           }}
         >
-          <TrackCreationNav />
+          <MetaTrackNav />
           <MetaInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
