@@ -36,7 +36,7 @@ export default function EmailVerification() {
         timer: 2000,
       }).then((value) => {
         setUser(response.data);
-        navigate("/UpdateUserInformation");
+        navigate("/SignUp/UpdateUserInformation");
       });
     } else {
       swal("Failed", response.message[0], "error");

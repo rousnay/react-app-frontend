@@ -84,7 +84,7 @@ export default function Channel() {
         buttons: ["Back to dashboard", "View your channel"],
       }).then((goToChannel) => {
         if (goToChannel) {
-          navigate("/ChannelProfile");
+          navigate("/Channel/ChannelProfile");
         } else {
           navigate("/Dashboard");
         }

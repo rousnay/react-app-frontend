@@ -80,7 +80,7 @@ export default function SignUp() {
 
   const handleTermsSubmit = (e) => {
     e.preventDefault();
-    navigate("/EmailSignUp");
+    navigate("/SignUp/EmailSignUp");
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
@@ -42,11 +42,23 @@ export default function EmailSignUp() {
   const navigate = useNavigate();
   const [, setToken] = useToken();
   const [, setUser] = useUser();
+  const deviceType = "ios";
+  const deviceToken = genDeviceToken;
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const deviceType = "ios";
-  const deviceToken = genDeviceToken;
+  const [newPassword, setNewPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [checkPassword, setCheckPassword] = useState();
+
+  useEffect(() => {
+    if (newPassword === confirmPassword) {
+      setCheckPassword("");
+      setPassword(confirmPassword);
+    } else {
+      setCheckPassword("error");
+    }
+  }, [newPassword, confirmPassword]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,7 +77,7 @@ export default function EmailSignUp() {
       }).then((value) => {
         setToken(response.data.token);
         setUser(response.data);
-        navigate("/EmailVerification");
+        navigate("/SignUp/EmailVerification");
       });
     } else {
       swal("Failed", response.error, "error");
@@ -130,11 +142,27 @@ export default function EmailSignUp() {
                   margin="normal"
                   required
                   fullWidth
-                  id="password"
-                  name="password"
+                  id="newPassword"
+                  name="newPassword"
                   label="Password"
-                  type="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  type="newPassword"
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="confirmPassword"
+                  label="Confirm Password"
+                  helperText={
+                    checkPassword === "error" ? "Passwords don't match." : ""
+                  }
+                  error={checkPassword === "error" ? true : false}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
 
                 <p style={{ fontStyle: "italic" }}>
