@@ -1,5 +1,4 @@
 // Custom hook to get all the query parameters from inside any components.
-
 import { useLocation } from "react-router-dom";
 
 const pairs = (arr) =>
