@@ -16,11 +16,11 @@ import { LayerStyle1 } from "./MetaTrackLayerStyle";
 import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 
-const initialLineData = {
+const initial_MetaTrack = {
   type: "FeatureCollection",
   features: [
     {
-      id: "Initial_pin_ID",
+      id: "Initial_MetaTrack_ID",
       type: "Feature",
       properties: {},
       geometry: {
@@ -35,9 +35,6 @@ const initialLineData = {
 };
 
 async function createNewTrack(authToken, payloadData) {
-  for (const value of payloadData.values()) {
-    console.log(value);
-  }
   return fetch(`${API_URL}/track/info`, {
     method: "POST",
     headers: {
@@ -52,7 +49,7 @@ export default function CreateTrack() {
   const [token] = useToken();
   const [user] = useUser();
   const [trackName, setTrackName] = useState(" ");
-  const [geoJSONLine, setGeoJSON] = useState(initialLineData);
+  const [geoJSONLine, setGeoJSON] = useState(initial_MetaTrack);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
 
   const [name, setName] = useState(" ");
@@ -138,7 +135,7 @@ export default function CreateTrack() {
       };
     } else {
       setTrackName(" ");
-      setGeoJSON(initialLineData);
+      setGeoJSON(initial_MetaTrack);
       setCentralCoordinate([0, 0]);
     }
   };

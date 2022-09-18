@@ -13,9 +13,9 @@ import MapGL, {
   NavigationControl,
 } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
-import * as turf from "@turf/turf";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
+import * as turf from "@turf/turf";
 import { Container, Grid, Stack } from "@mui/material";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
