@@ -127,7 +127,7 @@ const ManageTrackOptions = ({
   orderBy,
   onOrderByChange,
 }) => {
-  let [toggleSort, setToggleSort] = useState(true);
+  let [toggleSort] = useState(true);
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>

@@ -56,7 +56,7 @@ export default function CreateTrack() {
   const [description, setDescription] = useState(" ");
   const [tags, setTags] = useState([]);
   const [previewImage, setPreviewImage] = useState([]);
-  const [type, setType] = useState("loop");
+  const [type] = useState("loop");
   const [gpxFile, setGpxFile] = useState([]);
 
   var formData = new FormData();

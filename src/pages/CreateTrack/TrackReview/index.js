@@ -27,9 +27,9 @@ import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
 
-const localCurrentTrackId = localStorage.currentTrackId;
-// const localCurrentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
-// const localCurrentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
+const currentTrackId = localStorage.currentTrackId;
+// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
+// const currentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
 const initialLineCollection = {
   type: "FeatureCollection",
   features: [
@@ -67,15 +67,12 @@ export default function TrackReview() {
   // GET TrackInfo ==================
   async function getTrackInfo() {
     try {
-      const reqData = await fetch(
-        `${API_URL}/track/${localCurrentTrackId}/info`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const reqData = await fetch(`${API_URL}/track/${currentTrackId}/info`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
       const resData = await reqData.json();
       // console.log(resData.data.rawGpx);
       return resData.data;
@@ -161,7 +158,7 @@ export default function TrackReview() {
 
   // Checkpoint for TrackID ==================
   useEffect(() => {
-    if (!localCurrentTrackId) {
+    if (!currentTrackId) {
       navigate("/CreateTrack");
     }
   });
