@@ -15,9 +15,51 @@ import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 export default function SignUp() {
-  const [token] = useToken();
+  // Initialization of variables =================
   const navigate = useNavigate();
+  const [token] = useToken();
+  const [filterCheckboxs, setFilterCheckboxs] = useState([
+    {
+      name: "Accept All",
+      checked: false,
+    },
+    { name: "14 years of age or older (Required)", checked: false },
+    { name: "Agree to Terms of Service (Required)", checked: false },
+    { name: "Agree to Privacy Policy (Required)", checked: false },
+    { name: "Get news of events, and benefits (Optional)", checked: false },
+  ]);
 
+  // handle checkbox value changes =================
+  const handleCardFilterValueChange = (name) => {
+    setFilterCheckboxs((prevState) => {
+      if (name === "Accept All") {
+        return prevState.map((item) => {
+          return { ...item, checked: !prevState[0].checked };
+        });
+      } else {
+        const modifiedPrevState = prevState.map((item) => {
+          if (item.name === name) {
+            return { ...item, checked: !item.checked };
+          } else {
+            return item;
+          }
+        });
+        modifiedPrevState[0].checked =
+          modifiedPrevState[1].checked &&
+          modifiedPrevState[2].checked &&
+          modifiedPrevState[3].checked;
+        return modifiedPrevState;
+      }
+    });
+  };
+
+  // Checkbox submission  =================
+  const handleTermsSubmit = (e) => {
+    e.preventDefault();
+    navigate("/SignUp/EmailSignUp");
+  };
+
+  // Checkpoint for login existence =================
   useEffect(() => {
     if (token) {
       swal("Oops!", "You are already signed in with an account", "info", {
@@ -37,52 +79,7 @@ export default function SignUp() {
         }
       });
     }
-  }, []);
-
-  const [filterCheckboxs, setFilterCheckboxs] = useState([
-    {
-      name: "Accept All",
-      checked: false,
-    },
-    { name: "14 years of age or older (Required)", checked: false },
-    { name: "Agree to Terms of Service (Required)", checked: false },
-    { name: "Agree to Privacy Policy (Required)", checked: false },
-    { name: "Get news of events, and benefits (Optional)", checked: false },
-  ]);
-
-  const handleCardFilterValueChange = (name) => {
-    // handle checkbox value changes
-    setFilterCheckboxs((prevState) => {
-      // if "All" clicked and checked uncheck everything else check everything.
-      if (name === "Accept All") {
-        return prevState.map((item) => {
-          return { ...item, checked: !prevState[0].checked };
-        });
-        // if 'New', 'In Progress' or 'Complete' clicked revert thir value from true to false or false to true.
-      } else {
-        const modifiedPrevState = prevState.map((item) => {
-          if (item.name === name) {
-            return { ...item, checked: !item.checked };
-          } else {
-            return item;
-          }
-        });
-        // for each user click other than 'All'; modify 'All' button's checked value.
-        // If  'New', 'In Progress' and 'Complete' checked, check 'All' else uncheck 'All'
-        modifiedPrevState[0].checked =
-          modifiedPrevState[1].checked &&
-          modifiedPrevState[2].checked &&
-          modifiedPrevState[3].checked;
-        return modifiedPrevState;
-      }
-    });
-  };
-
-  const handleTermsSubmit = (e) => {
-    e.preventDefault();
-    navigate("/SignUp/EmailSignUp");
-  };
-
+  }, [token, navigate]);
   return (
     <>
       <Container maxWidth="xl">

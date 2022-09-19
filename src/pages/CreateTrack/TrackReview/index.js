@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   API_URL,
@@ -65,7 +65,7 @@ export default function TrackReview() {
     console.log(line);
   }, [line]);
   // GET TrackInfo ==================
-  async function getTrackInfo() {
+  const getTrackInfo = useCallback(async () => {
     try {
       const reqData = await fetch(`${API_URL}/track/${currentTrackId}/info`, {
         method: "GET",
@@ -80,10 +80,10 @@ export default function TrackReview() {
       console.log(error);
       return null;
     }
-  }
+  }, [token]);
 
   // GET Converted GeoJSON data ==================
-  async function convertToGeoJSON() {
+  const convertToGeoJSON = useCallback(async () => {
     const trackAsyncData = await getTrackInfo();
     const trackAsyncGpx = await trackAsyncData.rawGpx;
     var geoJSONLineData = toGeoJson.gpx(
@@ -91,10 +91,10 @@ export default function TrackReview() {
     );
     console.log(geoJSONLineData);
     return geoJSONLineData;
-  }
+  }, [getTrackInfo]);
 
   // GET CentralCoordinate ==================
-  async function centralCoordinate() {
+  const centralCoordinate = useCallback(async () => {
     const trackAsyncGeoJson = await convertToGeoJSON();
     console.log(trackAsyncGeoJson);
     const allLineGeoCoordinates =
@@ -102,10 +102,10 @@ export default function TrackReview() {
     const turfLine = await turf.lineString(allLineGeoCoordinates);
     setLine(turfLine);
     const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
-    const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
-    const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
+    const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
+    const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
     return centralLineCoordinates;
-  }
+  }, [convertToGeoJSON]);
 
   // GET PointFeatures ==================
   const convertToPointFeatures = (pinPointPayload) => {
@@ -143,7 +143,7 @@ export default function TrackReview() {
       setTrackingTags(trackData.tags.split(","));
       convertToPointFeatures(trackData.pinPoints.pinPointArray);
     })();
-  }, []);
+  }, [centralCoordinate, convertToGeoJSON, getTrackInfo]);
 
   // Painting map Marker ==================
   const currentCoordinates = geoJSONPoint.map(

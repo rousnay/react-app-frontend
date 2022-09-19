@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   API_URL,
@@ -87,7 +87,7 @@ export default function MetaInfo() {
   //  Get Track Data from API
   /******************************************/
   // GET TrackInfo ==================
-  async function getTrackInfo() {
+  const getTrackInfo = useCallback(async () => {
     try {
       const reqData = await fetch(`${API_URL}/track/${currentTrackId}/info`, {
         method: "GET",
@@ -102,20 +102,20 @@ export default function MetaInfo() {
       console.log(error);
       return null;
     }
-  }
+  }, [token]);
 
   // GET Converted GeoJSON data ==================
-  async function convertToGeoJSON() {
+  const convertToGeoJSON = useCallback(async () => {
     const trackAsyncGpx = await getTrackInfo();
     var geoJSONLineData = await toGeoJson.gpx(
       new DOMParser().parseFromString(trackAsyncGpx, "text/xml")
     );
     console.log(geoJSONLineData);
     return geoJSONLineData;
-  }
+  }, [getTrackInfo]);
 
   // GET CentralCoordinate ==================
-  async function centralCoordinate() {
+  const centralCoordinate = useCallback(async () => {
     const trackAsyncGeoJson = await convertToGeoJSON();
     const allLineGeoCoordinates =
       trackAsyncGeoJson.features[0]?.geometry.coordinates;
@@ -135,13 +135,13 @@ export default function MetaInfo() {
       ],
     };
     const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
-    const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
-    const centralLineCoordinates = turfcenterLineFeature.geometry.coordinates;
+    const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
+    const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
 
     setLine(turfLine);
     setGeoJSONPoint(createInitialPoint);
     return centralLineCoordinates;
-  }
+  }, [convertToGeoJSON]);
 
   // Get TrackInfo Data ==================
   useEffect(() => {
@@ -151,7 +151,7 @@ export default function MetaInfo() {
       setGeoJSONLine(geoJSONData);
       setCentralCoordinate(centralCoordinates);
     })();
-  }, []);
+  }, [convertToGeoJSON, centralCoordinate]);
 
   /******************************************/
   //  Drawing mode manipulation
@@ -234,19 +234,19 @@ export default function MetaInfo() {
     const updatedLocalGeo = JSON.parse(
       localStorage.getItem("geoJSONPointLocal")
     );
-    const updatedformValuesLocal = JSON.parse(
+    const updatedFormValuesLocal = JSON.parse(
       localStorage.getItem("formValuesLocal")
     );
     const pinId = getPointId(pinIndex, updatedLocalGeo);
-    const getTheNameValue = updatedformValuesLocal.findIndex(
+    const getTheNameValue = updatedFormValuesLocal.findIndex(
       (x) => x.id === pinId
     );
     pinSelector(pinIndex + 1);
-    console.log(
-      pinIndex + 1,
-      pinId.slice(0, 7),
-      updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
-    );
+    // console.log(
+    //   pinIndex + 1,
+    //   pinId.slice(0, 7),
+    //   updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
+    // );
 
     // set Metadata form values ==================
     setSelectedPinIndex(pinIndex);
@@ -254,7 +254,7 @@ export default function MetaInfo() {
     setPinName2(
       getTheNameValue === -1
         ? `PIN ID: ${pinId.slice(0, 5)}...`
-        : updatedformValuesLocal[getTheNameValue].name
+        : updatedFormValuesLocal[getTheNameValue].name
     );
     // setPinName(formDataHolder[0].name);
     setPinLon(updatedLocalGeo.features[pinIndex].geometry.coordinates[0]);

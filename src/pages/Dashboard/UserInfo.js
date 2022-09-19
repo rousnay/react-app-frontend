@@ -1,19 +1,27 @@
 import { Link } from "react-router-dom";
-import { CardContent, Button } from "@mui/material";
+import { CardContent, Card, Typography, Button } from "@mui/material";
 
 export default function UserInfo(props) {
   const userData = props.loginInfo;
   return (
     <>
       <CardContent>
-        <img
-          style={{
-            width: "100%",
-            maxWidth: "350px",
-          }}
-          src={userData.profilePhoto}
-          alt={userData.firstName}
-        />
+        {userData.profilePhoto === "undefined" ? (
+          <Card variant="outlined" sx={{ maxWidth: 270, padding: "50px" }}>
+            <Typography sx={{ fontSize: 14 }} color="logored" gutterBottom>
+              No profile photo exist
+            </Typography>
+          </Card>
+        ) : (
+          <img
+            style={{
+              width: "100%",
+              maxWidth: "270px",
+            }}
+            src={userData.profilePhoto}
+            alt={userData.firstName}
+          />
+        )}
         <p>
           <span style={{ fontWeight: "bold" }}>Name: </span>
           {userData.firstName} {userData.lastName}
@@ -41,8 +49,8 @@ export default function UserInfo(props) {
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Channel ID: </span>
-          {userData.channelId ? (
-            userData.channelId
+          {localStorage.channelId ? (
+            localStorage.channelId
           ) : (
             <Link to="/Channel">
               <Button

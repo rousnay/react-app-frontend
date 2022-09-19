@@ -39,6 +39,7 @@ const genDeviceToken = (() => {
 })();
 
 export default function EmailSignUp() {
+  // Initialization of variables =================
   const navigate = useNavigate();
   const [, setToken] = useToken();
   const [, setUser] = useUser();
@@ -60,6 +61,7 @@ export default function EmailSignUp() {
     }
   }, [newPassword, confirmPassword]);
 
+  // Signup form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await userSignUp({

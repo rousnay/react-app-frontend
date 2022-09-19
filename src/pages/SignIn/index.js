@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
@@ -22,35 +22,16 @@ const genDeviceToken = (() => {
 })();
 
 export default function SignIn() {
+  // Initialization of variables =================
+  const navigate = useNavigate();
   const [token, setToken] = useToken();
   const [, setUser] = useUser();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token) {
-      swal("Oops!", "You are already signed in with an account", "info", {
-        buttons: ["Go to dashboard", "Logout"],
-        dangerMode: true,
-      }).then((willLoggedOut) => {
-        if (willLoggedOut) {
-          swal("You have been logged out!", {
-            icon: "success",
-            timer: 1000,
-          }).then((value) => {
-            localStorage.clear();
-            window.location.reload();
-          });
-        } else {
-          navigate("/Dashboard");
-        }
-      });
-    }
-  }, []);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
 
+  // Sign in form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await loginUser({
@@ -80,6 +61,28 @@ export default function SignIn() {
       console.log(token);
     }
   };
+
+  // Checkpoint for login existence =================
+  (() => {
+    if (token) {
+      swal("Oops!", "You are already signed in with an account", "info", {
+        buttons: ["Go to dashboard", "Logout"],
+        dangerMode: true,
+      }).then((willLoggedOut) => {
+        if (willLoggedOut) {
+          swal("You have been logged out!", {
+            icon: "success",
+            timer: 1000,
+          }).then((value) => {
+            localStorage.clear();
+            window.location.reload();
+          });
+        } else {
+          navigate("/Dashboard");
+        }
+      });
+    }
+  })();
 
   return (
     <>

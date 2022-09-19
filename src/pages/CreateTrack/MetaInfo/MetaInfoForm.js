@@ -40,7 +40,6 @@ export default function MetaInfoForm(props) {
 
   // Setting form variables ===================
   useEffect(() => {
-    console.log(props.pinName);
     setPinName(props.pinName);
   }, [props.pinName]);
 

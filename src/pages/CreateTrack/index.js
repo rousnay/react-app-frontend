@@ -45,9 +45,12 @@ async function createNewTrack(authToken, payloadData) {
 }
 
 export default function CreateTrack() {
+  // Initialization of variables =================
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
+  const channelId = localStorage.channelId;
+  // const [channelId, setChannelId] = useState(localChannelId);
   const [trackName, setTrackName] = useState(" ");
   const [geoJSONLine, setGeoJSON] = useState(initial_MetaTrack);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
@@ -60,7 +63,7 @@ export default function CreateTrack() {
   const [gpxFile, setGpxFile] = useState([]);
 
   var formData = new FormData();
-  formData.append("channelId", user.channelId);
+  formData.append("channelId", channelId);
   formData.append("name", name);
   formData.append("description", description);
   formData.append("tags", tags);
@@ -88,22 +91,6 @@ export default function CreateTrack() {
     }
   };
 
-  // Setting files for upload  ==================
-  function setPreviewImagedata(fileItems) {
-    const _previewImageFileItem = fileItems.map((fileItem) => {
-      return fileItem.file;
-    });
-    setPreviewImage(_previewImageFileItem);
-  }
-
-  function setGpxFiledata(fileItems) {
-    const _gpxFileItem = fileItems.map((fileItem) => {
-      return fileItem.file;
-    });
-    setGpxFile(_gpxFileItem);
-    convertToGeoJSON(_gpxFileItem[0]);
-  }
-
   // Convert GPX data to GeoJSON ==================
   const convertToGeoJSON = (gpxPayload) => {
     if (gpxPayload) {
@@ -125,9 +112,9 @@ export default function CreateTrack() {
           geoJSONLineData.features[0].geometry.coordinates;
 
         const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
-        const turfcenterLineFeature = turf.center(turfLineFeatureCollection);
+        const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
         const centralLineCoordinates =
-          turfcenterLineFeature.geometry.coordinates;
+          turfCenterLineFeature.geometry.coordinates;
 
         setGeoJSON(geoJSONLineData);
         setTrackName(LineCollectionName);
@@ -140,9 +127,25 @@ export default function CreateTrack() {
     }
   };
 
+  // Setting files for upload  ==================
+  function setPreviewImageData(fileItems) {
+    const _previewImageFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+    setPreviewImage(_previewImageFileItem);
+  }
+
+  function setGpxFileData(fileItems) {
+    const _gpxFileItem = fileItems.map((fileItem) => {
+      return fileItem.file;
+    });
+    setGpxFile(_gpxFileItem);
+    convertToGeoJSON(_gpxFileItem[0]);
+  }
+
   // Checkpoint for channel existence ==================
   useEffect(() => {
-    if (!user.channelId && !localStorage.channelId) {
+    if (!user.channelId && !channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {
@@ -153,7 +156,7 @@ export default function CreateTrack() {
         }
       });
     }
-  }, []);
+  }, [user.channelId, channelId, navigate]);
 
   return (
     <>
@@ -187,7 +190,7 @@ export default function CreateTrack() {
                 <Uploader
                   files={gpxFile}
                   name={"gpxFile"}
-                  onupdatefiles={(fileItems) => setGpxFiledata(fileItems)}
+                  onupdatefiles={(fileItems) => setGpxFileData(fileItems)}
                   labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 />
               </div>
@@ -257,7 +260,7 @@ export default function CreateTrack() {
                 <Uploader
                   files={previewImage}
                   name={"previewImage"}
-                  onupdatefiles={(fileItems) => setPreviewImagedata(fileItems)}
+                  onupdatefiles={(fileItems) => setPreviewImageData(fileItems)}
                   labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 />
               </div>

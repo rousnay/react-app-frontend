@@ -19,13 +19,13 @@ async function addUserInfo(authToken, payloadData) {
 }
 
 export default function UpdateUserInformation() {
+  // Initialization of variables =================
+  const navigate = useNavigate();
   const [token] = useToken();
   const [, setUser] = useUser();
-  const navigate = useNavigate();
-
   const [firstName, setFirstName] = useState(" ");
   const [lastName, setLastName] = useState(" ");
-  const [addressLine1, setaddressLine1] = useState(" ");
+  const [addressLine1, setAddressLine1] = useState(" ");
   const [state, setState] = useState(" ");
   const [zipCode, setZipCode] = useState(" ");
   const [country, setCountry] = useState(" ");
@@ -40,6 +40,7 @@ export default function UpdateUserInformation() {
   formData.append("country", country);
   formData.append("profilePhoto", profilePhoto[0]);
 
+  // Updated form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,31 +71,33 @@ export default function UpdateUserInformation() {
     setProfilePhoto(_gpxFileItem);
   }
 
-  async function getUserInfo() {
-    const response = await fetch("https://api.finutss.com/user/info", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    }).then((data) => data.json());
-
-    if (response.message === "Success") {
-      return response.data;
-    }
-  }
+  // Set initial user data from server =================
   useEffect(() => {
+    async function getUserInfo() {
+      const response = await fetch("https://api.finutss.com/user/info", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      }).then((data) => data.json());
+
+      if (response.message === "Success") {
+        return response.data;
+      }
+    }
+
     (async function () {
       const userData = await getUserInfo();
       setFirstName(userData.firstName || " ");
       setLastName(userData.lastName || " ");
-      setaddressLine1(userData.addressLine1 || " ");
+      setAddressLine1(userData.addressLine1 || " ");
       setState(userData.state || " ");
       setZipCode(userData.zipCode || " ");
       setCountry(userData.country || " ");
       setProfilePhoto(userData.profilePhoto || []);
     })();
-  }, []);
+  }, [token]);
 
   return (
     <>
@@ -141,7 +144,7 @@ export default function UpdateUserInformation() {
                   name="addressLine1"
                   value={addressLine1}
                   label="Address Line 1"
-                  onChange={(e) => setaddressLine1(e.target.value)}
+                  onChange={(e) => setAddressLine1(e.target.value)}
                 />
                 <TextField
                   variant="outlined"

@@ -18,11 +18,19 @@ async function emailVerification(payloadData) {
 }
 
 export default function EmailVerification() {
+  // Initialization of variables =================
   const navigate = useNavigate();
   const [user, setUser] = useUser();
   const [email, setEmail] = useState("");
   const [otp, setOTP] = useState();
 
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+    }
+  }, [user]);
+
+  // Verification form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await emailVerification({
@@ -43,44 +51,44 @@ export default function EmailVerification() {
     }
   };
 
-  useEffect(() => {
-    if (!user) {
-      swal("Oops!", "Please sign up with an email first", "error", {
-        buttons: ["Back to the home page", "Sing Up"],
-      }).then((willSingUp) => {
-        if (willSingUp) {
-          swal("Going for sign up...", {
-            icon: "success",
-            timer: 1000,
-          }).then((value) => {
-            navigate("/SignUp");
-          });
-        } else {
-          navigate("/");
-        }
-      });
-    } else if (user.firstName) {
-      swal("Oops!", `You are already verified with ${user.email}`, "info", {
-        buttons: ["Go to dashboard", "Logout"],
-        dangerMode: true,
-      }).then((willLoggedOut) => {
-        if (willLoggedOut) {
-          swal("You have been logged out!", {
-            icon: "success",
-            timer: 1000,
-          }).then((value) => {
-            localStorage.clear();
-            navigate("/SignUp");
-          });
-        } else {
-          navigate("/Dashboard");
-        }
-      });
-    } else {
-      setEmail(user.email);
-    }
-  }, [user]);
-
+  // Checkpoint for login existence =================
+  // (() => {
+  // if (!user) {
+  //   swal("Oops!", "Please sign up with an email first", "error", {
+  //     buttons: ["Back to the home page", "Sing Up"],
+  //   }).then((willSingUp) => {
+  //     if (willSingUp) {
+  //       swal("Going for sign up...", {
+  //         icon: "success",
+  //         timer: 1000,
+  //       }).then((value) => {
+  //         navigate("/SignUp");
+  //       });
+  //     } else {
+  //       navigate("/");
+  //     }
+  //   });
+  // } else if (user.firstName) {
+  //     swal("Oops!", `You are already verified with ${user.email}`, "info", {
+  //       buttons: ["Go to dashboard", "Logout"],
+  //       dangerMode: true,
+  //     }).then((willLoggedOut) => {
+  //       if (willLoggedOut) {
+  //         swal("You have been logged out!", {
+  //           icon: "success",
+  //           timer: 1000,
+  //         }).then((value) => {
+  //           localStorage.clear();
+  //           navigate("/SignUp");
+  //         });
+  //       } else {
+  //         navigate("/Dashboard");
+  //       }
+  //     });
+  //   } else {
+  //     setEmail(user.email || "");
+  //   }
+  // })();
   return (
     <>
       <Container maxWidth="xl">

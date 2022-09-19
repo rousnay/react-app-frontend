@@ -60,6 +60,11 @@ export default function Landing() {
                   <Link to="/Dashboard">Dashboard</Link>
                 </ListItem>
                 <ListItem>
+                  <Link to="/SignUp/UpdateUserInformation">
+                    Update User info
+                  </Link>
+                </ListItem>
+                <ListItem>
                   <Link to="/Channel">Channel</Link>
                 </ListItem>
                 <ListItem>

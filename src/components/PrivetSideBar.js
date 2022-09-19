@@ -67,6 +67,9 @@ export default function PrivetSideBar() {
             <Link to="/Dashboard">Dashboard</Link>
           </ListItem>
           <ListItem>
+            <Link to="/SignUp/UpdateUserInformation">Update User info</Link>
+          </ListItem>
+          <ListItem>
             <Link to="/Management/Tracks">Manage Tracks</Link>
           </ListItem>
           <ListItem>

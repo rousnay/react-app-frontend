@@ -35,7 +35,7 @@ export default function PrivetHeader(props) {
   };
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/Landing");
+    navigate("/");
   };
   const handleSignIn = () => {
     navigate("/SignIn");
