@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/CONSTANTS";
 import { useToken } from "../../../auth/userAuth";
 import swal from "sweetalert";
