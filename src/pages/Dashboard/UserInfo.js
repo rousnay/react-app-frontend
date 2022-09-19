@@ -1,8 +1,17 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CardContent, Card, Typography, Button } from "@mui/material";
 
 export default function UserInfo(props) {
   const userData = props.loginInfo;
+  const [channelId, setChannelId] = useState(localStorage.channelId);
+  useEffect(() => {
+    if (userData.channelId) {
+      setChannelId(userData.channelId);
+      localStorage.setItem("channelId", userData.channelId);
+    }
+  }, [userData.channelId]);
+
   return (
     <>
       <CardContent>
@@ -49,8 +58,8 @@ export default function UserInfo(props) {
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Channel ID: </span>
-          {localStorage.channelId ? (
-            localStorage.channelId
+          {userData.channelId || channelId ? (
+            channelId
           ) : (
             <Link to="/Channel">
               <Button

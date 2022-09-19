@@ -49,8 +49,7 @@ export default function CreateTrack() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
-  const channelId = localStorage.channelId;
-  // const [channelId, setChannelId] = useState(localChannelId);
+  const [channelId, setChannelId] = useState(localStorage.channelId);
   const [trackName, setTrackName] = useState(" ");
   const [geoJSONLine, setGeoJSONLine] = useState(initial_MetaTrack);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
@@ -145,6 +144,10 @@ export default function CreateTrack() {
 
   // Checkpoint for channel existence ==================
   useEffect(() => {
+    if (user.channelId) {
+      setChannelId(user.channelId);
+      localStorage.setItem("channelId", user.channelId);
+    }
     if (!user.channelId && !channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],

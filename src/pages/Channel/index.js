@@ -30,7 +30,7 @@ export default function Channel() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
-
+  const [channelId, setChannelId] = useState(localStorage.channelId);
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState([]);
@@ -80,6 +80,10 @@ export default function Channel() {
 
   useEffect(() => {
     if (user.channelId) {
+      setChannelId(user.channelId);
+      localStorage.setItem("channelId", user.channelId);
+    }
+    if (user.channelId || channelId) {
       swal("Channel exist!", `You already have a channel`, "info", {
         buttons: ["Back to dashboard", "View your channel"],
       }).then((goToChannel) => {
@@ -91,7 +95,7 @@ export default function Channel() {
       });
     } else {
     }
-  });
+  }, [channelId, navigate, user.channelId]);
 
   return (
     <>
