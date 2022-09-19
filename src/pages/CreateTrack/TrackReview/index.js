@@ -26,27 +26,10 @@ import TrackReviewPinList from "./TrackReviewPinList";
 import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
-
+import { initialLineCollection } from "../MetaTrackInitializer";
 const currentTrackId = localStorage.currentTrackId;
 // const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
 // const currentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
-const initialLineCollection = {
-  type: "FeatureCollection",
-  features: [
-    {
-      id: "Initial_LineString_ID",
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [0, 0],
-          [0, 0],
-        ],
-      },
-    },
-  ],
-};
 
 export default function TrackReview() {
   // Initialization ==================
@@ -189,7 +172,7 @@ export default function TrackReview() {
                   accessToken={MAP_BOX_TOKEN}
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
-                  zoom={11.8}
+                  zoom={11.7}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />

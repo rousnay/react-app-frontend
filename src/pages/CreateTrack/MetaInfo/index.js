@@ -26,16 +26,21 @@ import { MetaInfoFormStyled } from "../MetaTracksStyles";
 import MetaInfoPinList from "./MetaInfoPinList";
 import MetaInfoPinPoint from "./MetaInfoPinPoint";
 import MetaInfoForm from "./MetaInfoForm";
-
+import {
+  initialPointCollection,
+  initialLineString,
+  initialFormValues,
+} from "../MetaTrackInitializer";
 import {
   onMapClick,
   onDataDelete,
   onDataChange,
 } from "./MetaInfoInteractionHandler";
-//const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
 const currentTrackId = localStorage.currentTrackId;
+// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
+// const currentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
 
-var initialPinId = (len, bits) => {
+var pinIdGenerator = (len, bits) => {
   bits = bits || 36;
   var outStr = "",
     newStr;
@@ -44,21 +49,6 @@ var initialPinId = (len, bits) => {
     outStr += newStr.slice(0, Math.min(newStr.length, len - outStr.length));
   }
   return outStr;
-};
-
-const initialPointCollection = {
-  type: "FeatureCollection",
-  features: [
-    {
-      id: initialPinId(32),
-      type: "Feature",
-      properties: {},
-      geometry: {
-        coordinates: [0, 0],
-        type: "Point",
-      },
-    },
-  ],
 };
 
 export default function MetaInfo() {
@@ -70,17 +60,7 @@ export default function MetaInfo() {
   const [geoJSONLine, setGeoJSONLine] = useState([]);
   const [geoJSONPoint, setGeoJSONPoint] = useState(initialPointCollection);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
-  const [line, setLine] = useState({
-    type: "Feature",
-    properties: {},
-    geometry: {
-      type: "LineString",
-      coordinates: [
-        [0, 0],
-        [0, 0],
-      ],
-    },
-  });
+  const [line, setLine] = useState(initialLineString);
 
   /******************************************/
   //  Get Track Data from API
@@ -96,7 +76,6 @@ export default function MetaInfo() {
       });
       const resData = await reqData.json();
       setTrackInfoData(resData.data);
-      console.log(resData.data);
       return resData.data;
     } catch (error) {
       console.log(error);
@@ -122,6 +101,7 @@ export default function MetaInfo() {
     if (trackAsyncPoint.count === 0) return false;
     else {
       const trackAsyncPointArray = await trackAsyncPoint.pinPointArray;
+
       const pointFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
         const pointFeaturesId = pinPoint.id;
         const pointFeaturesCoords = [pinPoint.lon, pinPoint.lat];
@@ -138,6 +118,17 @@ export default function MetaInfo() {
         };
         return pointFeatureAdd;
       });
+
+      const pinFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
+        const pointFeaturesId = pinPoint.id;
+        const valuesFoPinList = {
+          id: pointFeaturesId,
+          name: pinPoint.name,
+          save: "saved",
+        };
+        return valuesFoPinList;
+      });
+      localStorage.setItem("formValuesLocal", JSON.stringify(pinFeatureArray));
       const pointFeatureCollection = {
         type: "FeatureCollection",
         features: pointFeatureArray.reverse(),
@@ -157,7 +148,7 @@ export default function MetaInfo() {
       type: "FeatureCollection",
       features: [
         {
-          id: `Starting Point ${initialPinId(16)}`,
+          id: `Starting Point ${pinIdGenerator(16)}`,
           type: "Feature",
           properties: {},
           geometry: {
@@ -172,6 +163,7 @@ export default function MetaInfo() {
     const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
     setLine(turfLine);
 
+    console.log(getPointFeatures);
     getPointFeatures
       ? setGeoJSONPoint(getPointFeatures)
       : setGeoJSONPoint(createInitialPoint);
@@ -219,8 +211,10 @@ export default function MetaInfo() {
   const [pinFeature, setPinFeature] = useState({});
   const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
 
+  const initialFormValueForPins =
+    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
+
   useEffect(() => {
-    localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
     setPinFeature(JSON.stringify(geoJSONPoint));
     setPinId(geoJSONPoint.features[0].id);
     setPinLon(geoJSONPoint.features[0].geometry.coordinates[0]);
@@ -231,17 +225,6 @@ export default function MetaInfo() {
     opacity: selectedPinIndex + 1 < 1 ? 0.3 : 1,
     pointerEvents: selectedPinIndex + 1 < 1 ? "none" : "initial",
   };
-
-  const initialFormValues = [
-    {
-      id: "",
-      name: "",
-      save: "not_saved",
-    },
-  ];
-
-  const initialFormValuesLocal =
-    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
 
   /******************************************/
   //  Marker Click Handler
@@ -260,22 +243,14 @@ export default function MetaInfo() {
 
   // markerClickHandler function ==================
   const markerClickHandler = (event, pinIndex) => {
-    const updatedLocalGeo = JSON.parse(
-      localStorage.getItem("geoJSONPointLocal")
-    );
     const updatedFormValuesLocal = JSON.parse(
       localStorage.getItem("formValuesLocal")
     );
-    const pinId = getPointId(pinIndex, updatedLocalGeo);
+    const pinId = getPointId(pinIndex, geoJSONPoint);
     const getTheNameValue = updatedFormValuesLocal.findIndex(
       (x) => x.id === pinId
     );
     pinSelector(pinIndex + 1);
-    // console.log(
-    //   pinIndex + 1,
-    //   pinId.slice(0, 7),
-    //   updatedLocalGeo.features[pinIndex].geometry.coordinates[1]
-    // );
 
     // set Metadata form values ==================
     setSelectedPinIndex(pinIndex);
@@ -286,16 +261,16 @@ export default function MetaInfo() {
         : updatedFormValuesLocal[getTheNameValue].name
     );
     // setPinName(formDataHolder[0].name);
-    setPinLon(updatedLocalGeo.features[pinIndex].geometry.coordinates[0]);
-    setPinLat(updatedLocalGeo.features[pinIndex].geometry.coordinates[1]);
+    setPinLon(geoJSONPoint.features[pinIndex].geometry.coordinates[0]);
+    setPinLat(geoJSONPoint.features[pinIndex].geometry.coordinates[1]);
     setPinFeature("Test feature");
 
     // SetDistanceInKm ==================
     const turfPointFrom = turf.point(
-      updatedLocalGeo.features[0].geometry.coordinates
+      geoJSONPoint.features[0].geometry.coordinates
     );
     const turfPointTo = turf.point(
-      updatedLocalGeo.features[pinIndex].geometry.coordinates
+      geoJSONPoint.features[pinIndex].geometry.coordinates
     );
     const pointToPointDistance = (pointFrom, pointTo, line) => {
       const nearestPointOnLineFrom = turf.nearestPointOnLine(line, pointFrom);
@@ -334,7 +309,6 @@ export default function MetaInfo() {
   const goForTrackReview = async (e) => {
     e.preventDefault();
     localStorage.removeItem("formValuesLocal");
-    localStorage.removeItem("geoJSONPointLocal");
     navigate("/CreateTrack/TrackReview");
   };
   // Checkpoint for TrackID ==================
@@ -368,7 +342,6 @@ export default function MetaInfo() {
           }}
         >
           <MetaTrackNav />
-          {/* <TrackInfoFormStyled noValidate onSubmit={submitMetaInfo}> */}
           <MetaInfoFormStyled>
             <Grid item sm={12} md={8} className="gpxFileInfo">
               <div className="metaMapContainer">
@@ -380,7 +353,7 @@ export default function MetaInfo() {
                   longitude={centralLineCoordinate[0]}
                   latitude={centralLineCoordinate[1]}
                   onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.7}
+                  zoom={11.5}
                 >
                   <Source id="route" type="geojson" data={geoJSONLine} />
                   <Layer {...LayerStyle1} />
@@ -430,7 +403,7 @@ export default function MetaInfo() {
               <div className="pin_list">
                 <MetaInfoPinList
                   data={geoJSONPoint}
-                  localFormValues={initialFormValuesLocal}
+                  localFormValues={initialFormValueForPins}
                   cuttentPinIndex={selectedPinIndex}
                 />
               </div>
@@ -449,7 +422,7 @@ export default function MetaInfo() {
                 pinName={pinName}
                 distanceInKm={distanceInKm}
                 pinFeature={pinFeature}
-                localFormValues={initialFormValuesLocal}
+                localFormValues={initialFormValueForPins}
                 formVisibility={formVisibility}
                 selectedPinIndex={selectedPinIndex}
               />

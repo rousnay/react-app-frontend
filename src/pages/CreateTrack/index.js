@@ -15,24 +15,7 @@ import Uploader from "../../components/uploader";
 import { LayerStyle1 } from "./MetaTrackLayerStyle";
 import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
-
-const initial_MetaTrack = {
-  type: "FeatureCollection",
-  features: [
-    {
-      id: "Initial_MetaTrack_ID",
-      type: "Feature",
-      properties: {},
-      geometry: {
-        coordinates: [
-          [0, 0],
-          [0, 0],
-        ],
-        type: "LineString",
-      },
-    },
-  ],
-};
+import { initialLineCollection } from "./MetaTrackInitializer";
 
 async function createNewTrack(authToken, payloadData) {
   return fetch(`${API_URL}/track/info`, {
@@ -51,7 +34,7 @@ export default function CreateTrack() {
   const [user] = useUser();
   const [channelId, setChannelId] = useState(localStorage.channelId);
   const [trackName, setTrackName] = useState(" ");
-  const [geoJSONLine, setGeoJSONLine] = useState(initial_MetaTrack);
+  const [geoJSONLine, setGeoJSONLine] = useState(initialLineCollection);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
 
   const [name, setName] = useState(" ");
@@ -81,6 +64,7 @@ export default function CreateTrack() {
         timer: 1000,
       }).then((value) => {
         localStorage.setItem("currentTrackId", response.data.id);
+        localStorage.removeItem("formValuesLocal");
         navigate("/CreateTrack/MetaInfo");
       });
     } else {
@@ -121,7 +105,7 @@ export default function CreateTrack() {
       };
     } else {
       setTrackName(" ");
-      setGeoJSONLine(initial_MetaTrack);
+      setGeoJSONLine(initialLineCollection);
       setCentralCoordinate([0, 0]);
     }
   };
