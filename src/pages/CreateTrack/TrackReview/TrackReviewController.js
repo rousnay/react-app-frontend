@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/CONSTANTS";
 import { useToken } from "../../../auth/userAuth";
-import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import {
   Stack,
@@ -109,21 +109,21 @@ export default function TrackReviewController(props) {
         </Box>
       </Stack>
       <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-        {/* <Link to="/MetaInfo">
-          <Button
-            type="button"
-            size="small"
-            variant="outlined"
-            color="themepurple"
-            className="backToTrackInfo"
-          >
-            Back
-          </Button>
-        </Link> */}
+        <Button
+          type="button"
+          size="small"
+          variant="outlined"
+          color="themepurple"
+          className="backToTrackInfo"
+          onClick={() => {
+            navigate("/CreateTrack/MetaInfo");
+          }}
+        >
+          Back
+        </Button>
 
         <Button
           type="button"
-          fullWidth
           size="small"
           variant="contained"
           color="themepurple"
@@ -132,7 +132,7 @@ export default function TrackReviewController(props) {
             submitUpdatedTrackInfo(e);
           }}
         >
-          Submit
+          Next
         </Button>
       </Stack>
     </>

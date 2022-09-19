@@ -33,7 +33,6 @@ import {
   onDataChange,
 } from "./MetaInfoInteractionHandler";
 //const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
-
 const currentTrackId = localStorage.currentTrackId;
 
 var initialPinId = (len, bits) => {
@@ -97,7 +96,8 @@ export default function MetaInfo() {
       });
       const resData = await reqData.json();
       setTrackInfoData(resData.data);
-      return resData.data.rawGpx;
+      console.log(resData.data);
+      return resData.data;
     } catch (error) {
       console.log(error);
       return null;
@@ -105,18 +105,51 @@ export default function MetaInfo() {
   }, [token]);
 
   // GET Converted GeoJSON data ==================
-  const convertToGeoJSON = useCallback(async () => {
-    const trackAsyncGpx = await getTrackInfo();
+  const convertToGeoJSONLine = useCallback(async () => {
+    const trackAsyncData = await getTrackInfo();
+    const trackAsyncRawGpx = await trackAsyncData.rawGpx;
     var geoJSONLineData = await toGeoJson.gpx(
-      new DOMParser().parseFromString(trackAsyncGpx, "text/xml")
+      new DOMParser().parseFromString(trackAsyncRawGpx, "text/xml")
     );
     console.log(geoJSONLineData);
     return geoJSONLineData;
   }, [getTrackInfo]);
 
+  // GET PointFeatures ==================
+  const convertToPointFeatures = useCallback(async () => {
+    const trackAsyncData = await getTrackInfo();
+    const trackAsyncPoint = await trackAsyncData.pinPoints;
+    if (trackAsyncPoint.count === 0) return false;
+    else {
+      const trackAsyncPointArray = await trackAsyncPoint.pinPointArray;
+      const pointFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
+        const pointFeaturesId = pinPoint.id;
+        const pointFeaturesCoords = [pinPoint.lon, pinPoint.lat];
+        const pointFeatureAdd = {
+          type: "Feature",
+          id: pointFeaturesId,
+          properties: {
+            name: pinPoint.name,
+            text: pinPoint.text,
+            image: pinPoint.image,
+            pointNumber: index + 1,
+          },
+          geometry: { type: "Point", coordinates: pointFeaturesCoords },
+        };
+        return pointFeatureAdd;
+      });
+      const pointFeatureCollection = {
+        type: "FeatureCollection",
+        features: pointFeatureArray.reverse(),
+      };
+      return pointFeatureCollection;
+    }
+  }, [getTrackInfo]);
+
   // GET CentralCoordinate ==================
   const centralCoordinate = useCallback(async () => {
-    const trackAsyncGeoJson = await convertToGeoJSON();
+    const trackAsyncGeoJson = await convertToGeoJSONLine();
+    const getPointFeatures = await convertToPointFeatures();
     const allLineGeoCoordinates =
       trackAsyncGeoJson.features[0]?.geometry.coordinates;
     const turfLine = await turf.lineString(allLineGeoCoordinates);
@@ -124,7 +157,7 @@ export default function MetaInfo() {
       type: "FeatureCollection",
       features: [
         {
-          id: initialPinId(32),
+          id: `Starting Point ${initialPinId(16)}`,
           type: "Feature",
           properties: {},
           geometry: {
@@ -137,21 +170,24 @@ export default function MetaInfo() {
     const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
     const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
     const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
-
     setLine(turfLine);
-    setGeoJSONPoint(createInitialPoint);
+
+    getPointFeatures
+      ? setGeoJSONPoint(getPointFeatures)
+      : setGeoJSONPoint(createInitialPoint);
+
     return centralLineCoordinates;
-  }, [convertToGeoJSON]);
+  }, [convertToGeoJSONLine, convertToPointFeatures]);
 
   // Get TrackInfo Data ==================
   useEffect(() => {
     (async function () {
-      const geoJSONData = await convertToGeoJSON();
+      const geoJSONData = await convertToGeoJSONLine();
       const centralCoordinates = await centralCoordinate();
       setGeoJSONLine(geoJSONData);
       setCentralCoordinate(centralCoordinates);
     })();
-  }, [convertToGeoJSON, centralCoordinate]);
+  }, [convertToGeoJSONLine, centralCoordinate]);
 
   /******************************************/
   //  Drawing mode manipulation
@@ -181,14 +217,7 @@ export default function MetaInfo() {
   const [pinLat, setPinLat] = useState("");
   const [distanceInKm, SetDistanceInKm] = useState(0);
   const [pinFeature, setPinFeature] = useState({});
-
   const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
-  // const [newCollection, setNewCollection] = useState([initialPointCollection]);
-  // const [newFeatures, setNewFeatures] = useState([]);
-  // useEffect(() => {
-  //   const turfFeaturesCollection = turf.featureCollection([...newFeatures]);
-  //   setNewCollection(turfFeaturesCollection);
-  // }, [newFeatures]);
 
   useEffect(() => {
     localStorage.setItem("geoJSONPointLocal", JSON.stringify(geoJSONPoint));
@@ -253,31 +282,13 @@ export default function MetaInfo() {
     setPinId(pinId);
     setPinName2(
       getTheNameValue === -1
-        ? `PIN ID: ${pinId.slice(0, 5)}...`
+        ? `${pinId.slice(0, 14)}...`
         : updatedFormValuesLocal[getTheNameValue].name
     );
     // setPinName(formDataHolder[0].name);
     setPinLon(updatedLocalGeo.features[pinIndex].geometry.coordinates[0]);
     setPinLat(updatedLocalGeo.features[pinIndex].geometry.coordinates[1]);
     setPinFeature("Test feature");
-
-    // setNewFeatures ==================
-    // const updatedLocalGeofeatures = updatedLocalGeo.features.map(
-    //   (features) => features
-    // );
-    // const featureArray = updatedLocalGeofeatures.map((features, index) => {
-    //   const featuresId = features.id;
-    //   const featuresCoords = features.geometry.coordinates;
-    //   const featureAdd = {
-    //     type: "Feature",
-    //     id: featuresId,
-    //     properties: { name: "a name", pointNumber: index + 1 },
-    //     geometry: { type: "Point", coordinates: featuresCoords },
-    //   };
-
-    //   return featureAdd;
-    // });
-    // setNewFeatures(featureArray);
 
     // SetDistanceInKm ==================
     const turfPointFrom = turf.point(
@@ -319,6 +330,13 @@ export default function MetaInfo() {
     </Marker>
   ));
 
+  // Go to Track Review ==================
+  const goForTrackReview = async (e) => {
+    e.preventDefault();
+    localStorage.removeItem("formValuesLocal");
+    localStorage.removeItem("geoJSONPointLocal");
+    navigate("/CreateTrack/TrackReview");
+  };
   // Checkpoint for TrackID ==================
   useEffect(() => {
     if (!currentTrackId) {
@@ -456,6 +474,9 @@ export default function MetaInfo() {
                     variant="contained"
                     color="themepurple"
                     className="metaInfoSubmit"
+                    onClick={(e) => {
+                      goForTrackReview(e);
+                    }}
                   >
                     Next
                   </Button>

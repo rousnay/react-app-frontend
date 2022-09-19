@@ -59,11 +59,7 @@ export default function TrackReview() {
   const [geoJSONLine, setGeoJSONLine] = useState(initialLineCollection);
   const [geoJSONPoint, setGeoJSONPoint] = useState([]);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
-  const [line, setLine] = useState([0, 0]);
 
-  useEffect(() => {
-    console.log(line);
-  }, [line]);
   // GET TrackInfo ==================
   const getTrackInfo = useCallback(async () => {
     try {
@@ -83,7 +79,7 @@ export default function TrackReview() {
   }, [token]);
 
   // GET Converted GeoJSON data ==================
-  const convertToGeoJSON = useCallback(async () => {
+  const convertToGeoJSONLine = useCallback(async () => {
     const trackAsyncData = await getTrackInfo();
     const trackAsyncGpx = await trackAsyncData.rawGpx;
     var geoJSONLineData = toGeoJson.gpx(
@@ -95,55 +91,50 @@ export default function TrackReview() {
 
   // GET CentralCoordinate ==================
   const centralCoordinate = useCallback(async () => {
-    const trackAsyncGeoJson = await convertToGeoJSON();
-    console.log(trackAsyncGeoJson);
+    const trackAsyncGeoJson = await convertToGeoJSONLine();
     const allLineGeoCoordinates =
       trackAsyncGeoJson.features[0]?.geometry.coordinates;
-    const turfLine = await turf.lineString(allLineGeoCoordinates);
-    setLine(turfLine);
     const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
     const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
     const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
     return centralLineCoordinates;
-  }, [convertToGeoJSON]);
+  }, [convertToGeoJSONLine]);
 
   // GET PointFeatures ==================
   const convertToPointFeatures = (pinPointPayload) => {
-    const featureArray = pinPointPayload.map((pinPoint, index) => {
-      const featuresId = pinPoint.id;
-      const featuresCoords = [pinPoint.lon, pinPoint.lat];
-      const featureAdd = {
+    const pointFeatureArray = pinPointPayload.map((pinPoint, index) => {
+      const pointFeaturesId = pinPoint.id;
+      const pointFeaturesCoords = [pinPoint.lon, pinPoint.lat];
+      const pointFeatureAdd = {
         type: "Feature",
-        id: featuresId,
+        id: pointFeaturesId,
         properties: {
           name: pinPoint.name,
           text: pinPoint.text,
           image: pinPoint.image,
           pointNumber: index + 1,
         },
-        geometry: { type: "Point", coordinates: featuresCoords },
+        geometry: { type: "Point", coordinates: pointFeaturesCoords },
       };
-      console.log(featureAdd);
-      return featureAdd;
+      return pointFeatureAdd;
     });
-    setGeoJSONPoint(featureArray.reverse());
+    setGeoJSONPoint(pointFeatureArray.reverse());
   };
 
   // Get TrackInfo Data ==================
   useEffect(() => {
     (async function () {
       const trackData = await getTrackInfo();
-      const geoJSONData = await convertToGeoJSON();
-      console.log(geoJSONData);
+      const geoJSONLineData = await convertToGeoJSONLine();
       const centralCoordinates = await centralCoordinate();
       setTrackInfoData(trackData);
-      setGeoJSONLine(geoJSONData);
+      setGeoJSONLine(geoJSONLineData);
       setCentralCoordinate(centralCoordinates);
       setPrivacy(trackData.privacy);
       setTrackingTags(trackData.tags.split(","));
       convertToPointFeatures(trackData.pinPoints.pinPointArray);
     })();
-  }, [centralCoordinate, convertToGeoJSON, getTrackInfo]);
+  }, [centralCoordinate, convertToGeoJSONLine, getTrackInfo]);
 
   // Painting map Marker ==================
   const currentCoordinates = geoJSONPoint.map(

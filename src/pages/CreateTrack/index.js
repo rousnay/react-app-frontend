@@ -52,7 +52,7 @@ export default function CreateTrack() {
   const channelId = localStorage.channelId;
   // const [channelId, setChannelId] = useState(localChannelId);
   const [trackName, setTrackName] = useState(" ");
-  const [geoJSONLine, setGeoJSON] = useState(initial_MetaTrack);
+  const [geoJSONLine, setGeoJSONLine] = useState(initial_MetaTrack);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
 
   const [name, setName] = useState(" ");
@@ -92,7 +92,7 @@ export default function CreateTrack() {
   };
 
   // Convert GPX data to GeoJSON ==================
-  const convertToGeoJSON = (gpxPayload) => {
+  const convertToGeoJSONLine = (gpxPayload) => {
     if (gpxPayload) {
       const fileReader = new FileReader();
       fileReader.readAsText(gpxPayload, "UTF-8");
@@ -116,13 +116,13 @@ export default function CreateTrack() {
         const centralLineCoordinates =
           turfCenterLineFeature.geometry.coordinates;
 
-        setGeoJSON(geoJSONLineData);
+        setGeoJSONLine(geoJSONLineData);
         setTrackName(LineCollectionName);
         setCentralCoordinate(centralLineCoordinates);
       };
     } else {
       setTrackName(" ");
-      setGeoJSON(initial_MetaTrack);
+      setGeoJSONLine(initial_MetaTrack);
       setCentralCoordinate([0, 0]);
     }
   };
@@ -140,7 +140,7 @@ export default function CreateTrack() {
       return fileItem.file;
     });
     setGpxFile(_gpxFileItem);
-    convertToGeoJSON(_gpxFileItem[0]);
+    convertToGeoJSONLine(_gpxFileItem[0]);
   }
 
   // Checkpoint for channel existence ==================
