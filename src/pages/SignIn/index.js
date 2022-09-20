@@ -1,21 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
-
-async function loginUser(credentials) {
-  return fetch(`${API_URL}/user/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-}
 
 const genDeviceToken = (() => {
   return Math.random().toString(36).substring(2, 8);
@@ -34,12 +24,14 @@ export default function SignIn() {
   // Sign in form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await loginUser({
+    const formData = JSON.stringify({
       email,
       password,
       deviceType,
       deviceToken,
     });
+
+    const [response] = await RequestApi("POST", `user/login`, token, formData);
     if (response.message === "Success") {
       swal(
         "Welcome to FINTUSS",
@@ -52,6 +44,7 @@ export default function SignIn() {
       ).then((value) => {
         setToken(response.data.token);
         setUser(response.data);
+        localStorage.setItem("channelId", response.data.channelId);
         navigate("/Dashboard");
       });
     } else if (response.statusCode === 400) {

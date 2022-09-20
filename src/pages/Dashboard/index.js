@@ -1,6 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { API_URL } from "../../utils/Constants";
-// import { useToken, useUser } from "../../auth/userAuth";
 import { useUser } from "../../auth/userAuth";
 import { Container, Grid, Card } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
@@ -9,23 +6,6 @@ import UserInfo from "./UserInfo";
 
 export default function Dashboard() {
   const [user] = useUser();
-
-  // const [token] = useToken();
-  // const [userData, setUserData] = useState({});
-  // useEffect(() => {
-  //   (async function () {
-  //     const response = await fetch(`${API_URL}/user/info`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: "Bearer " + token,
-  //       },
-  //     }).then((data) => data.json());
-  //     if (response.message === "Success") {
-  //       setUserData(response.data);
-  //     }
-  //   })();
-  // }, []);
 
   return (
     <>

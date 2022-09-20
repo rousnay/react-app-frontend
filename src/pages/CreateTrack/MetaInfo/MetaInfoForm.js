@@ -1,28 +1,16 @@
 import { useState, useEffect } from "react";
-import { API_URL } from "../../../utils/CONSTANTS";
 import { useToken } from "../../../auth/userAuth";
 import { TextField, Button } from "@mui/material";
 import Uploader from "../../../components/uploader";
 import swal from "sweetalert";
-
+import { RequestApi } from "../../../components/RequestApi";
 const localCurrentTrackId = localStorage.currentTrackId;
-
-async function addNewPin(authToken, payloadData) {
-  return fetch(`${API_URL}/track/${localCurrentTrackId}/pin-point`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + authToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
 
 export default function MetaInfoForm(props) {
   const [token] = useToken();
 
   // Dynamic input setup ==================
   const [formValues, setFormValues] = useState(props.localFormValues);
-
   const newFormSubmit = (pin_id, pin_name, pin_save) => {
     let newValues = {
       id: pin_id,
@@ -64,7 +52,12 @@ export default function MetaInfoForm(props) {
   // MetaInfo (PIN) submission handler  ==================
   const submitMetaInfo = async (e) => {
     e.preventDefault();
-    const response = await addNewPin(token, formData);
+    const [response] = await RequestApi(
+      "POST",
+      `track/${localCurrentTrackId}/pin-point`,
+      token,
+      formData
+    );
     if (response.message === "Success") {
       swal("Success", "Pin has been add", "success", {
         buttons: false,

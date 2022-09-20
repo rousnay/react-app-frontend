@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  API_URL,
-  MAP_BOX_TOKEN,
-  MAP_BOX_STYLE,
-} from "../../../utils/CONSTANTS";
+import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
 import { useToken, useUser } from "../../../auth/userAuth";
-import { Container, Grid, Stack, Button } from "@mui/material";
+import { RequestApi } from "../../../components/RequestApi";
+import { Container, Grid, Stack, Button, Typography } from "@mui/material";
 import MapGL, {
   Source,
   Layer,
@@ -56,6 +53,7 @@ export default function MetaInfo() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
+  const [loading, setLoading] = useState(true);
   const [trackInfoData, setTrackInfoData] = useState({});
   const [geoJSONLine, setGeoJSONLine] = useState([]);
   const [geoJSONPoint, setGeoJSONPoint] = useState(initialPointCollection);
@@ -67,20 +65,13 @@ export default function MetaInfo() {
   /******************************************/
   // GET TrackInfo ==================
   const getTrackInfo = useCallback(async () => {
-    try {
-      const reqData = await fetch(`${API_URL}/track/${currentTrackId}/info`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      const resData = await reqData.json();
-      setTrackInfoData(resData.data);
-      return resData.data;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+    const [getTrackData, loading] = await RequestApi(
+      "GET",
+      `track/${currentTrackId}/info`,
+      token
+    );
+    setLoading(loading);
+    return await getTrackData.data;
   }, [token]);
 
   // GET Converted GeoJSON data ==================
@@ -91,6 +82,7 @@ export default function MetaInfo() {
       new DOMParser().parseFromString(trackAsyncRawGpx, "text/xml")
     );
     console.log(geoJSONLineData);
+    setTrackInfoData(trackAsyncData);
     return geoJSONLineData;
   }, [getTrackInfo]);
 
@@ -163,7 +155,6 @@ export default function MetaInfo() {
     const centralLineCoordinates = turfCenterLineFeature.geometry.coordinates;
     setLine(turfLine);
 
-    console.log(getPointFeatures);
     getPointFeatures
       ? setGeoJSONPoint(getPointFeatures)
       : setGeoJSONPoint(createInitialPoint);
@@ -189,16 +180,19 @@ export default function MetaInfo() {
   const prevMode = useRef(mode);
   useEffect(() => {
     prevMode.current = mode;
-    (() => {
-      setCurrentMode(prevMode.current);
-      const mapCanvas = document.querySelector("canvas.mapboxgl-canvas");
-      if (prevMode.current === "draw_point") {
-        mapCanvas.classList.add("draw_point_mode");
-      } else {
-        mapCanvas.classList.remove("draw_point_mode");
-      }
-    })();
-  }, [mode]);
+
+    if (document.querySelector("canvas.mapboxgl-canvas")) {
+      (() => {
+        setCurrentMode(prevMode.current);
+        const mapCanvas = document.querySelector("canvas.mapboxgl-canvas");
+        if (prevMode.current === "draw_point") {
+          mapCanvas.classList.add("draw_point_mode");
+        } else {
+          mapCanvas.classList.remove("draw_point_mode");
+        }
+      })();
+    }
+  }, [loading, mode]);
 
   /******************************************/
   //  Form value of with dynamic PIN info
@@ -342,121 +336,125 @@ export default function MetaInfo() {
           }}
         >
           <MetaTrackNav />
-          <MetaInfoFormStyled>
-            <Grid item sm={12} md={8} className="gpxFileInfo">
-              <div className="metaMapContainer">
-                <h4>Track Name: {trackInfoData.name}</h4>
-                <MapGL
-                  style={{ width: "100%", height: "500px" }}
-                  mapStyle={MAP_BOX_STYLE}
-                  accessToken={MAP_BOX_TOKEN}
-                  longitude={centralLineCoordinate[0]}
-                  latitude={centralLineCoordinate[1]}
-                  onClick={(event) => onMapClick(event, line, currentMode)}
-                  zoom={11.5}
-                >
-                  <Source id="route" type="geojson" data={geoJSONLine} />
-                  <Layer {...LayerStyle1} />
-                  <Draw
-                    position={"top-left"}
-                    displayControlsDefault={false}
-                    controls={{
-                      polygon: false,
-                      point: false,
-                      trash: true,
-                      scrollZoom: true,
-                    }}
-                    mode={currentMode}
-                    data={geoJSONPoint}
-                    pointControl={false}
-                    lineStringControl={false}
-                    polygonControl={false}
-                    combineFeaturesControl={false}
-                    uncombineFeaturesControl={false}
-                    onDrawModeChange={({ mode }) => setMode(mode)}
-                    onDrawDelete={(currentFeature) =>
-                      onDataDelete(currentFeature)
-                    }
-                    onChange={(geoJSONPoint) =>
-                      onDataChange(geoJSONPoint, line, setGeoJSONPoint)
-                    }
-                  />
-                  {pointMarkerLocal}
-                  <NavigationControl />
-                </MapGL>
-              </div>
-              <Stack className="pinInfoHeader">
-                <h3 style={{ margin: 0 }}>Pins</h3>
-                <Button
-                  type="button"
-                  size="small"
-                  variant={
-                    currentMode === "draw_point" ? "contained" : "outlined"
-                  }
-                  color="themepurple"
-                  className="metaInfoSubmit"
-                  onClick={() => setMode("draw_point")}
-                >
-                  Add a pin
-                </Button>
-              </Stack>
-              <div className="pin_list">
-                <MetaInfoPinList
-                  data={geoJSONPoint}
-                  localFormValues={initialFormValueForPins}
-                  cuttentPinIndex={selectedPinIndex}
-                />
-              </div>
-            </Grid>
-
-            <Grid
-              item
-              sm={12}
-              md={4}
-              className="trackInformation metaInformation"
-            >
-              <MetaInfoForm
-                pinId={pinId}
-                pinLon={pinLon}
-                pinLat={pinLat}
-                pinName={pinName}
-                distanceInKm={distanceInKm}
-                pinFeature={pinFeature}
-                localFormValues={initialFormValueForPins}
-                formVisibility={formVisibility}
-                selectedPinIndex={selectedPinIndex}
-              />
-
-              <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-                <Link to="/CreateTrack">
-                  <Button
-                    type="button"
-                    size="small"
-                    variant="outlined"
-                    color="themepurple"
-                    className="backToTrackInfo"
+          {loading ? (
+            <Typography>Loading...</Typography>
+          ) : (
+            <MetaInfoFormStyled>
+              <Grid item sm={12} md={8} className="gpxFileInfo">
+                <div className="metaMapContainer">
+                  <h4>Track Name: {trackInfoData.name}</h4>
+                  <MapGL
+                    style={{ width: "100%", height: "500px" }}
+                    mapStyle={MAP_BOX_STYLE}
+                    accessToken={MAP_BOX_TOKEN}
+                    longitude={centralLineCoordinate[0]}
+                    latitude={centralLineCoordinate[1]}
+                    onClick={(event) => onMapClick(event, line, currentMode)}
+                    zoom={11.5}
                   >
-                    Back
-                  </Button>
-                </Link>
-
-                <Link to="/CreateTrack/TrackReview">
+                    <Source id="route" type="geojson" data={geoJSONLine} />
+                    <Layer {...LayerStyle1} />
+                    <Draw
+                      position={"top-left"}
+                      displayControlsDefault={false}
+                      controls={{
+                        polygon: false,
+                        point: false,
+                        trash: true,
+                        scrollZoom: true,
+                      }}
+                      mode={currentMode}
+                      data={geoJSONPoint}
+                      pointControl={false}
+                      lineStringControl={false}
+                      polygonControl={false}
+                      combineFeaturesControl={false}
+                      uncombineFeaturesControl={false}
+                      onDrawModeChange={({ mode }) => setMode(mode)}
+                      onDrawDelete={(currentFeature) =>
+                        onDataDelete(currentFeature)
+                      }
+                      onChange={(geoJSONPoint) =>
+                        onDataChange(geoJSONPoint, line, setGeoJSONPoint)
+                      }
+                    />
+                    {pointMarkerLocal}
+                    <NavigationControl />
+                  </MapGL>
+                </div>
+                <Stack className="pinInfoHeader">
+                  <h3 style={{ margin: 0 }}>Pins</h3>
                   <Button
                     type="button"
                     size="small"
-                    variant="contained"
+                    variant={
+                      currentMode === "draw_point" ? "contained" : "outlined"
+                    }
                     color="themepurple"
                     className="metaInfoSubmit"
-                    onClick={(e) => {
-                      goForTrackReview(e);
-                    }}
+                    onClick={() => setMode("draw_point")}
                   >
-                    Next
+                    Add a pin
                   </Button>
-                </Link>
-              </Stack>
-            </Grid>
-          </MetaInfoFormStyled>
+                </Stack>
+                <div className="pin_list">
+                  <MetaInfoPinList
+                    data={geoJSONPoint}
+                    localFormValues={initialFormValueForPins}
+                    cuttentPinIndex={selectedPinIndex}
+                  />
+                </div>
+              </Grid>
+
+              <Grid
+                item
+                sm={12}
+                md={4}
+                className="trackInformation metaInformation"
+              >
+                <MetaInfoForm
+                  pinId={pinId}
+                  pinLon={pinLon}
+                  pinLat={pinLat}
+                  pinName={pinName}
+                  distanceInKm={distanceInKm}
+                  pinFeature={pinFeature}
+                  localFormValues={initialFormValueForPins}
+                  formVisibility={formVisibility}
+                  selectedPinIndex={selectedPinIndex}
+                />
+
+                <Stack direction="row" sx={{ justifyContent: "space-around" }}>
+                  <Link to="/CreateTrack">
+                    <Button
+                      type="button"
+                      size="small"
+                      variant="outlined"
+                      color="themepurple"
+                      className="backToTrackInfo"
+                    >
+                      Back
+                    </Button>
+                  </Link>
+
+                  <Link to="/CreateTrack/TrackReview">
+                    <Button
+                      type="button"
+                      size="small"
+                      variant="contained"
+                      color="themepurple"
+                      className="metaInfoSubmit"
+                      onClick={(e) => {
+                        goForTrackReview(e);
+                      }}
+                    >
+                      Next
+                    </Button>
+                  </Link>
+                </Stack>
+              </Grid>
+            </MetaInfoFormStyled>
+          )}
         </Grid>
       </Container>
     </>

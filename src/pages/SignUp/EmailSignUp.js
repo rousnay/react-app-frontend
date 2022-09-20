@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 // import { useQueryParams } from "../../utils/useQueryParams";
 import {
   Container,
@@ -14,16 +15,6 @@ import {
 import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
-
-async function userSignUp(payloadData) {
-  return fetch(`${API_URL}/user/signup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payloadData),
-  }).then((data) => data.json());
-}
 
 // async function oauthSignUp(provider) {
 //   return fetch(`${API_URL}/user/auth/${provider}`, {
@@ -64,7 +55,7 @@ export default function EmailSignUp() {
   // Signup form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await userSignUp({
+    const formData = JSON.stringify({
       username,
       email,
       password,
@@ -72,6 +63,7 @@ export default function EmailSignUp() {
       deviceToken,
     });
 
+    const [response] = await RequestApi("POST", `user/signup`, "", formData);
     if (response.message === "Success") {
       swal("Success", "Going for email verification...", "success", {
         buttons: false,

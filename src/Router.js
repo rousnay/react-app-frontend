@@ -19,6 +19,7 @@ const Channel = lazy(() => import("./pages/Channel"));
 const ChannelProfile = lazy(() => import("./pages/Channel/ChannelProfile"));
 const CreateTrack = lazy(() => import("./pages/CreateTrack/"));
 const MetaInfo = lazy(() => import("./pages/CreateTrack/MetaInfo"));
+const TrackAction = lazy(() => import("./pages/CreateTrack/TrackAction"));
 const TrackReview = lazy(() => import("./pages/CreateTrack/TrackReview"));
 const ManageTracks = lazy(() => import("./pages/Management/Tracks"));
 const ManageComments = lazy(() => import("./pages/Management/Comments"));
@@ -50,6 +51,7 @@ export const Router = () => {
               element={<ChannelProfile />}
             />
             <Route path="/CreateTrack" element={<CreateTrack />} />
+            <Route path="CreateTrack/TrackAction" element={<TrackAction />} />
             <Route path="CreateTrack/MetaInfo" element={<MetaInfo />} />
             <Route path="CreateTrack/TrackReview" element={<TrackReview />} />
             <Route path="Management/Tracks" element={<ManageTracks />} />

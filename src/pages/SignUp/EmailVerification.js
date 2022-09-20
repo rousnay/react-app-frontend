@@ -1,21 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/CONSTANTS";
 import { useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 import logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
-
-async function emailVerification(payloadData) {
-  return fetch(`${API_URL}/user/verify/email`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payloadData),
-  }).then((data) => data.json());
-}
 
 export default function EmailVerification() {
   // Initialization of variables =================
@@ -33,10 +23,17 @@ export default function EmailVerification() {
   // Verification form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await emailVerification({
+    const formData = JSON.stringify({
       email,
       otp,
     });
+
+    const [response] = await RequestApi(
+      "POST",
+      `user/verify/email`,
+      "",
+      formData
+    );
 
     if (response.message === "Success") {
       swal("Verified", "your email has been verified successfully", "success", {

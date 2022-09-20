@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 import {
   Container,
   Grid,
@@ -15,16 +15,6 @@ import swal from "sweetalert";
 import Uploader from "../../components/uploader";
 import { ChannelStyles } from "./ChannelStyles";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
-
-async function createChannel(authToken, payloadData) {
-  return fetch(`${API_URL}/channel`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + authToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
 
 export default function Channel() {
   const navigate = useNavigate();
@@ -45,7 +35,8 @@ export default function Channel() {
   const submitChannelInfo = async (e) => {
     e.preventDefault();
 
-    const response = await createChannel(token, formData);
+    const [response] = await RequestApi("POST", `channel`, token, formData);
+
     if (response.message === "Success") {
       localStorage.setItem("channelId", response.data.id);
       console.log(response.data.id);

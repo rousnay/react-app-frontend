@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  API_URL,
-  MAP_BOX_TOKEN,
-  MAP_BOX_STYLE,
-} from "../../../utils/CONSTANTS";
+import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
 import { useToken, useUser } from "../../../auth/userAuth";
+import { RequestApi } from "../../../components/RequestApi";
 import MapGL, {
   Source,
   Layer,
@@ -16,7 +13,7 @@ import toGeoJson from "@mapbox/togeojson";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
-import { Container, Grid, Stack } from "@mui/material";
+import { Container, Grid, Stack, Typography } from "@mui/material";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
 import MetaTrackNav from "../MetaTrackNav";
@@ -28,7 +25,7 @@ import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
 import { initialLineCollection } from "../MetaTrackInitializer";
 const currentTrackId = localStorage.currentTrackId;
-// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
+//const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
 // const currentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
 
 export default function TrackReview() {
@@ -36,6 +33,7 @@ export default function TrackReview() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
+  const [loading, setLoading] = useState(true);
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
   const [privacy, setPrivacy] = useState("");
@@ -45,20 +43,13 @@ export default function TrackReview() {
 
   // GET TrackInfo ==================
   const getTrackInfo = useCallback(async () => {
-    try {
-      const reqData = await fetch(`${API_URL}/track/${currentTrackId}/info`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      const resData = await reqData.json();
-      // console.log(resData.data.rawGpx);
-      return resData.data;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+    const [getTrackData, loading] = await RequestApi(
+      "GET",
+      `track/${currentTrackId}/info`,
+      token
+    );
+    setLoading(loading);
+    return await getTrackData.data;
   }, [token]);
 
   // GET Converted GeoJSON data ==================
@@ -161,47 +152,51 @@ export default function TrackReview() {
           }}
         >
           <MetaTrackNav />
-          <MetaInfoFormStyled>
-            <Grid item sm={12} md={8} className="gpxFileInfo">
-              <div className="metaMapContainer">
-                <h4>Track Name: {trackInfoData.name}</h4>
+          {loading ? (
+            <Typography>Loading...</Typography>
+          ) : (
+            <MetaInfoFormStyled>
+              <Grid item sm={12} md={8} className="gpxFileInfo">
+                <div className="metaMapContainer">
+                  <h4>Track Name: {trackInfoData.name}</h4>
 
-                <MapGL
-                  style={{ width: "100%", height: "500px" }}
-                  mapStyle={MAP_BOX_STYLE}
-                  accessToken={MAP_BOX_TOKEN}
-                  longitude={centralLineCoordinate[0]}
-                  latitude={centralLineCoordinate[1]}
-                  zoom={11.7}
-                >
-                  <Source id="route" type="geojson" data={geoJSONLine} />
-                  <Layer {...LayerStyle1} />
+                  <MapGL
+                    style={{ width: "100%", height: "500px" }}
+                    mapStyle={MAP_BOX_STYLE}
+                    accessToken={MAP_BOX_TOKEN}
+                    longitude={centralLineCoordinate[0]}
+                    latitude={centralLineCoordinate[1]}
+                    zoom={11.7}
+                  >
+                    <Source id="route" type="geojson" data={geoJSONLine} />
+                    <Layer {...LayerStyle1} />
 
-                  {pointMarkerFromApi}
-                  <NavigationControl />
-                </MapGL>
-              </div>
-              <Stack className="pinInfoHeader">
-                <h3>Pins</h3>
-              </Stack>
-              <div className="pin_list">
-                <TrackReviewPinList data={geoJSONPoint} />
-              </div>
-            </Grid>
+                    {pointMarkerFromApi}
+                    <NavigationControl />
+                  </MapGL>
+                </div>
+                <Stack className="pinInfoHeader">
+                  <h3>Pins</h3>
+                </Stack>
+                <div className="pin_list">
+                  <TrackReviewPinList data={geoJSONPoint} />
+                </div>
+              </Grid>
 
-            <Grid
-              item
-              sm={12}
-              md={4}
-              className="trackInformation metaInformation"
-            >
-              <TrackReviewContent
-                data={trackInfoData}
-                trackingTags={trackingTags}
-              />
-              <TrackReviewController data={trackInfoData} privacy={privacy} />
-            </Grid>
-          </MetaInfoFormStyled>
+              <Grid
+                item
+                sm={12}
+                md={4}
+                className="trackInformation metaInformation"
+              >
+                <TrackReviewContent
+                  data={trackInfoData}
+                  trackingTags={trackingTags}
+                />
+                <TrackReviewController data={trackInfoData} privacy={privacy} />
+              </Grid>
+            </MetaInfoFormStyled>
+          )}
         </Grid>
       </Container>
     </>

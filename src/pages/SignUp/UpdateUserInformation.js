@@ -1,22 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
 import Uploader from "../../components/uploader";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
-
-async function addUserInfo(authToken, payloadData) {
-  return fetch(`${API_URL}/user`, {
-    method: "PUT",
-    headers: {
-      Authorization: "Bearer " + authToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
 
 export default function UpdateUserInformation() {
   // Initialization of variables =================
@@ -43,8 +33,7 @@ export default function UpdateUserInformation() {
   // Updated form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const response = await addUserInfo(token, formData);
+    const [response] = await RequestApi("POST", `user`, token, formData);
     if (response.message === "Success") {
       swal(
         "Profile updated",
@@ -74,14 +63,7 @@ export default function UpdateUserInformation() {
   // Set initial user data from server =================
   useEffect(() => {
     async function getUserInfo() {
-      const response = await fetch("https://api.finutss.com/user/info", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }).then((data) => data.json());
-
+      const [response] = await RequestApi("GET", `user/info`, token);
       if (response.message === "Success") {
         return response.data;
       }

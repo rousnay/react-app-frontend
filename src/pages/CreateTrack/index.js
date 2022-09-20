@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL, MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/CONSTANTS";
+import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../auth/userAuth";
+import { RequestApi } from "../../components/RequestApi";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -17,16 +18,6 @@ import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import { initialLineCollection } from "./MetaTrackInitializer";
 
-async function createNewTrack(authToken, payloadData) {
-  return fetch(`${API_URL}/track/info`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + authToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
-
 export default function CreateTrack() {
   // Initialization of variables =================
   const navigate = useNavigate();
@@ -39,7 +30,7 @@ export default function CreateTrack() {
 
   const [name, setName] = useState(" ");
   const [description, setDescription] = useState(" ");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(" ");
   const [previewImage, setPreviewImage] = useState([]);
   const [type] = useState("loop");
   const [gpxFile, setGpxFile] = useState([]);
@@ -56,8 +47,7 @@ export default function CreateTrack() {
   // TrackInfo form submission handler  ==================
   const submitTrackInfo = async (e) => {
     e.preventDefault();
-    const response = await createNewTrack(token, formData);
-
+    const [response] = await RequestApi("POST", `track/info`, token, formData);
     if (response.message === "Success") {
       swal("Success", "Track information has been add", "success", {
         buttons: false,
