@@ -33,7 +33,7 @@ export default function UpdateUserInformation() {
   // Updated form handler =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const [response] = await RequestApi("POST", `user`, token, formData);
+    const [response] = await RequestApi("PUT", `user`, token, formData);
     if (response.message === "Success") {
       swal(
         "Profile updated",

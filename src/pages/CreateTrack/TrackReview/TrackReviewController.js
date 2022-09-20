@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../../utils/CONSTANTS";
 import { useToken } from "../../../auth/userAuth";
+import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
 import {
   Stack,
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 export default function TrackReviewController(props) {
+  // Initialization of variables =================
   const navigate = useNavigate();
   const [token] = useToken();
   const [trackId, setTrackId] = useState("");
@@ -31,28 +32,15 @@ export default function TrackReviewController(props) {
   var formData = new FormData();
   formData.append("privacy", privacy);
 
-  // ===============================
-  // updateTrackInfo
-  // ===============================
-  async function updateTrackInfo(payloadData) {
-    try {
-      const reqData = await fetch(`${API_URL}/track/${trackId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        body: payloadData,
-      });
-      return await reqData.json();
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
-
+  // updateTrackInfo ===============================
   const submitUpdatedTrackInfo = async (e) => {
     e.preventDefault();
-    const response = await updateTrackInfo(formData);
+    const [response] = await RequestApi(
+      "PUT",
+      `track/${trackId}`,
+      token,
+      formData
+    );
     if (response.message === "Success") {
       swal(
         "Track Creation Completed!",
@@ -65,9 +53,6 @@ export default function TrackReviewController(props) {
         if (manageTrack) {
           localStorage.removeItem("formValuesLocal");
           localStorage.removeItem("currentTrackId");
-          localStorage.removeItem("geoJSONPointLocal");
-          localStorage.removeItem("geoJSONLineLocal");
-          localStorage.removeItem("centralLineCoordinateLocal");
           navigate("/Management/Tracks");
         }
       });

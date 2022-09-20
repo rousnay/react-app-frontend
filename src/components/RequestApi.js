@@ -1,10 +1,12 @@
 import { API_URL } from "../utils/CONSTANTS";
 export const RequestApi = async (method, reqUrl, authToken, payloadData) => {
-  if (typeof payloadData === "string") {
-    console.log(payloadData);
-  } else {
-    for (const pair of payloadData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
+  if (payloadData) {
+    if (typeof payloadData === "string") {
+      console.log(payloadData);
+    } else {
+      for (const pair of payloadData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
     }
   }
 
@@ -26,9 +28,9 @@ export const RequestApi = async (method, reqUrl, authToken, payloadData) => {
       body: payloadData,
       headers: config,
     });
-    const resData = await reqData.json();
+    const response = await reqData.json();
     isLoading = false;
-    return [resData, isLoading];
+    return [response, isLoading];
   } catch (error) {
     console.log(error);
     return null;

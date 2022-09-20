@@ -80,10 +80,8 @@ export default function CreateTrack() {
 
         const LineCollectionName =
           geoJSONLineData.features[indexOfName].properties.name;
-
         const allLineGeoCoordinates =
           geoJSONLineData.features[0].geometry.coordinates;
-
         const turfLineFeatureCollection = turf.points(allLineGeoCoordinates);
         const turfCenterLineFeature = turf.center(turfLineFeatureCollection);
         const centralLineCoordinates =
@@ -112,6 +110,7 @@ export default function CreateTrack() {
     const _gpxFileItem = fileItems.map((fileItem) => {
       return fileItem.file;
     });
+
     setGpxFile(_gpxFileItem);
     convertToGeoJSONLine(_gpxFileItem[0]);
   }
