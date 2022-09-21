@@ -34,8 +34,7 @@ import {
   onDataChange,
 } from "./MetaInfoInteractionHandler";
 const currentTrackId = localStorage.currentTrackId;
-// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; //working
-// const currentTrackId = "8ad9a33e-4abc-4356-88f3-1173c61f9955"; //notWorking
+// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 var pinIdGenerator = (len, bits) => {
   bits = bits || 36;

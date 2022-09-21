@@ -17,6 +17,8 @@ import { LayerStyle1 } from "./MetaTrackLayerStyle";
 import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import { initialLineCollection } from "./MetaTrackInitializer";
+// const currentTrackId = localStorage.currentTrackId; // For PUT API
+// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 export default function CreateTrack() {
   // Initialization of variables =================
