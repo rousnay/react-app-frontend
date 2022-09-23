@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
-import { useToken } from "../../../hooks/userAuth";
 import { TextField, Button } from "@mui/material";
 import Uploader from "../../../components/Uploader";
 import swal from "sweetalert";
 import { RequestApi } from "../../../components/RequestApi";
-const localCurrentTrackId = localStorage.currentTrackId;
 
 export default function MetaInfoForm(props) {
-  const [token] = useToken();
-
   // Dynamic input setup ==================
   const [formValues, setFormValues] = useState(props.localFormValues);
   const newFormSubmit = (pin_id, pin_name, pin_save) => {
@@ -54,8 +50,8 @@ export default function MetaInfoForm(props) {
     e.preventDefault();
     const [response] = await RequestApi(
       "POST",
-      `track/${localCurrentTrackId}/pin-point`,
-      token,
+      `track/${props.trackId}/pin-point`,
+      props.token,
       formData
     );
     if (response.message === "Success") {

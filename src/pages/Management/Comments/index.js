@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../hooks/userAuth";
+import { useToken, useUser } from "../../../hooks/useUserInfo";
 import { Container, Grid } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";

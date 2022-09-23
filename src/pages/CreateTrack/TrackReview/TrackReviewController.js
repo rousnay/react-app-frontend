@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToken } from "../../../hooks/userAuth";
 import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
 import {
@@ -16,13 +15,10 @@ import {
 export default function TrackReviewController(props) {
   // Initialization of variables =================
   const navigate = useNavigate();
-  const [token] = useToken();
-  const [trackId, setTrackId] = useState("");
   const [privacy, setPrivacy] = useState("");
 
   useEffect(() => {
     setPrivacy(props.privacy);
-    setTrackId(props.data.id);
   }, [props]);
 
   const handlePrivacyChange = (event) => {
@@ -37,8 +33,8 @@ export default function TrackReviewController(props) {
     e.preventDefault();
     const [response] = await RequestApi(
       "PUT",
-      `track/${trackId}`,
-      token,
+      `track/${props.trackId}`,
+      props.token,
       formData
     );
     if (response.message === "Success") {
@@ -51,8 +47,7 @@ export default function TrackReviewController(props) {
         }
       ).then((manageTrack) => {
         if (manageTrack) {
-          localStorage.removeItem("formValuesLocal");
-          localStorage.removeItem("currentTrackId");
+          localStorage.removeItem("track");
           navigate("/Management/Tracks");
         }
       });

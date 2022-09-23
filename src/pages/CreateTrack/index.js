@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/CONSTANTS";
-import { useToken, useUser } from "../../hooks/userAuth";
+import { useToken, useChannel, useTrack } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
@@ -17,15 +17,13 @@ import { LayerStyle1 } from "./MetaTrackLayerStyle";
 import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
 import { initialLineCollection } from "./MetaTrackInitializer";
-// const currentTrackId = localStorage.currentTrackId; // For PUT API
-// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 export default function CreateTrack() {
   // Initialization of variables =================
   const navigate = useNavigate();
   const [token] = useToken();
-  const [user] = useUser();
-  const [channelId, setChannelId] = useState(localStorage.channelId);
+  const [channelId] = useChannel();
+  const [, setTrackId] = useTrack();
   const [trackName, setTrackName] = useState(" ");
   const [geoJSONLine, setGeoJSONLine] = useState(initialLineCollection);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
@@ -55,8 +53,7 @@ export default function CreateTrack() {
         buttons: false,
         timer: 1000,
       }).then((value) => {
-        localStorage.setItem("currentTrackId", response.data.id);
-        localStorage.removeItem("formValuesLocal");
+        setTrackId(response.data.id);
         navigate("/CreateTrack/MetaInfo");
       });
     } else {
@@ -119,11 +116,7 @@ export default function CreateTrack() {
 
   // Checkpoint for channel existence ==================
   useEffect(() => {
-    if (user.channelId) {
-      setChannelId(user.channelId);
-      localStorage.setItem("channelId", user.channelId);
-    }
-    if (!user.channelId && !channelId) {
+    if (!channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {
@@ -134,11 +127,11 @@ export default function CreateTrack() {
         }
       });
     }
-  }, [user.channelId, channelId, navigate]);
+  }, [channelId, navigate]);
 
   return (
     <>
-      <PrivetHeader loginInfo={user} />
+      <PrivetHeader />
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
           container

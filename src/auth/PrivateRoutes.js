@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { useToken } from "../hooks/userAuth";
+import { useToken } from "../hooks/useUserInfo";
 
 export const PrivateRoutes = () => {
   const [token] = useToken();

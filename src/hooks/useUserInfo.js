@@ -27,3 +27,29 @@ export const useUser = () => {
   //   console.log(user);
   return [user, setUser];
 };
+
+// Manage channel ID ==================
+export const useChannel = () => {
+  const [channel, setChannelInternal] = useState(() => {
+    return localStorage.getItem("channel");
+  });
+
+  const setChannel = (newChannel) => {
+    localStorage.setItem("channel", newChannel);
+    setChannelInternal(newChannel);
+  };
+  return [channel, setChannel];
+};
+
+// Manage Track ID ==================
+export const useTrack = () => {
+  const [track, setTrackInternal] = useState(() => {
+    return localStorage.getItem("track");
+  });
+
+  const setTrack = (newTrack) => {
+    localStorage.setItem("track", newTrack);
+    setTrackInternal(newTrack);
+  };
+  return [track, setTrack];
+};

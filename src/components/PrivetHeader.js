@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../hooks/useUserInfo";
 import {
   Container,
   Grid,
@@ -16,13 +17,13 @@ import LogoWidthWhite from "../assets/logo-width-white.svg";
 
 export default function PrivetHeader(props) {
   const navigate = useNavigate();
+  const [user] = useUser();
 
   useEffect(() => {
     document.body.classList.remove("hasPublicHeader");
     document.body.classList.add("hasPrivetHeader");
   }, []);
 
-  const userData = props.loginInfo;
   let totalBalance = "$99,000";
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -42,7 +43,7 @@ export default function PrivetHeader(props) {
   };
 
   let loginButton;
-  if (userData) {
+  if (user) {
     loginButton = <MenuItem onClick={handleLogout}> Logout </MenuItem>;
   } else {
     loginButton = <MenuItem onClick={handleSignIn}> Sign in </MenuItem>;
@@ -99,7 +100,7 @@ export default function PrivetHeader(props) {
                   >
                     Welcome,{" "}
                     <span style={{ fontWeight: "bold" }}>
-                      {userData ? userData.username : "Guest"}
+                      {user ? user.username : "Guest"}
                     </span>
                   </Typography>
 
@@ -110,10 +111,10 @@ export default function PrivetHeader(props) {
                         fontWeight: "bold",
                       }}
                     >
-                      {userData ? totalBalance : "$0,00"}
+                      {user ? totalBalance : "$0,00"}
                     </span>
                     <IconButton onClick={handleMenu} color="inherit">
-                      <Avatar src={userData ? userData.profilePhoto : ""} />
+                      <Avatar src={user ? user.profilePhoto : ""} />
                     </IconButton>
                     <Menu
                       id="menu-appbar"

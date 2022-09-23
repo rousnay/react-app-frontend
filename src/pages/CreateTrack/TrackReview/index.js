@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../hooks/userAuth";
+import { useToken, useTrack } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
 import MapGL, {
   Source,
@@ -24,14 +24,13 @@ import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
 import { initialLineCollection } from "../MetaTrackInitializer";
-const currentTrackId = localStorage.currentTrackId;
-//const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
+//const trackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 export default function TrackReview() {
   // Initialization ==================
   const navigate = useNavigate();
   const [token] = useToken();
-  const [user] = useUser();
+  const [trackId] = useTrack();
   const [loading, setLoading] = useState(true);
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);
@@ -44,12 +43,12 @@ export default function TrackReview() {
   const getTrackInfo = useCallback(async () => {
     const [getTrackData, loading] = await RequestApi(
       "GET",
-      `track/${currentTrackId}/info`,
+      `track/${trackId}/info`,
       token
     );
     setLoading(loading);
     return await getTrackData.data;
-  }, [token]);
+  }, [trackId, token]);
 
   // GET Converted GeoJSON data ==================
   const convertToGeoJSONLine = useCallback(async () => {
@@ -122,13 +121,13 @@ export default function TrackReview() {
 
   // Checkpoint for TrackID ==================
   useEffect(() => {
-    if (!currentTrackId) {
+    if (!trackId) {
       navigate("/CreateTrack");
     }
   });
   return (
     <>
-      <PrivetHeader loginInfo={user} />
+      <PrivetHeader />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
@@ -192,7 +191,12 @@ export default function TrackReview() {
                   data={trackInfoData}
                   trackingTags={trackingTags}
                 />
-                <TrackReviewController data={trackInfoData} privacy={privacy} />
+                <TrackReviewController
+                  token={token}
+                  trackId={trackId}
+                  data={trackInfoData}
+                  privacy={privacy}
+                />
               </Grid>
             </MetaInfoFormStyled>
           )}

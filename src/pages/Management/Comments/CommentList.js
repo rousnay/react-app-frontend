@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken } from "../../../hooks/userAuth";
+import { useToken } from "../../../hooks/useUserInfo";
 import swal from "sweetalert";
 import {
   Stack,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../hooks/userAuth";
+import { useToken, useTrack } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
 import { Container, Grid, Stack, Button, Typography } from "@mui/material";
 import MapGL, {
@@ -33,8 +33,7 @@ import {
   onDataDelete,
   onDataChange,
 } from "./MetaInfoInteractionHandler";
-const currentTrackId = localStorage.currentTrackId;
-// const currentTrackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
+// const trackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 var pinIdGenerator = (len, bits) => {
   bits = bits || 36;
@@ -51,7 +50,7 @@ export default function MetaInfo() {
   // Initialization ==================
   const navigate = useNavigate();
   const [token] = useToken();
-  const [user] = useUser();
+  const [trackId] = useTrack();
   const [loading, setLoading] = useState(true);
   const [trackInfoData, setTrackInfoData] = useState({});
   const [geoJSONLine, setGeoJSONLine] = useState([]);
@@ -66,12 +65,12 @@ export default function MetaInfo() {
   const getTrackInfo = useCallback(async () => {
     const [getTrackData, loading] = await RequestApi(
       "GET",
-      `track/${currentTrackId}/info`,
+      `track/${trackId}/info`,
       token
     );
     setLoading(loading);
     return await getTrackData.data;
-  }, [token]);
+  }, [trackId, token]);
 
   // GET Converted GeoJSON data ==================
   const convertToGeoJSONLine = useCallback(async () => {
@@ -139,7 +138,7 @@ export default function MetaInfo() {
       type: "FeatureCollection",
       features: [
         {
-          id: `Starting Point ${pinIdGenerator(16)}`,
+          id: `Starting_Point_${pinIdGenerator(16)}`,
           type: "Feature",
           properties: {},
           geometry: {
@@ -299,20 +298,28 @@ export default function MetaInfo() {
   ));
 
   // Go to Track Review ==================
-  const goForTrackReview = async (e) => {
+  const goForTrackReview = (e) => {
     e.preventDefault();
     localStorage.removeItem("formValuesLocal");
     navigate("/CreateTrack/TrackReview");
   };
+
+  // Go to Create Track ==================
+  const goForCreateTrack = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("formValuesLocal");
+    navigate("/CreateTrack");
+  };
+
   // Checkpoint for TrackID ==================
   useEffect(() => {
-    if (!currentTrackId) {
+    if (!trackId) {
       navigate("/CreateTrack");
     }
   });
   return (
     <>
-      <PrivetHeader loginInfo={user} />
+      <PrivetHeader />
 
       <Container maxWidth="xl" sx={{ display: " flex" }}>
         <Grid
@@ -412,6 +419,8 @@ export default function MetaInfo() {
                 className="trackInformation metaInformation"
               >
                 <MetaInfoForm
+                  token={token}
+                  trackId={trackId}
                   pinId={pinId}
                   pinLon={pinLon}
                   pinLat={pinLat}
@@ -424,32 +433,31 @@ export default function MetaInfo() {
                 />
 
                 <Stack direction="row" sx={{ justifyContent: "space-around" }}>
-                  <Link to="/CreateTrack">
-                    <Button
-                      type="button"
-                      size="small"
-                      variant="outlined"
-                      color="themePurple"
-                      className="backToTrackInfo"
-                    >
-                      Back
-                    </Button>
-                  </Link>
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="outlined"
+                    color="themePurple"
+                    className="backToTrackInfo"
+                    onClick={(e) => {
+                      goForCreateTrack(e);
+                    }}
+                  >
+                    Back
+                  </Button>
 
-                  <Link to="/CreateTrack/TrackReview">
-                    <Button
-                      type="button"
-                      size="small"
-                      variant="contained"
-                      color="themePurple"
-                      className="metaInfoSubmit"
-                      onClick={(e) => {
-                        goForTrackReview(e);
-                      }}
-                    >
-                      Next
-                    </Button>
-                  </Link>
+                  <Button
+                    type="button"
+                    size="small"
+                    variant="contained"
+                    color="themePurple"
+                    className="metaInfoSubmit"
+                    onClick={(e) => {
+                      goForTrackReview(e);
+                    }}
+                  >
+                    Next
+                  </Button>
                 </Stack>
               </Grid>
             </MetaInfoFormStyled>

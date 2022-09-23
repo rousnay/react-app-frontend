@@ -1,21 +1,14 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CardContent, Card, Typography, Button } from "@mui/material";
 
 export default function UserInfo(props) {
-  const userData = props.loginInfo;
-  const [channelId, setChannelId] = useState(localStorage.channelId);
-  useEffect(() => {
-    if (userData.channelId) {
-      setChannelId(userData.channelId);
-      localStorage.setItem("channelId", userData.channelId);
-    }
-  }, [userData.channelId]);
+  const userInfo = props.userInfo;
+  const channelId = props.channelId;
 
   return (
     <>
       <CardContent>
-        {userData.profilePhoto === "undefined" ? (
+        {userInfo.profilePhoto === "undefined" ? (
           <Card variant="outlined" sx={{ maxWidth: 270, padding: "50px" }}>
             <Typography sx={{ fontSize: 14 }} color="logoRed" gutterBottom>
               No profile photo exist
@@ -27,47 +20,42 @@ export default function UserInfo(props) {
               width: "100%",
               maxWidth: "270px",
             }}
-            src={userData.profilePhoto}
-            alt={userData.firstName}
+            src={userInfo.profilePhoto}
+            alt={userInfo.firstName}
           />
         )}
         <p>
           <span style={{ fontWeight: "bold" }}>Name: </span>
-          {userData.firstName} {userData.lastName}
+          {userInfo.firstName} {userInfo.lastName}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Username: </span>
-          {userData.username}
+          {userInfo.username}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Email: </span>
-          {userData.email}
+          {userInfo.email}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Address: </span>
-          {userData.addressLine1}, {userData.addressLine2}, {userData.city},{" "}
-          {userData.state} - {userData.zipCode}.
+          {userInfo.addressLine1}, {userInfo.addressLine2}, {userInfo.city},{" "}
+          {userInfo.state} - {userInfo.zipCode}.
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Country: </span>
-          {userData.country}
+          {userInfo.country}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Account Type: </span>
-          {userData.accountType}
+          {userInfo.accountType}
         </p>
         <p>
           <span style={{ fontWeight: "bold" }}>Channel ID: </span>
-          {userData.channelId || channelId ? (
+          {channelId ? (
             channelId
           ) : (
             <Link to="/Channel">
-              <Button
-                // fullWidth
-                // variant="contained"
-                color="themeGreen"
-                className="channelSubmit"
-              >
+              <Button color="themeGreen" className="channelSubmit">
                 Create Channel
               </Button>
             </Link>

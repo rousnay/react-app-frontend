@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "../../hooks/userAuth";
+import { useToken, useChannel } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
 import {
   Container,
@@ -19,8 +19,7 @@ import LogoSquareBlack from "../../assets/logo-square-black.svg";
 export default function Channel() {
   const navigate = useNavigate();
   const [token] = useToken();
-  const [user] = useUser();
-  const [channelId, setChannelId] = useState(localStorage.channelId);
+  const [channelId, setChannelId] = useChannel();
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState([]);
@@ -38,8 +37,8 @@ export default function Channel() {
     const [response] = await RequestApi("POST", `channel`, token, formData);
 
     if (response.message === "Success") {
-      localStorage.setItem("channelId", response.data.id);
-      console.log(response.data.id);
+      console.log(setChannelId(response.data));
+      setChannelId(response.data.id);
       swal("Success", "Channel has been created", "success", {
         buttons: ["Back to dashboard", "Create MetaTrack"],
       }).then((createChannel) => {
@@ -70,23 +69,19 @@ export default function Channel() {
   }
 
   useEffect(() => {
-    if (user.channelId) {
-      setChannelId(user.channelId);
-      localStorage.setItem("channelId", user.channelId);
-    }
-    if (user.channelId || channelId) {
+    if (channelId) {
       swal("Channel exist!", `You already have a channel`, "info", {
-        buttons: ["Back to dashboard", "View your channel"],
-      }).then((goToChannel) => {
-        if (goToChannel) {
-          navigate("/Channel/ChannelProfile");
+        buttons: ["Back to Channel", "Create a Track"],
+      }).then((createTrack) => {
+        if (createTrack) {
+          navigate("/CreateTrack");
         } else {
-          navigate("/Dashboard");
+          navigate("/Channel/ChannelProfile");
         }
       });
     } else {
     }
-  }, [channelId, navigate, user.channelId]);
+  }, [channelId, navigate]);
 
   return (
     <>

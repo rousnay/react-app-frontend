@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "../../hooks/userAuth";
+import { useToken, useUser, useChannel } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
@@ -16,6 +16,7 @@ export default function SignIn() {
   const navigate = useNavigate();
   const [token, setToken] = useToken();
   const [, setUser] = useUser();
+  const [, setChannelId] = useChannel();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const deviceType = "ios";
@@ -44,7 +45,7 @@ export default function SignIn() {
       ).then((value) => {
         setToken(response.data.token);
         setUser(response.data);
-        localStorage.setItem("channelId", response.data.channelId);
+        setChannelId(response.data.channelId);
         navigate("/Dashboard");
       });
     } else if (response.statusCode === 400) {

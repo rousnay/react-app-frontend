@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken } from "../../hooks/userAuth";
+import { useToken } from "../../hooks/useUserInfo";
 import {
   Container,
   Grid,
