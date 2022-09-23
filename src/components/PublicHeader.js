@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import logo from "../assets/logo.svg";
+import Logo from "../assets/logo.svg";
 
 const MenuItem = styled("li")`
   list-style: none;
@@ -11,7 +11,7 @@ const MenuItem = styled("li")`
     font-weight: 700;
     font-size: 17px;
     padding: 5px;
-    color: var(--themeblack);
+    color: var(--themeBlack);
     text-decoration: none;
     // &:hover {
     //   background-color: #65daf9;
@@ -24,9 +24,9 @@ const MenuItem = styled("li")`
 `;
 
 const SigninStyles = {
-  border: `1px solid var(--logored)`,
+  border: `1px solid var(--logoRed)`,
   borderRadius: "6px",
-  color: `var(--logored)`,
+  color: `var(--logoRed)`,
   "&:hover": {
     backgroundColor: "#f73a6b",
     color: "white",
@@ -45,7 +45,7 @@ export default function PublicHeader() {
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
           <Grid item xs={12} md={4}>
             <Link to="/Home">
-              <img src={logo} alt="Logo" />
+              <img src={Logo} alt="Logo" />
             </Link>
           </Grid>
           <Grid item xs={12} md={8}>

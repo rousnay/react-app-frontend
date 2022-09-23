@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "../../auth/userAuth";
+import { useToken, useUser } from "../../hooks/userAuth";
 import { RequestApi } from "../../components/RequestApi";
 import {
   Container,
@@ -12,7 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import swal from "sweetalert";
-import Uploader from "../../components/uploader";
+import Uploader from "../../components/Uploader";
 import { ChannelStyles } from "./ChannelStyles";
 import LogoSquareBlack from "../../assets/logo-square-black.svg";
 
@@ -96,7 +96,7 @@ export default function Channel() {
             <Stack direction="row" spacing={2}>
               <Grid item sm={12} md={6}>
                 <Box sm={6} sx={{ flexGrow: 1 }}>
-                  <Typography variant="h4" sx={{ color: `var(--logoblack)` }}>
+                  <Typography variant="h4" sx={{ color: `var(--logoBlack)` }}>
                     Channel Information
                   </Typography>
                   <p>
@@ -158,7 +158,7 @@ export default function Channel() {
                       <Uploader
                         files={image}
                         name={"image"}
-                        onupdatefiles={(fileItems) => setImagedata(fileItems)}
+                        onUpdateFiles={(fileItems) => setImagedata(fileItems)}
                         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                       />
                     </div>
@@ -168,7 +168,7 @@ export default function Channel() {
                       <Uploader
                         files={bannerImage}
                         name={"bannerImage"}
-                        onupdatefiles={(fileItems) =>
+                        onUpdateFiles={(fileItems) =>
                           setBannerImagedata(fileItems)
                         }
                         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
@@ -180,7 +180,7 @@ export default function Channel() {
                     type="submit"
                     fullWidth
                     variant="contained"
-                    color="logoblue"
+                    color="logoBlue"
                     className="channelSubmit"
                   >
                     Save

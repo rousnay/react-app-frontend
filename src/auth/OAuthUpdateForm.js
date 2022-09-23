@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "../../hooks/userAuth";
-import { RequestApi } from "../../components/RequestApi";
+import { useToken, useUser } from "./userAuth";
+import { RequestApi } from "../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import Uploader from "../../components/Uploader";
-import Logo from "../../assets/logo.svg";
+import Uploader from "../components/uploader";
+import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
-export default function UpdateUserInformation() {
+export default function OAuthUpdateForm() {
   // Initialization of variables =================
   const navigate = useNavigate();
   const [token] = useToken();
@@ -87,7 +87,7 @@ export default function UpdateUserInformation() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <Link to="/">
-              <img src={Logo} alt="Logo" />
+              <img src={logo} alt="Logo" />
             </Link>
             <h3 style={{ marginTop: "50px" }}>
               Update your profile information{" "}

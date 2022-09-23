@@ -18,31 +18,31 @@ export const AppTheme = createTheme({
   },
   // palette - style Custom
   palette: {
-    logored: {
+    logoRed: {
       main: "#f73a6b",
       contrastText: "#fff",
     },
-    logoblue: {
+    logoBlue: {
       main: "#3bcce1",
       contrastText: "#fff",
     },
-    logoblack: {
+    logoBlack: {
       main: "#2b2d42",
       contrastText: "#fff",
     },
-    themered: {
+    themeRed: {
       main: "#ff4141",
       contrastText: "#fff",
     },
-    themegreen: {
+    themeGreen: {
       main: "#40ac4f",
       contrastText: "#fff",
     },
-    themeblue: {
+    themeBlue: {
       main: "#4caff6",
       contrastText: "#fff",
     },
-    themeyellow: {
+    themeYellow: {
       main: "#ff9938",
       contrastText: "#fff",
     },
@@ -50,15 +50,15 @@ export const AppTheme = createTheme({
       main: "#ab64e8",
       contrastText: "#fff",
     },
-    themeblack: {
+    themeBlack: {
       main: "#1d1f30",
       contrastText: "#fff",
     },
-    themegray: {
+    themeGray: {
       main: "#777983",
       contrastText: "#fff",
     },
-    themebg: {
+    themeBackground: {
       main: "#d0d0d0",
       contrastText: "#fff",
     },

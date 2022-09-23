@@ -1,23 +1,23 @@
 :root {
-  --logored : #f73a6b;
-  --logoblue : #3bcce1;
-  --logoblack : #2b2d42;
-  --themered : #ff4141;
-  --themegreen : #40ac4f;
-  --themeblue : #4caff6;
-  --themeyellow : #ff9938;
+  --logoRed : #f73a6b;
+  --logoBlue : #3bcce1;
+  --logoBlack : #2b2d42;
+  --themeRed : #ff4141;
+  --themeGreen : #40ac4f;
+  --themeBlue : #4caff6;
+  --themeYellow : #ff9938;
   --themepurple : #ab64e8;
-  --themeblack : #1d1f30;
-  --themegray : #777983;
+  --themeBlack : #1d1f30;
+  --themeGray : #777983;
   --themeinput : #bacbe9;
-  --themebg : #F6F9FF;
+  --themeBackground : #F6F9FF;
 }
 
 body.hasPublicHeader{
   background-color:  white!important;
 }
 body.hasPrivetHeader{
-  background-color:  var(--themebg)!important;
+  background-color:  var(--themeBackground)!important;
 }
 .App {
   text-align: center;

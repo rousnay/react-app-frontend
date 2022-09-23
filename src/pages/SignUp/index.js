@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken } from "../../auth/userAuth";
+import { useToken } from "../../hooks/userAuth";
 import {
   Container,
   Grid,
@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import swal from "sweetalert";
-import logo from "../../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 export default function SignUp() {
@@ -86,13 +86,13 @@ export default function SignUp() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <Link to="/">
-              <img src={logo} alt="Logo" />
+              <img src={Logo} alt="Logo" />
             </Link>
 
             <div className="formHolder" style={{ marginTop: "100px" }}>
               <Typography
                 sx={{
-                  color: `var(--logored)`,
+                  color: `var(--logoRed)`,
                   fontWeight: 700,
                   fontSize: "18px",
                   textTransform: "uppercase",
@@ -107,7 +107,7 @@ export default function SignUp() {
                     label={item.name}
                     control={
                       <Checkbox
-                        color="logoblue"
+                        color="logoBlue"
                         style={{
                           padding: "5px 20px",
                         }}
@@ -126,7 +126,7 @@ export default function SignUp() {
                   maxWidth: "350px",
                 }}
                 variant="contained"
-                color="logoblue"
+                color="logoBlue"
                 disabled={
                   !filterCheckboxs[1].checked ||
                   !filterCheckboxs[2].checked ||
@@ -144,7 +144,7 @@ export default function SignUp() {
             sm={12}
             md={6}
             sx={{
-              backgroundColor: ` var(--logoblack)`,
+              backgroundColor: ` var(--logoBlack)`,
               height: "100vh",
               display: "flex",
               justifyContent: "center",

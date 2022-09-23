@@ -35,13 +35,13 @@ export default function ChannelProfile() {
                 }}
               >
                 Welcome to your{" "}
-                <span style={{ color: `var(--logored)`, fontWeight: 700 }}>
+                <span style={{ color: `var(--logoRed)`, fontWeight: 700 }}>
                   {" "}
                   Channel
                 </span>
               </Typography>
               <Link to="/CreateTrack">
-                <Button variant="outlined" size="large" color="logoblue">
+                <Button variant="outlined" size="large" color="logoBlue">
                   Create a Meta Track
                 </Button>
               </Link>

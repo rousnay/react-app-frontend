@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken } from "../../../auth/userAuth";
+import { useToken } from "../../../hooks/userAuth";
 import swal from "sweetalert";
 import {
   Stack,
@@ -154,7 +154,7 @@ export default function CommentList(props) {
                   aria-label="send the comment"
                   onClick={(e) => submitNewComment(e, index, trackItem.id)}
                 >
-                  <TelegramIcon fontSize="large" color={`var(--themeblue)`} />
+                  <TelegramIcon fontSize="large" color={`var(--themeBlue)`} />
                 </IconButton>
               </Stack>
 

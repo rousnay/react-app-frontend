@@ -62,7 +62,7 @@ export default function PrivetHeader(props) {
               paddingTop: "30px",
               display: "flex",
               justifyContent: "center",
-              backgroundColor: `var(--logoblack)`,
+              backgroundColor: `var(--logoBlack)`,
             }}
           >
             <Link to="/" style={{ height: "fit-content" }}>
@@ -95,7 +95,7 @@ export default function PrivetHeader(props) {
                   <Typography
                     variant="h6"
                     component="div"
-                    sx={{ flexGrow: 1, color: `var(--themeblack)` }}
+                    sx={{ flexGrow: 1, color: `var(--themeBlack)` }}
                   >
                     Welcome,{" "}
                     <span style={{ fontWeight: "bold" }}>
@@ -106,7 +106,7 @@ export default function PrivetHeader(props) {
                   <div>
                     <span
                       style={{
-                        color: `var(--themeyellow)`,
+                        color: `var(--themeYellow)`,
                         fontWeight: "bold",
                       }}
                     >

@@ -32,7 +32,7 @@ export default function Uploader(props) {
       <FilePond
         files={props.files}
         name={props.name}
-        onupdatefiles={props.onupdatefiles}
+        onUpdateFiles={props.onUpdateFiles}
         allowMultiple={false}
         maxFiles={1}
         // acceptedFileTypes={["image/png", "xml/gpx"]}

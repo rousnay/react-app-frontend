@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../utils/CONSTANTS";
-import { useToken, useUser } from "../../auth/userAuth";
+import { useToken, useUser } from "../../hooks/userAuth";
 import { RequestApi } from "../../components/RequestApi";
 import MapGL, { Source, Layer } from "@urbica/react-map-gl";
 import toGeoJson from "@mapbox/togeojson";
@@ -12,7 +12,7 @@ import { Container, Grid, Stack, TextField, Button } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
-import Uploader from "../../components/uploader";
+import Uploader from "../../components/Uploader";
 import { LayerStyle1 } from "./MetaTrackLayerStyle";
 import MetaTrackNav from "./MetaTrackNav";
 import { TrackInfoFormStyled } from "./MetaTracksStyles";
@@ -145,7 +145,7 @@ export default function CreateTrack() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />
@@ -168,7 +168,7 @@ export default function CreateTrack() {
                 <Uploader
                   files={gpxFile}
                   name={"gpxFile"}
-                  onupdatefiles={(fileItems) => setGpxFileData(fileItems)}
+                  onUpdateFiles={(fileItems) => setGpxFileData(fileItems)}
                   labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 />
               </div>
@@ -238,7 +238,7 @@ export default function CreateTrack() {
                 <Uploader
                   files={previewImage}
                   name={"previewImage"}
-                  onupdatefiles={(fileItems) => setPreviewImageData(fileItems)}
+                  onUpdateFiles={(fileItems) => setPreviewImageData(fileItems)}
                   labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                 />
               </div>

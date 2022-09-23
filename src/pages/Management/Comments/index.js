@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../auth/userAuth";
+import { useToken, useUser } from "../../../hooks/userAuth";
 import { Container, Grid } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
@@ -105,7 +105,7 @@ export default function ManageComments() {
       await getAllReaction();
       // await getUserInfo();
     })();
-  }, []);
+  });
 
   useEffect(() => {
     if (!user.channelId && !localStorage.channelId) {
@@ -119,7 +119,7 @@ export default function ManageComments() {
         }
       });
     }
-  }, []);
+  });
 
   // useEffect(() => {
   //   console.log(trackCommentReaction);
@@ -153,7 +153,7 @@ export default function ManageComments() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />
@@ -173,7 +173,7 @@ export default function ManageComments() {
             <Container
               className="content"
               sx={{
-                backgroundColor: `var(--themebg)!important`,
+                backgroundColor: `var(--themeBackground)!important`,
                 padding: "0!important",
               }}
             >

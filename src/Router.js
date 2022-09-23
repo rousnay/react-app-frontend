@@ -6,6 +6,8 @@ const Landing = lazy(() => import("./pages/Home/Landing"));
 const Home = lazy(() => import("./pages/Home/"));
 const SignIn = lazy(() => import("./pages/SignIn"));
 const Callback = lazy(() => import("./auth/Callback"));
+const GoogleCallback = lazy(() => import("./auth/GoogleCallback"));
+const KakaoCallback = lazy(() => import("./auth/KakaoCallback"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const EmailSignUp = lazy(() => import("./pages/SignUp/EmailSignUp"));
 const EmailVerification = lazy(() =>
@@ -33,6 +35,8 @@ export const Router = () => {
           <Route path="/" element={<Landing />} exact />
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/auth/Callback" element={<Callback />} />
+          <Route path="auth/google/callback" element={<GoogleCallback />} />
+          <Route path="auth/kakao/callback" element={<KakaoCallback />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="SignUp/EmailSignUp" element={<EmailSignUp />} />
           <Route

@@ -13,10 +13,10 @@ const ListItem = styled("li")`
     text-transform: uppercase;
     padding: 8px 15px;
     color: white;
-    background-color: var(--logoblack);
+    background-color: var(--logoBlack);
     text-decoration: none;
     &:hover {
-      background-color: var(--logored);
+      background-color: var(--logoRed);
       color: white;
     }
   }
@@ -41,7 +41,7 @@ export default function PrivetSideBar() {
           <Button
             startIcon={<AddIcon />}
             variant="contained"
-            color="logoblue"
+            color="logoBlue"
             className="createTrackButton"
             sx={{
               width: "80%",

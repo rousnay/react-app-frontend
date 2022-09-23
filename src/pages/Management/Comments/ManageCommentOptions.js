@@ -7,7 +7,7 @@ const ManageCommentOptions = () => {
         <AppBar
           position="static"
           sx={{
-            backgroundColor: `var(--themebg)`,
+            backgroundColor: `var(--themeBackground)`,
             boxShadow: "none",
           }}
         >
@@ -19,7 +19,7 @@ const ManageCommentOptions = () => {
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", sm: "block" },
-                color: `var(--themeblack)`,
+                color: `var(--themeBlack)`,
                 fontWeight: "bold",
               }}
             >

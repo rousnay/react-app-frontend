@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "../../auth/userAuth";
+import { useToken, useUser } from "../../hooks/userAuth";
 import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import logo from "../../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
 const genDeviceToken = (() => {
@@ -83,7 +83,7 @@ export default function SignIn() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <Link to="/">
-              <img src={logo} alt="Logo" />
+              <img src={Logo} alt="Logo" />
             </Link>
 
             <div className="formHolder" style={{ marginTop: "50px" }}>
@@ -113,7 +113,7 @@ export default function SignIn() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="logoblue"
+                  color="logoBlue"
                   disabled={!email || !password}
                 >
                   Sign In
@@ -122,7 +122,7 @@ export default function SignIn() {
               <p>
                 Don’t have an account?{" "}
                 <Link to="/SignUp">
-                  <span style={{ color: "var(--logored)" }}>Sign Up</span>
+                  <span style={{ color: "var(--logoRed)" }}>Sign Up</span>
                 </Link>
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function SignIn() {
             sm={12}
             md={6}
             sx={{
-              backgroundColor: ` var(--logoblack)`,
+              backgroundColor: ` var(--logoBlack)`,
               height: "100vh",
               display: "flex",
               justifyContent: "center",

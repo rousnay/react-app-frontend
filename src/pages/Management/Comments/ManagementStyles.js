@@ -32,10 +32,10 @@ export const ManageCommentsStyled = styled("div")`
         margin-right: 10px;
       }
       &:first-of-type svg {
-        color: var(--themered);
+        color: var(--themeRed);
       }
       &:last-of-type svg {
-        color: var(--themeblue);
+        color: var(--themeBlue);
       }
     }
   }

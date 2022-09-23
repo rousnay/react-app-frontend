@@ -34,12 +34,12 @@ export default function Home() {
                 }}
               >
                 Anyone can create their own Path & become a <br />{" "}
-                <span style={{ color: `var(--logored)`, fontWeight: 700 }}>
+                <span style={{ color: `var(--logoRed)`, fontWeight: 700 }}>
                   CREATOR
                 </span>
               </Typography>
               <Link to="/SignUp">
-                <Button variant="contained" size="large" color="logoblue">
+                <Button variant="contained" size="large" color="logoBlue">
                   GET STARTED
                 </Button>
               </Link>

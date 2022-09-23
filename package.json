@@ -21,6 +21,7 @@
     "filepond-plugin-image-exif-orientation": "^1.0.11",
     "filepond-plugin-image-preview": "^4.6.11",
     "filepond-plugin-media-preview": "^1.0.11",
+    "jwt-decode": "^3.1.2",
     "mapbox-gl": "^2.9.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -30,7 +31,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-      "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,4 +1,4 @@
-import { useUser } from "../../auth/userAuth";
+import { useUser } from "../../hooks/userAuth";
 import { Container, Grid, Card } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
@@ -16,7 +16,7 @@ export default function Dashboard() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />
@@ -26,7 +26,7 @@ export default function Dashboard() {
           sx={{
             width: "calc(100% - 230px)",
             display: "flex",
-            backgroundColor: `var(--themebg)`,
+            backgroundColor: `var(--themeBackground)`,
           }}
         >
           <Grid item sm={12} sx={{ padding: "30px" }}>

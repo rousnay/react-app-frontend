@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../../auth/userAuth";
+import { useUser } from "../../hooks/userAuth";
 import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import logo from "../../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 export default function EmailVerification() {
@@ -92,7 +92,7 @@ export default function EmailVerification() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <Link to="/">
-              <img src={logo} alt="Logo" />
+              <img src={Logo} alt="Logo" />
             </Link>
             <h3 style={{ marginTop: "50px" }}>Verify your Identity</h3>
             <p>
@@ -130,7 +130,7 @@ export default function EmailVerification() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="logoblue"
+                  color="logoBlue"
                   className=""
                 >
                   Next
@@ -144,7 +144,7 @@ export default function EmailVerification() {
             sm={12}
             md={6}
             sx={{
-              backgroundColor: ` var(--logoblack)`,
+              backgroundColor: ` var(--logoBlack)`,
               height: "100vh",
               display: "flex",
               justifyContent: "center",

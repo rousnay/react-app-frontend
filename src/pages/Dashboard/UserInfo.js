@@ -17,7 +17,7 @@ export default function UserInfo(props) {
       <CardContent>
         {userData.profilePhoto === "undefined" ? (
           <Card variant="outlined" sx={{ maxWidth: 270, padding: "50px" }}>
-            <Typography sx={{ fontSize: 14 }} color="logored" gutterBottom>
+            <Typography sx={{ fontSize: 14 }} color="logoRed" gutterBottom>
               No profile photo exist
             </Typography>
           </Card>
@@ -65,7 +65,7 @@ export default function UserInfo(props) {
               <Button
                 // fullWidth
                 // variant="contained"
-                color="themegreen"
+                color="themeGreen"
                 className="channelSubmit"
               >
                 Create Channel

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../auth/userAuth";
+import { useToken, useUser } from "../../../hooks/userAuth";
 import { RequestApi } from "../../../components/RequestApi";
 import MapGL, {
   Source,
@@ -136,7 +136,7 @@ export default function TrackReview() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />

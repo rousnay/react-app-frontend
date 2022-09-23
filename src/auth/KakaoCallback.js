@@ -3,7 +3,7 @@ import { GOOGLE_CLIENT_ID } from "../utils/CONSTANTS";
 import jwt_deocde from "jwt-decode";
 import { useScript } from "../hooks/useScript";
 
-export default function Callback() {
+export default function KakaoCallback() {
   const googleButtonRef = useRef();
   const [user, setUser] = useState(false);
   const onGoogleSignIn = (user) => {

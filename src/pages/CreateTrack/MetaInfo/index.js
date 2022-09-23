@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MAP_BOX_TOKEN, MAP_BOX_STYLE } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../auth/userAuth";
+import { useToken, useUser } from "../../../hooks/userAuth";
 import { RequestApi } from "../../../components/RequestApi";
 import { Container, Grid, Stack, Button, Typography } from "@mui/material";
 import MapGL, {
@@ -320,7 +320,7 @@ export default function MetaInfo() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />

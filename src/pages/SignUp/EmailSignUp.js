@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
-import { useToken, useUser } from "../../auth/userAuth";
+import { useToken, useUser } from "../../hooks/userAuth";
 import { RequestApi } from "../../components/RequestApi";
 // import { useQueryParams } from "../../utils/useQueryParams";
 import {
@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@mui/material";
 import swal from "sweetalert";
-import logo from "../../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
 
 // async function oauthSignUp(provider) {
@@ -102,7 +102,7 @@ export default function EmailSignUp() {
         <Grid container>
           <Grid item sm={12} md={6} sx={{ padding: "30px 30px 0 0" }}>
             <Link to="/">
-              <img src={logo} alt="Logo" />
+              <img src={Logo} alt="Logo" />
             </Link>
 
             <h3 style={{ marginTop: "50px" }}>Sign Up with your email</h3>
@@ -166,7 +166,7 @@ export default function EmailSignUp() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  color="logoblue"
+                  color="logoBlue"
                 >
                   Send
                 </Button>
@@ -181,7 +181,7 @@ export default function EmailSignUp() {
               <Button
                 type="submit"
                 variant="contained"
-                color="themegreen"
+                color="themeGreen"
                 // onClick={(e) => signUpWithOAuth(e, "google")}
                 onClick={() => {
                   window.location.href = `${API_URL}/user/auth/google`;
@@ -193,7 +193,7 @@ export default function EmailSignUp() {
               <Button
                 type="submit"
                 variant="contained"
-                color="themeyellow"
+                color="themeYellow"
                 // onClick={(e) => signUpWithOAuth(e, "kakao")}
                 onClick={() => {
                   window.location.href = `${API_URL}/user/auth/kakao`;
@@ -205,7 +205,7 @@ export default function EmailSignUp() {
             <p style={{ textAlign: "center", marginTop: "40px" }}>
               Already have an account?{" "}
               <Link to="/SignIn">
-                <span style={{ color: "var(--logored)" }}>Sign In</span>
+                <span style={{ color: "var(--logoRed)" }}>Sign In</span>
               </Link>
             </p>
           </Grid>
@@ -215,7 +215,7 @@ export default function EmailSignUp() {
             sm={12}
             md={6}
             sx={{
-              backgroundColor: ` var(--logoblack)`,
+              backgroundColor: ` var(--logoBlack)`,
               height: "100vh",
               display: "flex",
               justifyContent: "center",

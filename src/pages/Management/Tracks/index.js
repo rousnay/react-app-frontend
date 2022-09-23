@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../auth/userAuth";
+import { useToken, useUser } from "../../../hooks/userAuth";
 // import axios from "axios";
 import { Container, Grid } from "@mui/material";
 import swal from "sweetalert";
@@ -84,7 +84,7 @@ export default function ManageTracks() {
     (async function () {
       await getTrackComments();
     })();
-  }, []);
+  });
 
   const handlecheckbox = (e) => {
     const { value, checked } = e.target;
@@ -108,7 +108,7 @@ export default function ManageTracks() {
         }
       });
     }
-  }, []);
+  });
 
   // delete Track ==================
   // const alldelete = async () => {
@@ -142,7 +142,7 @@ export default function ManageTracks() {
           sx={{
             width: "230px",
             display: "flex",
-            backgroundColor: `var(--logoblack)`,
+            backgroundColor: `var(--logoBlack)`,
           }}
         >
           <PrivetSideBar />
@@ -162,7 +162,7 @@ export default function ManageTracks() {
             <Container
               className="content"
               sx={{
-                backgroundColor: `var(--themebg)!important`,
+                backgroundColor: `var(--themeBackground)!important`,
                 padding: "0!important",
               }}
             >

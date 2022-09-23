@@ -13,10 +13,10 @@ export const TrackCreationNavStyled = styled("ul")`
     &:hover {
       opacity: 1;
       span {
-        background-color: var(--themeblue);
+        background-color: var(--themeBlue);
       }
       a {
-        color: var(--themeblue);
+        color: var(--themeBlue);
         font-weight: bold;
       }
     }
@@ -25,7 +25,7 @@ export const TrackCreationNavStyled = styled("ul")`
       font-weight: 500;
       text-transform: uppercase;
       padding: 8px 15px;
-      color: var(--themeblack);
+      color: var(--themeBlack);
       text-decoration: none;
       span {
         display: inline-block;
@@ -36,7 +36,7 @@ export const TrackCreationNavStyled = styled("ul")`
         text-align: center;
         line-height: 24px;
         color: white;
-        background-color: var(--themeblack);
+        background-color: var(--themeBlack);
       }
     }
     @media only screen and (max-width: 600px) {

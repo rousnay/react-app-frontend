@@ -42,7 +42,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: `var(--themeblack)`,
+  color: `var(--themeBlack)`,
   border: "1px solid #C9D0DE",
   borderRadius: "4px",
   "& .MuiInputBase-input": {
@@ -62,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const checkIcon = {
   fontSize: "20px",
-  color: `var(--themeblack)`,
+  color: `var(--themeBlack)`,
   marginLeft: "10px",
 };
 
@@ -134,7 +134,7 @@ const ManageTrackOptions = ({
         <AppBar
           position="static"
           sx={{
-            backgroundColor: `var(--themebg)`,
+            backgroundColor: `var(--themeBackground)`,
             boxShadow: "none",
           }}
         >
@@ -146,7 +146,7 @@ const ManageTrackOptions = ({
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", sm: "block" },
-                color: `var(--themeblack)`,
+                color: `var(--themeBlack)`,
                 fontWeight: "bold",
               }}
             >

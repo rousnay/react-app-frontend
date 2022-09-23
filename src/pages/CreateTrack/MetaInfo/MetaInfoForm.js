@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useToken } from "../../../auth/userAuth";
+import { useToken } from "../../../hooks/userAuth";
 import { TextField, Button } from "@mui/material";
-import Uploader from "../../../components/uploader";
+import Uploader from "../../../components/Uploader";
 import swal from "sweetalert";
 import { RequestApi } from "../../../components/RequestApi";
 const localCurrentTrackId = localStorage.currentTrackId;
@@ -136,7 +136,7 @@ export default function MetaInfoForm(props) {
             <Uploader
               files={sound}
               name={"sound"}
-              onupdatefiles={(soundFileItems) =>
+              onUpdateFiles={(soundFileItems) =>
                 setPinSoundFile(soundFileItems)
               }
               labelIdle='Drop Sound for pin or <span class="filepond--label-action">Browse</span>'
@@ -146,7 +146,7 @@ export default function MetaInfoForm(props) {
             <Uploader
               files={image}
               name={"image"}
-              onupdatefiles={(imageFileItems) =>
+              onUpdateFiles={(imageFileItems) =>
                 setPinImageFile(imageFileItems)
               }
               labelIdle='Drop Image for pin or <span class="filepond--label-action">Browse</span>'
@@ -158,7 +158,7 @@ export default function MetaInfoForm(props) {
           fullWidth
           size="small"
           variant="contained"
-          color="logoblue"
+          color="logoBlue"
           className="pinInfoSubmit"
         >
           Save Pin {props.selectedPinIndex + 1}
