@@ -98,7 +98,7 @@ export default function TrackReviewController(props) {
           type="button"
           size="small"
           variant="outlined"
-          color="themepurple"
+          color="themePurple"
           className="backToTrackInfo"
           onClick={() => {
             navigate("/CreateTrack/MetaInfo");
@@ -111,7 +111,7 @@ export default function TrackReviewController(props) {
           type="button"
           size="small"
           variant="contained"
-          color="themepurple"
+          color="themePurple"
           className="metaInfoSubmit"
           onClick={(e) => {
             submitUpdatedTrackInfo(e);

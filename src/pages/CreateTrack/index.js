@@ -248,7 +248,7 @@ export default function CreateTrack() {
                   type="submit"
                   size="small"
                   variant="contained"
-                  color="themepurple"
+                  color="themePurple"
                   className="trackInfoSubmit"
                 >
                   Next

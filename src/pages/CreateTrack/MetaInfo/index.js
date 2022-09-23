@@ -389,7 +389,7 @@ export default function MetaInfo() {
                     variant={
                       currentMode === "draw_point" ? "contained" : "outlined"
                     }
-                    color="themepurple"
+                    color="themePurple"
                     className="metaInfoSubmit"
                     onClick={() => setMode("draw_point")}
                   >
@@ -429,7 +429,7 @@ export default function MetaInfo() {
                       type="button"
                       size="small"
                       variant="outlined"
-                      color="themepurple"
+                      color="themePurple"
                       className="backToTrackInfo"
                     >
                       Back
@@ -441,7 +441,7 @@ export default function MetaInfo() {
                       type="button"
                       size="small"
                       variant="contained"
-                      color="themepurple"
+                      color="themePurple"
                       className="metaInfoSubmit"
                       onClick={(e) => {
                         goForTrackReview(e);

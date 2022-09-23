@@ -46,7 +46,7 @@ export const AppTheme = createTheme({
       main: "#ff9938",
       contrastText: "#fff",
     },
-    themepurple: {
+    themePurple: {
       main: "#ab64e8",
       contrastText: "#fff",
     },
