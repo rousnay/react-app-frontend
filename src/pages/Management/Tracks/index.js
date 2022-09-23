@@ -86,7 +86,7 @@ export default function ManageTracks() {
     })();
   });
 
-  const handlecheckbox = (e) => {
+  const handleCheckbox = (e) => {
     const { value, checked } = e.target;
     console.log(value);
     if (checked) {
@@ -205,7 +205,7 @@ export default function ManageTracks() {
                             type="checkbox"
                             value={trackItem.id}
                             checked={trackItem.isChecked}
-                            onChange={(e) => handlecheckbox(e)}
+                            onChange={(e) => handleCheckbox(e)}
                           />
                         </td>
                         <td>
