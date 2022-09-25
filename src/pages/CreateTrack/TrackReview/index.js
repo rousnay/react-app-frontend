@@ -24,13 +24,13 @@ import TrackReviewPinPoint from "./TrackReviewPinPoint";
 import TrackReviewContent from "./TrackReviewContent";
 import TrackReviewController from "./TrackReviewController";
 import { initialLineCollection } from "../MetaTrackInitializer";
-//const trackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
+const trackId = "9472a6ce-cd91-4828-8a66-91b3e7b30c1d"; // Testing purpose
 
 export default function TrackReview() {
   // Initialization ==================
   const navigate = useNavigate();
   const [token] = useToken();
-  const [trackId] = useTrack();
+  // const [trackId] = useTrack();
   const [loading, setLoading] = useState(true);
   const [trackInfoData, setTrackInfoData] = useState({});
   const [trackingTags, setTrackingTags] = useState([]);

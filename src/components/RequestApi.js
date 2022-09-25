@@ -1,5 +1,11 @@
 import { API_URL } from "../utils/CONSTANTS";
-export const RequestApi = async (method, reqUrl, authToken, payloadData) => {
+export const RequestApi = async (
+  method,
+  reqUrl,
+  authToken,
+  payloadData,
+  JsonData
+) => {
   if (payloadData) {
     if (typeof payloadData === "string") {
       console.log(payloadData);
@@ -11,9 +17,15 @@ export const RequestApi = async (method, reqUrl, authToken, payloadData) => {
   }
 
   var isLoading = true;
+
   var config = {};
-  if (authToken) {
+  if (authToken && !JsonData) {
     config = {
+      Authorization: "Bearer " + authToken,
+    };
+  } else if (authToken && JsonData) {
+    config = {
+      "Content-Type": "application/json",
       Authorization: "Bearer " + authToken,
     };
   } else {

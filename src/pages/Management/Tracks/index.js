@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../hooks/useUserInfo";
-// import axios from "axios";
-import { Container, Grid } from "@mui/material";
+import { useToken, useUser, useChannel } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
+import { Container, Grid, Typography } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
@@ -14,10 +13,10 @@ export default function ManageTracks() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
-
+  const [channelId] = useChannel();
+  const [loading, setLoading] = useState(true);
   const [trackComments, setTrackComments] = useState([]);
-  const [isChecked, setisChecked] = useState([]);
-  // const [delmsg, setDelmsg] = useState("");
+  const [checkedIndividual, setCheckedIndividual] = useState([]);
 
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
@@ -26,8 +25,9 @@ export default function ManageTracks() {
   const filteredTrackData = trackComments
     .filter((item) => {
       return (
-        item.name.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase())
+        item.status !== "deleted" &&
+        (item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.description.toLowerCase().includes(query.toLowerCase()))
       );
     })
     .sort((a, b) => {
@@ -37,67 +37,57 @@ export default function ManageTracks() {
         : 1 * order;
     });
 
-  // TrackData ==================
-  async function getTracks() {
-    try {
-      const reqData = await fetch(`${API_URL}/track/user/listing`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      const resData = await reqData.json();
-      return resData.data.tracksArray;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
+  // TrackList ==================
+  const getTrackList = useCallback(async () => {
+    const [getTrackListData] = await RequestApi(
+      "GET",
+      `track/user/listing`,
+      token
+    );
+    return await getTrackListData.data.tracksArray;
+  }, [token]);
 
-  // CommentsData ==================
-  async function getTrackComments() {
-    try {
-      const trackAsyncData = await getTracks();
-      const commentsPromises = trackAsyncData.map(async (trackItem) => {
-        const reqComment = await fetch(`${API_URL}/comment/${trackItem.id}`, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
-        const resComment = await reqComment.json();
-        return Object.assign(trackItem, {
-          commentArray: resComment.data.commentArray,
-        });
-      });
-      let trackWithCommentsArray = (await Promise.all(commentsPromises)).map(
-        (obj) => obj
+  // TrackInfo ==================
+  const getTrackInfo = useCallback(async () => {
+    const trackListAsyncData = await getTrackList();
+    const trackInfoPromises = trackListAsyncData.map(async (trackItem) => {
+      const [getTrackInfoData, loading] = await RequestApi(
+        "GET",
+        `/track/${trackItem.id}/info`,
+        token
       );
-      setTrackComments(trackWithCommentsArray);
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
+      return await getTrackInfoData.data;
+    });
 
+    let trackWithInfoArray = (await Promise.all(trackInfoPromises)).map(
+      (obj) => obj
+    );
+    setLoading(false);
+    setTrackComments(trackWithInfoArray);
+  }, [getTrackList, token]);
+
+  // Call all Async functions ==================
   useEffect(() => {
     (async function () {
-      await getTrackComments();
+      await getTrackInfo();
     })();
-  });
+  }, [getTrackInfo]);
 
-  const handleCheckbox = (e) => {
+  // handle Checkbox ==================
+  const handleSelectIndividual = (e) => {
     const { value, checked } = e.target;
-    console.log(value);
     if (checked) {
-      setisChecked([...isChecked, value]);
+      setCheckedIndividual([...checkedIndividual, value]);
     } else {
-      setisChecked(isChecked.filter((e) => e !== value));
+      setCheckedIndividual(
+        checkedIndividual.filter((itemVale) => itemVale !== value)
+      );
     }
   };
 
+  // Checkpoint for channel existence ==================
   useEffect(() => {
-    if (!user.channelId && !localStorage.channelId) {
+    if (!channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {
@@ -108,29 +98,7 @@ export default function ManageTracks() {
         }
       });
     }
-  });
-
-  // delete Track ==================
-  // const alldelete = async () => {
-  //   //console.log(isChecked);
-  //   if (isChecked.length !== 0) {
-  //     const responce = await axios.post(
-  //       `fetch(`${API_URL}/tracks`,
-  //       JSON.stringify(isChecked)
-  //     );
-  //     setDelmsg(responce.data.msg);
-  //     setTimeout(() => {
-  //       // history.push("/user");
-  //       console.log("timeout");
-  //     }, 2000);
-  //   } else {
-  //     alert("please Select at least one check box !");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   console.log(trackComments);
-  // }, [trackComments]);
+  }, [channelId, navigate]);
 
   return (
     <>
@@ -167,15 +135,8 @@ export default function ManageTracks() {
               }}
             >
               <ManageTrackStyled>
-                {/* <h2>My Tracks</h2> */}
-
-                {/* <h5 className="text-danger">{delmsg} </h5> */}
-
-                {/* <Button className="btn btn-danger" onClick={alldelete}>
-              Delete
-            </Button> */}
-
                 <ManageTrackOptions
+                  checkedItems={checkedIndividual}
                   query={query}
                   onQueryChange={(myQuery) => setQuery(myQuery)}
                   orderBy={orderBy}
@@ -184,57 +145,69 @@ export default function ManageTracks() {
                   onSortByChange={(mySort) => setSortBy(mySort)}
                 />
 
-                <table className="table track-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <input type="checkbox" />
-                      </th>
-                      <th style={{ width: "50%" }}>Track</th>
-                      <th>Comments</th>
-                      <th>Users</th>
-                      <th>Creation Date</th>
-                      <th>Privacy</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTrackData.map((trackItem, index) => (
-                      <tr key={index}>
-                        <td style={{ textAlign: "center" }}>
+                {loading ? (
+                  <Typography>Loading...</Typography>
+                ) : (
+                  <table className="table track-table">
+                    <thead>
+                      <tr>
+                        <th>
                           <input
+                            style={{ visibility: "hidden" }}
                             type="checkbox"
-                            value={trackItem.id}
-                            checked={trackItem.isChecked}
-                            onChange={(e) => handleCheckbox(e)}
+                            value="all"
+                            // checked={checkedAll}
+                            // onChange={(e) => handleSelectAll(e)}
                           />
-                        </td>
-                        <td>
-                          <div className="trackInfo">
-                            <img
-                              className="trackImg"
-                              src={trackItem.previewImage}
-                              alt="Track Preview"
-                            />
-                            <div className="trackText">
-                              <h4>{trackItem.name}</h4>
-                              <p>{trackItem.description}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td style={{ textAlign: "center" }}>
-                          {trackItem.commentArray?.length}
-                        </td>
-                        <td style={{ textAlign: "center" }}>0</td>
-                        <td style={{ textAlign: "center" }}>
-                          {trackItem.createdAt.slice(0, 10)}
-                        </td>
-                        <td style={{ textAlign: "center" }}>
-                          {trackItem.privacy}
-                        </td>
+                        </th>
+                        <th style={{ width: "50%" }}>Track</th>
+                        <th>Comments</th>
+                        <th>Users</th>
+                        <th>Creation Date</th>
+                        <th>Privacy</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredTrackData.map((trackItem, index) => (
+                        <tr key={index}>
+                          <td style={{ textAlign: "center" }}>
+                            <input
+                              type="checkbox"
+                              value={trackItem.id}
+                              checked={trackItem.checkedIndividual}
+                              onChange={(e) => handleSelectIndividual(e)}
+                            />
+                          </td>
+                          <td>
+                            <div className="trackInfo">
+                              <img
+                                className="trackImg"
+                                src={trackItem.previewImage}
+                                alt="Track Preview"
+                              />
+                              <div className="trackText">
+                                <h4>{trackItem.name}</h4>
+                                <p>{trackItem.status}</p>
+                                <p>{trackItem.id}</p>
+                                <p>{trackItem.description}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            {trackItem.comments?.commentArray?.length}
+                          </td>
+                          <td style={{ textAlign: "center" }}>0</td>
+                          <td style={{ textAlign: "center" }}>
+                            {trackItem.createdAt.slice(0, 10)}
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            {trackItem.privacy}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </ManageTrackStyled>
             </Container>
           </div>

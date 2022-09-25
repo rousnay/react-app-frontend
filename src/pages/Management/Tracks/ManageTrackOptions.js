@@ -1,9 +1,13 @@
-import { React, useState } from "react";
+import { useState, useEffect } from "react";
+import { useToken } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
+import swal from "sweetalert";
 import {
   Box,
   Typography,
   AppBar,
   Toolbar,
+  Button,
   Divider,
   InputLabel,
   InputBase,
@@ -120,6 +124,7 @@ const DropDown = ({
 };
 
 const ManageTrackOptions = ({
+  checkedItems,
   query,
   onQueryChange,
   sortBy,
@@ -128,6 +133,40 @@ const ManageTrackOptions = ({
   onOrderByChange,
 }) => {
   let [toggleSort] = useState(true);
+  const [token] = useToken();
+
+  useEffect(() => {
+    console.log(checkedItems);
+  }, [checkedItems]);
+
+  // handleDelete Track ==================
+  const formData = JSON.stringify({
+    trackIdArray: checkedItems,
+    status: "deleted",
+  });
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    const [response] = await RequestApi(
+      "PUT",
+      `track/multiple`,
+      token,
+      formData,
+      "json"
+    );
+    if (response.message === "Success") {
+      swal("Deleted!", "Selected Tracks has been deleted", "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        console.log(response);
+      });
+    } else {
+      swal("Failed", response.error, "error");
+      console.log(response);
+    }
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -152,6 +191,19 @@ const ManageTrackOptions = ({
             >
               My Tracks
             </Typography>
+
+            {checkedItems.length > 0 && (
+              <Button
+                sx={{ marginRight: "15px" }}
+                variant="contained"
+                color="logoRed"
+                onClick={(e) => {
+                  handleDelete(e);
+                }}
+              >
+                Delete
+              </Button>
+            )}
 
             <DropDown
               toggle={toggleSort}
