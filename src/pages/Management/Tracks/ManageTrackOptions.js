@@ -125,6 +125,7 @@ const DropDown = ({
 
 const ManageTrackOptions = ({
   checkedItems,
+  currentlyDeleted,
   query,
   onQueryChange,
   sortBy,
@@ -134,10 +135,6 @@ const ManageTrackOptions = ({
 }) => {
   let [toggleSort] = useState(true);
   const [token] = useToken();
-
-  useEffect(() => {
-    console.log(checkedItems);
-  }, [checkedItems]);
 
   // handleDelete Track ==================
   const formData = JSON.stringify({
@@ -159,7 +156,7 @@ const ManageTrackOptions = ({
         buttons: false,
         timer: 2000,
       }).then((value) => {
-        console.log(response);
+        currentlyDeleted(checkedItems);
       });
     } else {
       swal("Failed", response.error, "error");

@@ -15,17 +15,18 @@ export default function ManageTracks() {
   const [user] = useUser();
   const [channelId] = useChannel();
   const [loading, setLoading] = useState(true);
-  const [trackComments, setTrackComments] = useState([]);
-  const [checkedIndividual, setCheckedIndividual] = useState([]);
+  const [trackInfo, setTrackInfo] = useState([]);
+  const [isChecked, setIsChecked] = useState([]);
+  const [currentDeletedTracks, setCurrentDeletedTracks] = useState([]);
 
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
 
-  const filteredTrackData = trackComments
+  const filteredTrackData = trackInfo
     .filter((item) => {
       return (
-        item.status !== "deleted" &&
+        !currentDeletedTracks.includes(item.id) &&
         (item.name.toLowerCase().includes(query.toLowerCase()) ||
           item.description.toLowerCase().includes(query.toLowerCase()))
       );
@@ -50,8 +51,11 @@ export default function ManageTracks() {
   // TrackInfo ==================
   const getTrackInfo = useCallback(async () => {
     const trackListAsyncData = await getTrackList();
-    const trackInfoPromises = trackListAsyncData.map(async (trackItem) => {
-      const [getTrackInfoData, loading] = await RequestApi(
+    const trackListData = trackListAsyncData.filter((trackItem) => {
+      return trackItem.status !== "deleted";
+    });
+    const trackInfoPromises = trackListData.map(async (trackItem) => {
+      const [getTrackInfoData] = await RequestApi(
         "GET",
         `/track/${trackItem.id}/info`,
         token
@@ -63,7 +67,7 @@ export default function ManageTracks() {
       (obj) => obj
     );
     setLoading(false);
-    setTrackComments(trackWithInfoArray);
+    setTrackInfo(trackWithInfoArray);
   }, [getTrackList, token]);
 
   // Call all Async functions ==================
@@ -73,15 +77,26 @@ export default function ManageTracks() {
     })();
   }, [getTrackInfo]);
 
+  useEffect(() => {
+    console.log(currentDeletedTracks);
+  }, [currentDeletedTracks]);
+
   // handle Checkbox ==================
   const handleSelectIndividual = (e) => {
     const { value, checked } = e.target;
     if (checked) {
-      setCheckedIndividual([...checkedIndividual, value]);
+      setIsChecked([...isChecked, value]);
     } else {
-      setCheckedIndividual(
-        checkedIndividual.filter((itemVale) => itemVale !== value)
-      );
+      setIsChecked(isChecked.filter((itemVale) => itemVale !== value));
+    }
+  };
+
+  const handleDeletedTracks = (deletedIds) => {
+    setIsChecked([]);
+    setCurrentDeletedTracks(deletedIds);
+    var inputs = document.querySelectorAll(".trackCheckbox");
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].checked = false;
     }
   };
 
@@ -136,7 +151,10 @@ export default function ManageTracks() {
             >
               <ManageTrackStyled>
                 <ManageTrackOptions
-                  checkedItems={checkedIndividual}
+                  checkedItems={isChecked}
+                  currentlyDeleted={(deletedIds) =>
+                    handleDeletedTracks(deletedIds)
+                  }
                   query={query}
                   onQueryChange={(myQuery) => setQuery(myQuery)}
                   orderBy={orderBy}
@@ -156,8 +174,6 @@ export default function ManageTracks() {
                             style={{ visibility: "hidden" }}
                             type="checkbox"
                             value="all"
-                            // checked={checkedAll}
-                            // onChange={(e) => handleSelectAll(e)}
                           />
                         </th>
                         <th style={{ width: "50%" }}>Track</th>
@@ -173,8 +189,9 @@ export default function ManageTracks() {
                           <td style={{ textAlign: "center" }}>
                             <input
                               type="checkbox"
+                              className="trackCheckbox"
                               value={trackItem.id}
-                              checked={trackItem.checkedIndividual}
+                              checked={trackItem.isChecked}
                               onChange={(e) => handleSelectIndividual(e)}
                             />
                           </td>
@@ -187,8 +204,6 @@ export default function ManageTracks() {
                               />
                               <div className="trackText">
                                 <h4>{trackItem.name}</h4>
-                                <p>{trackItem.status}</p>
-                                <p>{trackItem.id}</p>
                                 <p>{trackItem.description}</p>
                               </div>
                             </div>
@@ -201,7 +216,8 @@ export default function ManageTracks() {
                             {trackItem.createdAt.slice(0, 10)}
                           </td>
                           <td style={{ textAlign: "center" }}>
-                            {trackItem.privacy}
+                            <p>{trackItem.privacy}</p>
+                            {/* <p>{trackItem.status}</p> */}
                           </td>
                         </tr>
                       ))}
