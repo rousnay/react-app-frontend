@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToken } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
