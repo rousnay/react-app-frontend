@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { API_URL } from "../../../utils/CONSTANTS";
 import { useToken } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
 import {
   Stack,
@@ -15,16 +15,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 import TelegramIcon from "@mui/icons-material/Telegram";
-
-async function addNewComment(authToken, payloadData) {
-  return fetch(`${API_URL}/comment`, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + authToken,
-    },
-    body: payloadData,
-  }).then((data) => data.json());
-}
+import ReplyOptions from "./ReplyOptions";
 
 export default function CommentList(props) {
   const [token] = useToken();
@@ -40,14 +31,21 @@ export default function CommentList(props) {
     setCommentList(list);
   };
 
-  const submitNewComment = async (e, i, selectedTrackId) => {
+  const submitNewComment = async (
+    e,
+    i,
+    selectedParentCommentId,
+    selectedPinPointId
+  ) => {
     e.preventDefault();
 
     var formData = new FormData();
-    formData.append("trackId", selectedTrackId);
+    formData.append("parentCommentId", selectedParentCommentId);
+    formData.append("pinPointId", selectedPinPointId);
     formData.append("text", commentList[i]);
 
-    const response = await addNewComment(token, formData);
+    const [response] = await RequestApi("POST", `comment`, token, formData);
+
     if (response.message === "Success") {
       swal("Success", "Comment has been add", "success", {
         buttons: false,
@@ -89,10 +87,10 @@ export default function CommentList(props) {
                   <h4>{trackItem.name}</h4>
                   <div className="cr-counter">
                     <span>
-                      <FavoriteIcon /> {trackItem.reactionArray?.length}
+                      <FavoriteIcon /> {trackItem.reactions?.count}
                     </span>
                     <span>
-                      <MessageIcon /> {trackItem.commentArray?.length}
+                      <MessageIcon /> {trackItem.comments?.count}
                     </span>
                   </div>
                 </div>
@@ -108,26 +106,30 @@ export default function CommentList(props) {
 
                 <Avatar
                   alt={
-                    trackItem.commentArray[trackItem.commentArray.length - 1]
-                      ?.user.firstName
+                    trackItem.comments?.commentArray[
+                      trackItem.comments?.count - 1
+                    ]?.user.firstName
                   }
                   src={
-                    trackItem.commentArray[trackItem.commentArray.length - 1]
-                      ?.user.profilePhoto
+                    trackItem.comments?.commentArray[
+                      trackItem.comments?.count - 1
+                    ]?.user.profilePhoto
                   }
                 />
 
                 <div className="commentMeta">
                   <h4>
                     {
-                      trackItem.commentArray[trackItem.commentArray.length - 1]
-                        ?.user.firstName
+                      trackItem.comments?.commentArray[
+                        trackItem.comments?.count - 1
+                      ]?.user.firstName
                     }
                   </h4>
                   <p>
                     {
-                      trackItem.commentArray[trackItem.commentArray.length - 1]
-                        ?.text
+                      trackItem.comments?.commentArray[
+                        trackItem.comments?.count - 1
+                      ]?.text
                     }
                   </p>
                 </div>
@@ -152,26 +154,48 @@ export default function CommentList(props) {
                 <IconButton
                   color="primary"
                   aria-label="send the comment"
-                  onClick={(e) => submitNewComment(e, index, trackItem.id)}
+                  onClick={(e) =>
+                    submitNewComment(
+                      e,
+                      index,
+                      trackItem.comments?.commentArray[
+                        trackItem.comments?.count - 1
+                      ]?.id,
+                      trackItem.comments?.commentArray[
+                        trackItem.comments?.count - 1
+                      ]?.pinPointId
+                    )
+                  }
                 >
                   <TelegramIcon fontSize="large" color={`var(--themeBlue)`} />
                 </IconButton>
               </Stack>
 
-              {trackItem.commentArray
+              {trackItem.comments?.commentArray
                 .slice(0)
                 .reverse()
                 .map((commentItem, index) => (
                   <li key={index}>
-                    <Stack direction="row" spacing={2}>
-                      <Avatar
-                        alt={commentItem.user.firstName}
-                        src={commentItem.user.profilePhoto}
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ justifyContent: "space-between" }}
+                    >
+                      <Stack direction="row" spacing={2}>
+                        <Avatar
+                          alt={commentItem.user.firstName}
+                          src={commentItem.user.profilePhoto}
+                        />
+                        <div className="commentMeta">
+                          <h4>{commentItem.user.firstName}</h4>
+                          <p>{commentItem.text}</p>
+                        </div>
+                      </Stack>
+
+                      <ReplyOptions
+                        commentId={commentItem.id}
+                        reactionArray={trackItem.reactions?.reactionArray}
                       />
-                      <div className="commentMeta">
-                        <h4>{commentItem.user.firstName}</h4>
-                        <p>{commentItem.text}</p>
-                      </div>
                     </Stack>
                   </li>
                 ))}

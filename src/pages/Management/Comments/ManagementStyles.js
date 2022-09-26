@@ -24,10 +24,17 @@ export const ManageCommentsStyled = styled("div")`
     width: 50%;
   }
 
+  .ReplyOptions {
+    display: flex;
+    .cr-counter svg {
+      color: var(--themeRed) !important;
+    }
+  }
+
   .cr-counter {
     span {
       display: inline-flex;
-      margin-right: 3em;
+      margin-right: 2.8em;
       svg {
         margin-right: 10px;
       }

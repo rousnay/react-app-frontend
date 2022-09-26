@@ -149,23 +149,23 @@ export default function ManageTracks() {
                 padding: "0!important",
               }}
             >
-              <ManageTrackStyled>
-                <ManageTrackOptions
-                  checkedItems={isChecked}
-                  currentlyDeleted={(deletedIds) =>
-                    handleDeletedTracks(deletedIds)
-                  }
-                  query={query}
-                  onQueryChange={(myQuery) => setQuery(myQuery)}
-                  orderBy={orderBy}
-                  onOrderByChange={(mySort) => setOrderBy(mySort)}
-                  sortBy={sortBy}
-                  onSortByChange={(mySort) => setSortBy(mySort)}
-                />
+              {loading ? (
+                <Typography>Loading...</Typography>
+              ) : (
+                <ManageTrackStyled>
+                  <ManageTrackOptions
+                    checkedItems={isChecked}
+                    currentlyDeleted={(deletedIds) =>
+                      handleDeletedTracks(deletedIds)
+                    }
+                    query={query}
+                    onQueryChange={(myQuery) => setQuery(myQuery)}
+                    orderBy={orderBy}
+                    onOrderByChange={(mySort) => setOrderBy(mySort)}
+                    sortBy={sortBy}
+                    onSortByChange={(mySort) => setSortBy(mySort)}
+                  />
 
-                {loading ? (
-                  <Typography>Loading...</Typography>
-                ) : (
                   <table className="table track-table">
                     <thead>
                       <tr>
@@ -223,8 +223,8 @@ export default function ManageTracks() {
                       ))}
                     </tbody>
                   </table>
-                )}
-              </ManageTrackStyled>
+                </ManageTrackStyled>
+              )}
             </Container>
           </div>
         </Grid>

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../../utils/CONSTANTS";
-import { useToken, useUser } from "../../../hooks/useUserInfo";
-import { Container, Grid } from "@mui/material";
+import { useToken, useUser, useChannel } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
+import { Container, Grid, Typography } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
@@ -14,15 +14,16 @@ export default function ManageComments() {
   const navigate = useNavigate();
   const [token] = useToken();
   const [user] = useUser();
-
-  const [trackCommentReaction, setTrackCommentReaction] = useState([]);
+  const [channelId] = useChannel();
+  const [loading, setLoading] = useState(true);
+  const [trackInfo, setTrackInfo] = useState([]);
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
 
-  const filteredTCRData = trackCommentReaction
+  const filteredTCRData = trackInfo
     .filter((item) => {
-      return item.commentArray.length > 1 || item.reactionArray.length > 1;
+      return item.comments.count > 1 || item.reactions.count > 1;
     })
     .sort((a, b) => {
       let order = orderBy === "asc" ? 1 : -1;
@@ -31,84 +32,47 @@ export default function ManageComments() {
         : 1 * order;
     });
 
-  // TrackData ==================
-  async function getTracks() {
-    try {
-      const reqData = await fetch(`${API_URL}/track/user/listing`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      const resData = await reqData.json();
-      return resData.data?.tracksArray;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
+  // TrackList ==================
+  const getTrackList = useCallback(async () => {
+    const [getTrackListData] = await RequestApi(
+      "GET",
+      `track/user/listing`,
+      token
+    );
+    return await getTrackListData.data.tracksArray;
+  }, [token]);
 
-  // CommentsData ==================
-  async function getAllComments() {
-    try {
-      const trackAsyncData = await getTracks();
-      const commentsPromises = trackAsyncData.map(async (trackItem) => {
-        const reqComment = await fetch(`${API_URL}/comment/${trackItem.id}`, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
-        const resComment = await reqComment.json();
-        return Object.assign(trackItem, {
-          commentArray: resComment.data.commentArray,
-        });
-      });
-      let trackWithCommentsArray = (await Promise.all(commentsPromises)).map(
-        (obj) => obj
+  // TrackInfo ==================
+  const getTrackInfo = useCallback(async () => {
+    const trackListAsyncData = await getTrackList();
+    const trackListData = trackListAsyncData.filter((trackItem) => {
+      return trackItem.status !== "deleted";
+    });
+    const trackInfoPromises = trackListData.map(async (trackItem) => {
+      const [getTrackInfoData] = await RequestApi(
+        "GET",
+        `/track/${trackItem.id}/info`,
+        token
       );
-      return trackWithCommentsArray;
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
+      return await getTrackInfoData.data;
+    });
 
-  // ReactionData ==================
-  async function getAllReaction() {
-    try {
-      const trackWithCommentsData = await getAllComments();
-      const reactionPromises = trackWithCommentsData.map(async (trackItem) => {
-        const reqReaction = await fetch(`${API_URL}/reaction/${trackItem.id}`, {
-          method: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        });
-        const resReaction = await reqReaction.json();
-        return Object.assign(trackItem, {
-          reactionArray: resReaction.data.reactionArray,
-        });
-      });
-      let trackWithCommentsAndReactionArray = (
-        await Promise.all(reactionPromises)
-      ).map((obj) => obj);
-      setTrackCommentReaction(trackWithCommentsAndReactionArray);
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  }
+    let trackWithInfoArray = (await Promise.all(trackInfoPromises)).map(
+      (obj) => obj
+    );
+    setLoading(false);
+    setTrackInfo(trackWithInfoArray);
+  }, [getTrackList, token]);
 
   useEffect(() => {
     (async function () {
-      await getAllReaction();
-      // await getUserInfo();
+      await getTrackInfo();
     })();
-  });
+  }, [getTrackInfo]);
 
+  // Checkpoint for channel existence ==================
   useEffect(() => {
-    if (!user.channelId && !localStorage.channelId) {
+    if (!channelId) {
       swal("No channel exist!", "Please create a channel first", "error", {
         buttons: ["Back to dashboard", "Create channel"],
       }).then((createChannel) => {
@@ -119,29 +83,7 @@ export default function ManageComments() {
         }
       });
     }
-  });
-
-  // useEffect(() => {
-  //   console.log(trackCommentReaction);
-  // }, [trackCommentReaction]);
-
-  // getUserData ==================
-  // async function getUserInfo() {
-  //   try {
-  //     const reqData = await fetch(`${baseURL}/user/info`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: "Bearer " + token,
-  //       },
-  //     });
-  //     const resData = await reqData.json();
-  //     setUserData(resData.data);
-  //     return resData.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return null;
-  //   }
-  // }
+  }, [channelId, navigate]);
 
   return (
     <>
@@ -177,21 +119,25 @@ export default function ManageComments() {
                 padding: "0!important",
               }}
             >
-              <ManageCommentsStyled>
-                <ManageCommentOptions
-                  query={query}
-                  onQueryChange={(myQuery) => setQuery(myQuery)}
-                  orderBy={orderBy}
-                  onOrderByChange={(mySort) => setOrderBy(mySort)}
-                  sortBy={sortBy}
-                  onSortByChange={(mySort) => setSortBy(mySort)}
-                />
+              {loading ? (
+                <Typography>Loading...</Typography>
+              ) : (
+                <ManageCommentsStyled>
+                  <ManageCommentOptions
+                    query={query}
+                    onQueryChange={(myQuery) => setQuery(myQuery)}
+                    orderBy={orderBy}
+                    onOrderByChange={(mySort) => setOrderBy(mySort)}
+                    sortBy={sortBy}
+                    onSortByChange={(mySort) => setSortBy(mySort)}
+                  />
 
-                <CommentList
-                  currentUser={user}
-                  commentsData={filteredTCRData}
-                />
-              </ManageCommentsStyled>
+                  <CommentList
+                    currentUser={user}
+                    commentsData={filteredTCRData}
+                  />
+                </ManageCommentsStyled>
+              )}
             </Container>
           </div>
         </Grid>
