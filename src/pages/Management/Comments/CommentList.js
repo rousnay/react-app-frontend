@@ -15,8 +15,26 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import ReplyOptions from "./ReplyOptions";
+import CommentListOptions from "./CommentListOptions";
 
+// RecentComment (sub) Component=====================
+export function RecentComment({ commentArray }) {
+  const sortedCommentArray = commentArray.sort((a, b) =>
+    a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
+  );
+  const recentComment = sortedCommentArray.reverse();
+
+  return (
+    <>
+      <div className="commentMeta">
+        <h4>{recentComment[0].user.firstName}</h4>
+        <p>{recentComment[0].text}</p>
+      </div>
+    </>
+  );
+}
+
+// CommentList (main) Component=====================
 export default function CommentList(props) {
   const [token] = useToken();
   const [expanded, setExpanded] = useState(false);
@@ -117,22 +135,11 @@ export default function CommentList(props) {
                   }
                 />
 
-                <div className="commentMeta">
-                  <h4>
-                    {
-                      trackItem.comments?.commentArray[
-                        trackItem.comments?.count - 1
-                      ]?.user.firstName
-                    }
-                  </h4>
-                  <p>
-                    {
-                      trackItem.comments?.commentArray[
-                        trackItem.comments?.count - 1
-                      ]?.text
-                    }
-                  </p>
-                </div>
+                <RecentComment
+                  trackItem={trackItem}
+                  trackId={trackItem?.id}
+                  commentArray={trackItem?.comments?.commentArray}
+                />
               </Stack>
             </div>
           </AccordionSummary>
@@ -172,7 +179,13 @@ export default function CommentList(props) {
               </Stack>
 
               {trackItem.comments?.commentArray
-                .slice(0)
+                .sort((a, b) =>
+                  a.createdAt > b.createdAt
+                    ? 1
+                    : b.createdAt > a.createdAt
+                    ? -1
+                    : 0
+                )
                 .reverse()
                 .map((commentItem, index) => (
                   <li key={index}>
@@ -188,11 +201,12 @@ export default function CommentList(props) {
                         />
                         <div className="commentMeta">
                           <h4>{commentItem.user.firstName}</h4>
+                          <p>{commentItem.createdAt}</p>
                           <p>{commentItem.text}</p>
                         </div>
                       </Stack>
 
-                      <ReplyOptions
+                      <CommentListOptions
                         commentId={commentItem.id}
                         reactionArray={trackItem.reactions?.reactionArray}
                       />

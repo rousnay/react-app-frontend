@@ -1,17 +1,7 @@
 import { useState } from "react";
-import { useToken } from "../../../hooks/useUserInfo";
-import { RequestApi } from "../../../components/RequestApi";
-import {
-  Stack,
-  Menu,
-  MenuItem,
-  Avatar,
-  IconButton,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TextareaAutosize,
-} from "@mui/material";
+// import { useToken } from "../../../hooks/useUserInfo";
+// import { RequestApi } from "../../../components/RequestApi";
+import { Menu, MenuItem, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -71,9 +61,9 @@ export function OptionMenu({ commentId }) {
   );
 }
 
-// ReplyOptions (main) Component=====================
+// CommentListOptions (main) Component=====================
 
-export default function ReplyOptions({ commentId, reactionArray }) {
+export default function CommentListOptions({ commentId, reactionArray }) {
   return (
     <>
       <div className="ReplyOptions">

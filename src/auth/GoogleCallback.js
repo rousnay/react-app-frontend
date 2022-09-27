@@ -6,12 +6,14 @@ import { useScript } from "../hooks/useScript";
 export default function GoogleCallback() {
   const googleButtonRef = useRef();
   const [user, setUser] = useState(false);
+
   const onGoogleSignIn = (user) => {
     let userCred = user.credential;
     let payload = jwt_deocde(userCred);
     console.log(payload);
     setUser(payload);
   };
+
   useScript("https://accounts.google.com/gsi/client", () => {
     window.google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
