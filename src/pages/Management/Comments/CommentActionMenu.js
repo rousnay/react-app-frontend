@@ -61,9 +61,9 @@ export function OptionMenu({ commentId }) {
   );
 }
 
-// CommentListOptions (main) Component=====================
+// CommentActionMenu (main) Component=====================
 
-export default function CommentListOptions({ commentId, reactionArray }) {
+export default function CommentActionMenu({ commentId, reactionArray }) {
   return (
     <>
       <div className="ReplyOptions">

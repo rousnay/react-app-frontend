@@ -8,7 +8,7 @@ import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
 import { ManageCommentsStyled } from "./ManagementStyles";
 import ManageCommentOptions from "./ManageCommentOptions";
-import CommentList from "./CommentList";
+import CommentParentList from "./CommentParentList";
 
 export default function ManageComments() {
   const navigate = useNavigate();
@@ -132,7 +132,7 @@ export default function ManageComments() {
                     onSortByChange={(mySort) => setSortBy(mySort)}
                   />
 
-                  <CommentList
+                  <CommentParentList
                     currentUser={user}
                     commentsData={filteredTCRData}
                   />

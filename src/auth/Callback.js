@@ -1,12 +1,8 @@
-import { useState, useRef } from "react";
 import { GOOGLE_CLIENT_ID } from "../utils/CONSTANTS";
-import jwt_deocde from "jwt-decode";
-import { useScript } from "../hooks/useScript";
 import { Button } from "@mui/material";
 import {
   GoogleOAuthProvider,
   GoogleLogin,
-  useGoogleLogin,
   googleLogout,
 } from "@react-oauth/google";
 
