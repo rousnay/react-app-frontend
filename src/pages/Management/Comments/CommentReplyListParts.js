@@ -1,23 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 // import { useToken } from "../../../hooks/useUserInfo";
 // import { RequestApi } from "../../../components/RequestApi";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-// ReactionCount (sub) Component=====================
-export function ReactionCount({ commentId, reactionArray }) {
+// ReplyReaction Component=====================
+export function ReplyReaction({ commentId, trackArray }) {
+  const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
+  const [reactionArray, setReactionArray] = useState([]);
+
+  const allReactionArray = useCallback(() => {
+    const reactionArrays = trackWithAllInfoArray.map((trackItem, index) => {
+      return trackItem.reactions?.reactionArray?.filter((reactionItem) => {
+        return (
+          reactionItem.type === "like" && reactionItem.commentId === commentId
+        );
+      });
+    });
+    setReactionArray(reactionArrays.flat());
+  }, [trackWithAllInfoArray, commentId]);
+
+  useEffect(() => {
+    setTrackWithAllInfoArray(trackArray);
+    allReactionArray();
+  }, [allReactionArray, trackArray]);
+
   let count = 0;
   reactionArray.forEach((element) => {
     if (element.commentId === commentId) {
       count += 1;
     }
   });
-  return <p style={{ margin: 0 }}>{count} </p>;
+
+  return (
+    <div className="reactionMeta">
+      <div className="cr-counter">
+        <span>
+          <FavoriteIcon />
+          <p style={{ margin: 0 }}>{count} </p>
+        </span>
+      </div>
+    </div>
+  );
 }
 
-// OptionMenu (sub) Component=====================
-export function OptionMenu({ commentId }) {
+// ReplayActionMenu Component=====================
+export function ReplyActionMenu({ commentId }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -57,32 +86,6 @@ export function OptionMenu({ commentId }) {
         <MenuItem onClick={handleClose}>Report</MenuItem>
         <MenuItem onClick={handleClose}>Delete</MenuItem>
       </Menu>
-    </>
-  );
-}
-
-// CommentActionMenu (main) Component=====================
-
-export default function CommentActionMenu({ commentId, reactionArray }) {
-  return (
-    <>
-      <div className="ReplyOptions">
-        <div className="reactionMeta">
-          <div className="cr-counter">
-            <span>
-              <FavoriteIcon />
-              <ReactionCount
-                commentId={commentId}
-                reactionArray={reactionArray}
-              />
-            </span>
-          </div>
-        </div>
-
-        <div className="optionMeta">
-          <OptionMenu commentId={commentId} />
-        </div>
-      </div>
     </>
   );
 }

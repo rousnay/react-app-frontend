@@ -63,9 +63,12 @@ export const ManageCommentsStyled = styled("div")`
       font-size: 12px;
     }
   }
-  img.trackImg {
+  img.trackImage,
+  img.pinImage {
+    display: inline-flex;
     width: 176px;
     max-width: 50%;
+    margin-right: 15px;
     border-radius: 5px;
   }
   .trackText {

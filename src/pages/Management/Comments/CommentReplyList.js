@@ -1,19 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToken } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
 import { Stack, Avatar, TextareaAutosize, IconButton } from "@mui/material";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import CommentActionMenu from "./CommentActionMenu";
+import { ReplyReaction, ReplyActionMenu } from "./CommentReplyListParts";
 
-export default function CommentReplyList({ index, currentUser, trackItem }) {
+export default function CommentReplyList({
+  index,
+  currentUser,
+  trackArray,
+  parentCommentId,
+}) {
   const [token] = useToken();
+  const [replyList, setReplyList] = useState([]);
+  const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
+  const [replyArray, setReplyArray] = useState([]);
 
-  const [commentList, setCommentList] = useState([]);
+  const allReplyArray = useCallback(() => {
+    const commentReplyMultipleArrays = trackWithAllInfoArray.map(
+      (trackItem, index) => {
+        return trackItem.comments?.commentArray?.filter((commentItem) => {
+          return (
+            commentItem.deletedAt === null &&
+            commentItem.parentCommentId === parentCommentId
+          );
+        });
+      }
+    );
+
+    const commentReplySortedSingleArray = commentReplyMultipleArrays
+      .flat()
+      .sort((a, b) =>
+        a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
+      );
+    setReplyArray(commentReplySortedSingleArray.reverse());
+  }, [trackWithAllInfoArray, parentCommentId]);
+
+  useEffect(() => {
+    setTrackWithAllInfoArray(trackArray);
+    allReplyArray();
+  }, [allReplyArray, trackArray]);
+
   const handleCommentInputChange = (e, index) => {
-    const list = [...commentList];
+    const list = [...replyList];
     list[index] = e.target.value;
-    setCommentList(list);
+    setReplyList(list);
   };
 
   const submitNewComment = async (
@@ -27,7 +59,7 @@ export default function CommentReplyList({ index, currentUser, trackItem }) {
     var formData = new FormData();
     formData.append("parentCommentId", selectedParentCommentId);
     formData.append("pinPointId", selectedPinPointId);
-    formData.append("text", commentList[i]);
+    formData.append("text", replyList[i]);
 
     const [response] = await RequestApi("POST", `comment`, token, formData);
 
@@ -67,10 +99,10 @@ export default function CommentReplyList({ index, currentUser, trackItem }) {
               submitNewComment(
                 e,
                 index,
-                trackItem.comments?.commentArray[trackItem.comments?.count - 1]
-                  ?.id,
-                trackItem.comments?.commentArray[trackItem.comments?.count - 1]
-                  ?.pinPointId
+                parentCommentId,
+                trackArray.comments?.commentArray[
+                  trackArray.comments?.count - 1
+                ]?.pinPointId
               )
             }
           >
@@ -78,37 +110,37 @@ export default function CommentReplyList({ index, currentUser, trackItem }) {
           </IconButton>
         </Stack>
 
-        {trackItem.comments?.commentArray
-          .sort((a, b) =>
-            a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
-          )
-          .reverse()
-          .map((commentItem, index) => (
-            <li key={index}>
-              <Stack
-                direction="row"
-                spacing={2}
-                sx={{ justifyContent: "space-between" }}
-              >
-                <Stack direction="row" spacing={2}>
-                  <Avatar
-                    alt={commentItem.user.firstName}
-                    src={commentItem.user.profilePhoto}
-                  />
-                  <div className="commentMeta">
-                    <h4>{commentItem.user.firstName}</h4>
-                    <p>{commentItem.createdAt}</p>
-                    <p>{commentItem.text}</p>
-                  </div>
-                </Stack>
-
-                <CommentActionMenu
-                  commentId={commentItem.id}
-                  reactionArray={trackItem.reactions?.reactionArray}
+        {replyArray.map((replayItem, index) => (
+          <li key={index}>
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ justifyContent: "space-between" }}
+            >
+              <Stack direction="row" spacing={2}>
+                <Avatar
+                  alt={replayItem.user.firstName}
+                  src={replayItem.user.profilePhoto}
                 />
+                <div className="commentMeta">
+                  <h4>{replayItem.user.firstName}</h4>
+                  <p>{replayItem.createdAt}</p>
+                  <p>{replayItem.text}</p>
+                </div>
               </Stack>
-            </li>
-          ))}
+
+              <div className="ReplyOptions">
+                <ReplyReaction
+                  trackArray={trackWithAllInfoArray}
+                  replyId={replayItem.id}
+                />
+                <div className="optionMeta">
+                  <ReplyActionMenu replyId={replayItem.id} />
+                </div>
+              </div>
+            </Stack>
+          </li>
+        ))}
       </ul>
     </>
   );

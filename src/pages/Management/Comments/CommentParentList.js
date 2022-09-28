@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Stack,
   Avatar,
@@ -7,38 +7,53 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import MessageIcon from "@mui/icons-material/Message";
-import CommentActionMenu from "./CommentActionMenu";
+import {
+  TrackImage,
+  PinImage,
+  CommentReaction,
+} from "./CommentParentListParts";
 import CommentReplyList from "./CommentReplyList";
 
-// RecentComment (sub) Component=====================
-export function RecentComment({ commentArray }) {
-  const sortedCommentArray = commentArray.sort((a, b) =>
-    a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
-  );
-  const recentComment = sortedCommentArray.reverse();
-
-  return (
-    <>
-      <div className="commentMeta">
-        <h4>{recentComment[0].user.firstName}</h4>
-        <p>{recentComment[0].text}</p>
-      </div>
-    </>
-  );
-}
-
-// CommentList (main) Component=====================
 export default function CommentParentList({ currentUser, commentsData }) {
+  // Accordion Fn=====================
   const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  // Data manipulation =====================
+  const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
+  const [parentCommentsArray, setParentCommentsArray] = useState([]);
+
+  const commentHasNoParentArray = useCallback(() => {
+    const parentCommentsMultipleArrays = trackWithAllInfoArray.map(
+      (trackItem, index) => {
+        return trackItem.comments?.commentArray?.filter((commentItem) => {
+          return (
+            commentItem.deletedAt === null &&
+            commentItem.pinPointId !== null &&
+            commentItem.parentCommentId === null
+          );
+        });
+      }
+    );
+    const parentCommentsSortedSingleArray = parentCommentsMultipleArrays
+      .flat()
+      .sort((a, b) =>
+        a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
+      );
+
+    setParentCommentsArray(parentCommentsSortedSingleArray.reverse());
+  }, [trackWithAllInfoArray]);
+
+  useEffect(() => {
+    setTrackWithAllInfoArray(commentsData);
+    commentHasNoParentArray();
+  }, [commentHasNoParentArray, commentsData]);
+
   return (
     <>
-      {commentsData.map((trackItem, index) => (
+      {parentCommentsArray.map((parentCommentItem, index) => (
         <Accordion
           className="comments-accordion"
           expanded={expanded === index}
@@ -50,52 +65,44 @@ export default function CommentParentList({ currentUser, commentsData }) {
             id={`${index}-header`}
             expandIcon={<ExpandMoreIcon />}
             aria-controls={`${index}-content`}
+            sx={{ width: "100%" }}
           >
             <div className="trackInfo">
               <Stack direction="row" spacing={2}>
-                <img
-                  className="trackImg"
-                  src={trackItem.previewImage}
-                  alt="Track Preview"
+                <TrackImage
+                  trackArray={trackWithAllInfoArray}
+                  trackId={parentCommentItem.trackId}
                 />
 
-                <div className="trackText">
-                  <h4>{trackItem.name}</h4>
-                  <div className="cr-counter">
-                    <span>
-                      <FavoriteIcon /> {trackItem.reactions?.count}
-                    </span>
-                    <span>
-                      <MessageIcon /> {trackItem.comments?.count}
-                    </span>
-                  </div>
-                </div>
+                <PinImage
+                  trackArray={trackWithAllInfoArray}
+                  trackId={parentCommentItem.trackId}
+                  pinPointId={parentCommentItem.pinPointId}
+                />
               </Stack>
             </div>
             <div className="commentInfo">
               <Stack direction="row" spacing={2}>
-                <img
-                  className="trackImg"
-                  src="https://via.placeholder.com/1024x395?text=Preview+Image"
-                  alt="Comment preview"
-                />
+                <Stack direction="row" spacing={2}>
+                  <Avatar
+                    alt={parentCommentItem.user?.firstName}
+                    src={parentCommentItem.user?.profilePhoto}
+                  />
+                  <div className="commentMeta">
+                    <h4>{parentCommentItem.user.firstName}</h4>
+                    <p>{parentCommentItem.text}</p>
+                  </div>
+                </Stack>
 
-                <Avatar
-                  alt={
-                    trackItem.comments?.commentArray[
-                      trackItem.comments?.count - 1
-                    ]?.user.firstName
-                  }
-                  src={
-                    trackItem.comments?.commentArray[
-                      trackItem.comments?.count - 1
-                    ]?.user.profilePhoto
-                  }
-                />
-
-                <RecentComment
-                  commentArray={trackItem?.comments?.commentArray}
-                />
+                <div className="CommentOptions">
+                  <CommentReaction
+                    trackArray={trackWithAllInfoArray}
+                    replyId={parentCommentItem.id}
+                  />
+                  {/* <div className="optionMeta">
+                  <CommentActionMenu replyId={parentCommentItem.id} />
+                </div> */}
+                </div>
               </Stack>
             </div>
           </AccordionSummary>
@@ -104,7 +111,9 @@ export default function CommentParentList({ currentUser, commentsData }) {
             <CommentReplyList
               index={index}
               currentUser={currentUser}
-              trackItem={trackItem}
+              trackArray={trackWithAllInfoArray}
+              parentCommentId={parentCommentItem.id}
+              pinPointId={parentCommentItem.pinPointId}
             />
           </AccordionDetails>
         </Accordion>
