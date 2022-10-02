@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useToken } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
-// import { Menu, MenuItem, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 
@@ -23,18 +22,6 @@ export function CommentReaction({ trackArray, parentCommentId }) {
     const totalReaction = await getReactionListData.data.count;
     setReactionCount(totalReaction);
   }, [parentCommentId, token]);
-
-  // const allReactionArray = useCallback(() => {
-  //   const reactionArrays = trackWithAllInfoArray.map((trackItem, index) => {
-  //     return trackItem.reactions?.reactionArray?.filter((reactionItem) => {
-  //       return (
-  //         reactionItem.type === "like" &&
-  //         reactionItem.commentId === parentCommentId
-  //       );
-  //     });
-  //   });
-  //   setReactionArray(reactionArrays.flat());
-  // }, [trackWithAllInfoArray, parentCommentId]);
 
   const allReplyArray = useCallback(() => {
     const replyArrays = trackWithAllInfoArray.map((trackItem, index) => {
@@ -58,15 +45,13 @@ export function CommentReaction({ trackArray, parentCommentId }) {
   }, [allReplyArray, getReactionList, trackArray]);
 
   return (
-    <div className="trackText">
-      <div className="cr-counter">
-        <span>
-          <FavoriteIcon /> {reactionCount}
-        </span>
-        <span>
-          <MessageIcon /> {replyArray.length}
-        </span>
-      </div>
+    <div className="commentCounts">
+      <span>
+        <FavoriteIcon /> {reactionCount}
+      </span>
+      <span>
+        <MessageIcon /> {replyArray.length}
+      </span>
     </div>
   );
 }

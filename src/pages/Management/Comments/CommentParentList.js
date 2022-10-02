@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Stack,
   Avatar,
+  Divider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -66,13 +67,14 @@ export default function CommentParentList({ currentUser, commentsData }) {
             aria-controls={`${index}-content`}
             sx={{ width: "100%" }}
           >
+            {/* <Stack direction="row" spacing={2}> */}
             <div className="trackInfo">
               <Stack direction="row" spacing={2}>
                 <TrackImage
                   trackArray={trackWithAllInfoArray}
                   trackId={parentCommentItem.trackId}
                 />
-
+                <Divider orientation="vertical" variant="middle" flexItem />
                 <PinImage
                   trackArray={trackWithAllInfoArray}
                   trackId={parentCommentItem.trackId}
@@ -82,28 +84,21 @@ export default function CommentParentList({ currentUser, commentsData }) {
             </div>
             <div className="commentInfo">
               <Stack direction="row" spacing={2}>
-                <Stack direction="row" spacing={2}>
-                  <Avatar
-                    alt={parentCommentItem.user?.firstName}
-                    src={parentCommentItem.user?.profilePhoto}
-                  />
-                  <div className="commentMeta">
-                    <h4>{parentCommentItem.user.firstName}</h4>
-                    <p>{parentCommentItem.text}</p>
-                  </div>
-                </Stack>
-
-                <div className="CommentOptions">
-                  <CommentReaction
-                    trackArray={trackWithAllInfoArray}
-                    parentCommentId={parentCommentItem.id}
-                  />
-                  {/* <div className="optionMeta">
-                  <CommentActionMenu replyId={parentCommentItem.id} />
-                </div> */}
+                <Avatar
+                  alt={parentCommentItem.user?.firstName}
+                  src={parentCommentItem.user?.profilePhoto}
+                />
+                <div className="commentMeta">
+                  <h4>{parentCommentItem.user.firstName}</h4>
+                  <p>{parentCommentItem.text}</p>
                 </div>
               </Stack>
             </div>
+            <CommentReaction
+              trackArray={trackWithAllInfoArray}
+              parentCommentId={parentCommentItem.id}
+            />
+            {/* </Stack> */}
           </AccordionSummary>
 
           <AccordionDetails>

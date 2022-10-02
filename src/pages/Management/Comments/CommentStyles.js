@@ -19,9 +19,12 @@ export const CommentsStyled = styled("div")`
     }
   }
 
-  .trackInfo,
+  .trackInfo {
+    width: 35%;
+  }
   .commentInfo {
-    width: 50%;
+    width: 45%;
+    margin-left: 45px;
   }
 
   .ReplyOptions {
@@ -31,7 +34,9 @@ export const CommentsStyled = styled("div")`
     }
   }
 
+  .commentCounts,
   .cr-counter {
+    display: flex;
     span {
       display: inline-flex;
       margin-right: 2.8em;
@@ -44,6 +49,12 @@ export const CommentsStyled = styled("div")`
       &:last-of-type svg {
         color: var(--themeBlue);
       }
+    }
+  }
+
+  .commentCounts {
+    span {
+      margin-right: 1.8em;
     }
   }
 
@@ -68,8 +79,8 @@ export const CommentsStyled = styled("div")`
     display: inline-flex;
     width: 176px;
     max-width: 50%;
-    margin-right: 15px;
     border-radius: 5px;
+    // margin: 0 !important;
   }
   .trackText {
     width: 50%;
