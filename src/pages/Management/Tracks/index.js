@@ -205,7 +205,6 @@ export default function ManageTracks() {
                               />
                               <div className="trackText">
                                 <h4>{trackItem.name}</h4>
-                                <p>{trackItem.id}</p>
                                 <p>{trackItem.description}</p>
                               </div>
                             </div>

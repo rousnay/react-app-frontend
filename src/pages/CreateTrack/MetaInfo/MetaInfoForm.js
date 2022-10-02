@@ -6,7 +6,12 @@ import { RequestApi } from "../../../components/RequestApi";
 
 export default function MetaInfoForm(props) {
   // Dynamic input setup ==================
-  const [formValues, setFormValues] = useState(props.localFormValues);
+  const [formValues, setFormValues] = useState([]);
+
+  useEffect(() => {
+    setFormValues(props.localFormValues);
+  }, [props.localFormValues]);
+
   const newFormSubmit = (pin_id, pin_name, pin_save) => {
     let newValues = {
       id: pin_id,
@@ -14,11 +19,11 @@ export default function MetaInfoForm(props) {
       save: pin_save,
     };
     setFormValues([...formValues, newValues]);
+    localStorage.setItem(
+      "formValuesLocal",
+      JSON.stringify([...formValues, newValues])
+    );
   };
-
-  useEffect(() => {
-    localStorage.setItem("formValuesLocal", JSON.stringify(formValues));
-  }, [formValues]);
 
   const foundIndex = formValues.findIndex((x) => x.id === props.pinId);
 
