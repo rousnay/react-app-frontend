@@ -1,44 +1,47 @@
 import { useState, useEffect, useCallback } from "react";
-// import { useToken } from "../../../hooks/useUserInfo";
-// import { RequestApi } from "../../../components/RequestApi";
-import { Menu, MenuItem, IconButton } from "@mui/material";
+import { useToken } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
+import swal from "sweetalert";
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  Stack,
+  Avatar,
+  TextareaAutosize,
+} from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TelegramIcon from "@mui/icons-material/Telegram";
 
 // ReplyReaction Component=====================
-export function ReplyReaction({ commentId, trackArray }) {
-  const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
-  const [reactionArray, setReactionArray] = useState([]);
+export function ReplyReaction({ replyId }) {
+  const [token] = useToken();
+  const [reactionCount, setReactionCount] = useState(0);
 
-  const allReactionArray = useCallback(() => {
-    const reactionArrays = trackWithAllInfoArray.map((trackItem, index) => {
-      return trackItem.reactions?.reactionArray?.filter((reactionItem) => {
-        return (
-          reactionItem.type === "like" && reactionItem.commentId === commentId
-        );
-      });
-    });
-    setReactionArray(reactionArrays.flat());
-  }, [trackWithAllInfoArray, commentId]);
+  // Reaction Count ==================
+  const getReactionList = useCallback(async () => {
+    const [getReactionListData] = await RequestApi(
+      "GET",
+      `reaction?commentId=${replyId}`,
+      token
+    );
+    const totalReaction = await getReactionListData.data.count;
+    setReactionCount(totalReaction);
+  }, [replyId, token]);
 
   useEffect(() => {
-    setTrackWithAllInfoArray(trackArray);
-    allReactionArray();
-  }, [allReactionArray, trackArray]);
-
-  let count = 0;
-  reactionArray.forEach((element) => {
-    if (element.commentId === commentId) {
-      count += 1;
-    }
-  });
+    (async function () {
+      await getReactionList();
+    })();
+  }, [getReactionList]);
 
   return (
     <div className="reactionMeta">
       <div className="cr-counter">
         <span>
           <FavoriteIcon />
-          <p style={{ margin: 0 }}>{count} </p>
+          <p style={{ margin: 0 }}>{reactionCount} </p>
         </span>
       </div>
     </div>
@@ -86,6 +89,71 @@ export function ReplyActionMenu({ commentId }) {
         <MenuItem onClick={handleClose}>Report</MenuItem>
         <MenuItem onClick={handleClose}>Delete</MenuItem>
       </Menu>
+    </>
+  );
+}
+
+// AddReply Component=====================
+export function AddReply({ currentUser, index, parentCommentId, pinPointId }) {
+  const [token] = useToken();
+  const [replyList, setReplyList] = useState([]);
+
+  const handleCommentInputChange = (e, index) => {
+    const list = [...replyList];
+    list[index] = e.target.value;
+    setReplyList(list);
+  };
+
+  const submitNewComment = async (
+    e,
+    i,
+    selectedParentCommentId,
+    selectedPinPointId
+  ) => {
+    e.preventDefault();
+
+    var formData = new FormData();
+    formData.append("parentCommentId", selectedParentCommentId);
+    formData.append("pinPointId", selectedPinPointId);
+    formData.append("text", replyList[i]);
+
+    const [response] = await RequestApi("POST", `comment`, token, formData);
+
+    if (response.message === "Success") {
+      swal("Success", "Comment has been add", "success", {
+        buttons: false,
+        timer: 2000,
+      }).then((value) => {
+        console.log("Comment added");
+      });
+    } else {
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+      }).then((value) => {});
+    }
+  };
+
+  return (
+    <>
+      <Stack direction="row" spacing={2}>
+        <Avatar alt={currentUser?.firstName} src={currentUser?.profilePhoto} />
+
+        <TextareaAutosize
+          aria-label="empty textarea"
+          placeholder="Write a replay."
+          onChange={(e) => handleCommentInputChange(e, index)}
+        />
+
+        <IconButton
+          color="primary"
+          aria-label="send the comment"
+          onClick={(e) =>
+            submitNewComment(e, index, parentCommentId, pinPointId)
+          }
+        >
+          <TelegramIcon fontSize="large" color={`var(--themeBlue)`} />
+        </IconButton>
+      </Stack>
     </>
   );
 }

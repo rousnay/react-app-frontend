@@ -42,7 +42,6 @@ export default function CommentParentList({ currentUser, commentsData }) {
       .sort((a, b) =>
         a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
       );
-
     setParentCommentsArray(parentCommentsSortedSingleArray.reverse());
   }, [trackWithAllInfoArray]);
 
@@ -97,7 +96,7 @@ export default function CommentParentList({ currentUser, commentsData }) {
                 <div className="CommentOptions">
                   <CommentReaction
                     trackArray={trackWithAllInfoArray}
-                    replyId={parentCommentItem.id}
+                    parentCommentId={parentCommentItem.id}
                   />
                   {/* <div className="optionMeta">
                   <CommentActionMenu replyId={parentCommentItem.id} />

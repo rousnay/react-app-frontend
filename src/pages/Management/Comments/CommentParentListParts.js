@@ -1,49 +1,72 @@
 import { useState, useEffect, useCallback } from "react";
-// import { useToken } from "../../../hooks/useUserInfo";
-// import { RequestApi } from "../../../components/RequestApi";
-import { Menu, MenuItem, IconButton } from "@mui/material";
+import { useToken } from "../../../hooks/useUserInfo";
+import { RequestApi } from "../../../components/RequestApi";
+// import { Menu, MenuItem, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MessageIcon from "@mui/icons-material/Message";
 
-// ReplyReaction Component=====================
-export function CommentReaction({ commentId, trackArray }) {
+// CommentReaction Component=====================
+export function CommentReaction({ trackArray, parentCommentId }) {
+  const [token] = useToken();
   const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
-  const [reactionArray, setReactionArray] = useState([]);
+  // const [reactionArray, setReactionArray] = useState([]);
+  const [reactionCount, setReactionCount] = useState(0);
+  const [replyArray, setReplyArray] = useState([]);
 
-  const allReactionArray = useCallback(() => {
-    const reactionArrays = trackWithAllInfoArray.map((trackItem, index) => {
-      return trackItem.reactions?.reactionArray?.filter((reactionItem) => {
+  // Reaction Count ==================
+  const getReactionList = useCallback(async () => {
+    const [getReactionListData] = await RequestApi(
+      "GET",
+      `reaction?commentId=${parentCommentId}`,
+      token
+    );
+    const totalReaction = await getReactionListData.data.count;
+    setReactionCount(totalReaction);
+  }, [parentCommentId, token]);
+
+  // const allReactionArray = useCallback(() => {
+  //   const reactionArrays = trackWithAllInfoArray.map((trackItem, index) => {
+  //     return trackItem.reactions?.reactionArray?.filter((reactionItem) => {
+  //       return (
+  //         reactionItem.type === "like" &&
+  //         reactionItem.commentId === parentCommentId
+  //       );
+  //     });
+  //   });
+  //   setReactionArray(reactionArrays.flat());
+  // }, [trackWithAllInfoArray, parentCommentId]);
+
+  const allReplyArray = useCallback(() => {
+    const replyArrays = trackWithAllInfoArray.map((trackItem, index) => {
+      return trackItem.comments?.commentArray?.filter((commentItem) => {
         return (
-          reactionItem.type === "like" && reactionItem.commentId === commentId
+          commentItem.deletedAt === null &&
+          commentItem.parentCommentId === parentCommentId
         );
       });
     });
-    setReactionArray(reactionArrays.flat());
-  }, [trackWithAllInfoArray, commentId]);
+    setReplyArray(replyArrays.flat());
+  }, [trackWithAllInfoArray, parentCommentId]);
 
   useEffect(() => {
     setTrackWithAllInfoArray(trackArray);
-    allReactionArray();
-  }, [allReactionArray, trackArray]);
-
-  let count = 0;
-  reactionArray.forEach((element) => {
-    if (element.commentId === commentId) {
-      count += 1;
-    }
-  });
+    (async function () {
+      await getReactionList();
+    })();
+    // allReactionArray();
+    allReplyArray();
+  }, [allReplyArray, getReactionList, trackArray]);
 
   return (
     <div className="trackText">
-      {/* <h4>{trackItem.name}</h4>
       <div className="cr-counter">
         <span>
-          <FavoriteIcon /> {trackItem.reactions?.count}
+          <FavoriteIcon /> {reactionCount}
         </span>
         <span>
-          <MessageIcon /> {trackItem.comments?.count}
+          <MessageIcon /> {replyArray.length}
         </span>
-      </div> */}
+      </div>
     </div>
   );
 }
