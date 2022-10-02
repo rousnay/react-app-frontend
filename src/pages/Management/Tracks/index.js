@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToken, useUser, useChannel } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
-import { Container, Grid, Typography } from "@mui/material";
+import { Container, Grid, Typography, Stack } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
-import ManageTrackOptions from "./ManageTrackOptions";
-import { ManageTrackStyled } from "./ManagementStyles";
+import TrackOptionBar from "./TrackOptionBar";
+import { TracksStyled } from "./TrackStyles";
+import TrackActionMenu from "./TrackActionMenu";
 
 export default function ManageTracks() {
   const navigate = useNavigate();
@@ -152,8 +153,8 @@ export default function ManageTracks() {
               {loading ? (
                 <Typography>Loading...</Typography>
               ) : (
-                <ManageTrackStyled>
-                  <ManageTrackOptions
+                <TracksStyled>
+                  <TrackOptionBar
                     checkedItems={isChecked}
                     currentlyDeleted={(deletedIds) =>
                       handleDeletedTracks(deletedIds)
@@ -204,6 +205,7 @@ export default function ManageTracks() {
                               />
                               <div className="trackText">
                                 <h4>{trackItem.name}</h4>
+                                <p>{trackItem.id}</p>
                                 <p>{trackItem.description}</p>
                               </div>
                             </div>
@@ -216,14 +218,25 @@ export default function ManageTracks() {
                             {trackItem.createdAt.slice(0, 10)}
                           </td>
                           <td style={{ textAlign: "center" }}>
-                            <p>{trackItem.privacy}</p>
-                            {/* <p>{trackItem.status}</p> */}
+                            <Stack
+                              className="privacyRow"
+                              direction="row"
+                              spacing={2}
+                            >
+                              <div className="privacyStatus">
+                                <p>{trackItem.privacy}</p>
+                                {/* <p>{trackItem.status}</p> */}
+                              </div>
+                              <div className="optionMeta">
+                                <TrackActionMenu trackId={trackItem.id} />
+                              </div>
+                            </Stack>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </ManageTrackStyled>
+                </TracksStyled>
               )}
             </Container>
           </div>

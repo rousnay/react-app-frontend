@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 
-export const ManageCommentsStyled = styled("div")`
+export const CommentsStyled = styled("div")`
   ul.MuiList-root {
     svg {
       font-size: 20px;

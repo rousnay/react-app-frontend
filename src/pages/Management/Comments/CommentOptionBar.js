@@ -1,6 +1,6 @@
 import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 
-const ManageCommentOptions = () => {
+const CommentOptionBar = () => {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -32,4 +32,4 @@ const ManageCommentOptions = () => {
   );
 };
 
-export default ManageCommentOptions;
+export default CommentOptionBar;

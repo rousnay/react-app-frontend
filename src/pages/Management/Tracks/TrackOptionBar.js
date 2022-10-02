@@ -123,7 +123,7 @@ const DropDown = ({
   );
 };
 
-const ManageTrackOptions = ({
+const TrackOptionBar = ({
   checkedItems,
   currentlyDeleted,
   query,
@@ -233,4 +233,4 @@ const ManageTrackOptions = ({
   );
 };
 
-export default ManageTrackOptions;
+export default TrackOptionBar;

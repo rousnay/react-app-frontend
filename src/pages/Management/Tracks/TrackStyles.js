@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 
-export const ManageTrackStyled = styled("div")`
+export const TracksStyled = styled("div")`
   ul.MuiList-root {
     svg {
       font-size: 20px;
@@ -46,6 +46,11 @@ export const ManageTrackStyled = styled("div")`
     p {
       margin: 0;
       font-size: 12px;
+    }
+  }
+  .privacyRow {
+    div {
+      display: flex;
     }
   }
 `;

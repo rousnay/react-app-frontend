@@ -6,8 +6,8 @@ import { Container, Grid, Typography } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
-import { ManageCommentsStyled } from "./ManagementStyles";
-import ManageCommentOptions from "./ManageCommentOptions";
+import { CommentsStyled } from "./CommentStyles";
+import CommentOptionBar from "./CommentOptionBar";
 import CommentParentList from "./CommentParentList";
 
 export default function ManageComments() {
@@ -122,8 +122,8 @@ export default function ManageComments() {
               {loading ? (
                 <Typography>Loading...</Typography>
               ) : (
-                <ManageCommentsStyled>
-                  <ManageCommentOptions
+                <CommentsStyled>
+                  <CommentOptionBar
                     query={query}
                     onQueryChange={(myQuery) => setQuery(myQuery)}
                     orderBy={orderBy}
@@ -136,7 +136,7 @@ export default function ManageComments() {
                     currentUser={user}
                     commentsData={filteredTCRData}
                   />
-                </ManageCommentsStyled>
+                </CommentsStyled>
               )}
             </Container>
           </div>
