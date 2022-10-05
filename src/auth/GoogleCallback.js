@@ -36,7 +36,7 @@ export default function GoogleCallback() {
         height: "100vh",
       }}
     >
-      {!user && <div ref={googleButtonRef}></div>}
+      {!user && <div ref={googleButtonRef}>Login</div>}
       {user && (
         <div>
           <h1>{user.name}</h1>

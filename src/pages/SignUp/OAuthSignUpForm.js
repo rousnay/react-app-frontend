@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser } from "./userAuth";
-import { RequestApi } from "../components/RequestApi";
+import { useToken, useUser } from "../../hooks/useUserInfo";
+import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Button, TextField } from "@mui/material";
 import swal from "sweetalert";
-import Uploader from "../components/uploader";
+import Uploader from "../../components/Uploader";
 import logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
 
@@ -12,7 +12,8 @@ export default function OAuthUpdateForm() {
   // Initialization of variables =================
   const navigate = useNavigate();
   const [token] = useToken();
-  const [, setUser] = useUser();
+  const [user, setUser] = useUser();
+  const [email, setEmail] = useState(" ");
   const [firstName, setFirstName] = useState(" ");
   const [lastName, setLastName] = useState(" ");
   const [addressLine1, setAddressLine1] = useState(" ");
@@ -60,26 +61,14 @@ export default function OAuthUpdateForm() {
     setProfilePhoto(_gpxFileItem);
   }
 
-  // Set initial user data from server =================
+  // Set initial user data from sns server =================
   useEffect(() => {
-    async function getUserInfo() {
-      const [response] = await RequestApi("GET", `user/info`, token);
-      if (response.message === "Success") {
-        return response.data;
-      }
-    }
-
-    (async function () {
-      const userData = await getUserInfo();
-      setFirstName(userData.firstName || " ");
-      setLastName(userData.lastName || " ");
-      setAddressLine1(userData.addressLine1 || " ");
-      setState(userData.state || " ");
-      setZipCode(userData.zipCode || " ");
-      setCountry(userData.country || " ");
-      setProfilePhoto(userData.profilePhoto || []);
-    })();
-  }, [token]);
+    console.log(user);
+    setEmail(user.email || " ");
+    setFirstName(user.given_name || " ");
+    setLastName(user.family_name || " ");
+    setProfilePhoto(user.picture || []);
+  }, [user]);
 
   return (
     <>
@@ -94,6 +83,18 @@ export default function OAuthUpdateForm() {
             </h3>
             <div className="formHolder" style={{ marginTop: "50px" }}>
               <form className="" noValidate onSubmit={handleSubmit}>
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  name="email"
+                  label="Email Address"
+                  value={email}
+                  type="email"
+                  disabled
+                />
                 <TextField
                   variant="outlined"
                   margin="normal"

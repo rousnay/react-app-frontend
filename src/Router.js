@@ -10,6 +10,7 @@ const GoogleCallback = lazy(() => import("./auth/GoogleCallback"));
 const KakaoCallback = lazy(() => import("./auth/KakaoCallback"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const EmailSignUp = lazy(() => import("./pages/SignUp/EmailSignUp"));
+const OAuthSignUpForm = lazy(() => import("./pages/SignUp/OAuthSignUpForm"));
 const EmailVerification = lazy(() =>
   import("./pages/SignUp/EmailVerification")
 );
@@ -39,6 +40,7 @@ export const Router = () => {
           <Route path="auth/kakao/callback" element={<KakaoCallback />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="SignUp/EmailSignUp" element={<EmailSignUp />} />
+          <Route path="SignUp/OAuthSignUpForm" element={<OAuthSignUpForm />} />
           <Route
             path="SignUp/EmailVerification"
             element={<EmailVerification />}

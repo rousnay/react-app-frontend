@@ -4,6 +4,10 @@ import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
 // import { useQueryParams } from "../../utils/useQueryParams";
+import jwt_deocde from "jwt-decode";
+import { useScript } from "../../hooks/useScript";
+import { GOOGLE_CLIENT_ID } from "../../utils/CONSTANTS";
+
 import {
   Container,
   Grid,
@@ -15,15 +19,6 @@ import {
 import swal from "sweetalert";
 import Logo from "../../assets/logo.svg";
 import OtpBg from "../../assets/otp-bg.svg";
-
-// async function oauthSignUp(provider) {
-//   return fetch(`${API_URL}/user/auth/${provider}`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   }).then((data) => data.json());
-// }
 
 const genDeviceToken = (() => {
   return Math.random().toString(36).substring(2, 8);
@@ -77,6 +72,37 @@ export default function EmailSignUp() {
       swal("Failed", response.error, "error");
     }
   };
+
+  // Signup with Google =================
+  useScript("https://accounts.google.com/gsi/client", () => {
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: onGoogleSignIn,
+      auto_select: false,
+    });
+    window.google.accounts.id.renderButton(
+      document.getElementById("signUpWithGoogle"),
+      { theme: "outline", size: "large" }
+    );
+  });
+
+  const onGoogleSignIn = (response) => {
+    let googleToken = response.credential;
+    let payload = jwt_deocde(googleToken);
+    setToken(googleToken);
+    setUser(payload);
+    localStorage.setItem("googleToken", JSON.stringify(googleToken));
+    navigate("/SignUp/OAuthSignUpForm");
+  };
+
+  // async function oauthSignUp(provider) {
+  //   return fetch(`${API_URL}/user/auth/${provider}`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }).then((data) => data.json());
+  // }
 
   // const signUpWithOAuth = async (e, provider) => {
   //   e.preventDefault();
@@ -178,7 +204,7 @@ export default function EmailSignUp() {
               spacing={2}
               divider={<Divider orientation="vertical" flexItem />}
             >
-              <Button
+              {/* <Button
                 type="submit"
                 variant="contained"
                 color="themeGreen"
@@ -188,7 +214,9 @@ export default function EmailSignUp() {
                 }}
               >
                 login with Google
-              </Button>
+              </Button> */}
+
+              <div id="signUpWithGoogle"></div>
 
               <Button
                 type="submit"
