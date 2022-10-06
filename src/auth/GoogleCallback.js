@@ -1,32 +1,31 @@
-import { useState, useRef } from "react";
-import { GOOGLE_CLIENT_ID } from "../utils/CONSTANTS";
-import jwt_deocde from "jwt-decode";
-import { useScript } from "../hooks/useScript";
+import { useEffect } from "react";
+import { useQueryParams } from "../hooks/useQueryParams";
+import { RequestApi } from "../components/RequestApi";
+import { useToken, useUser } from "../hooks/useUserInfo";
 
 export default function GoogleCallback() {
-  const googleButtonRef = useRef();
-  const [user, setUser] = useState(false);
+  const queryParams = useQueryParams();
+  const [user, setUser] = useUser();
+  const [, setToken] = useToken();
 
-  const onGoogleSignIn = (user) => {
-    let userCred = user.credential;
-    let payload = jwt_deocde(userCred);
-    console.log(payload);
-    setUser(payload);
+  useEffect(() => {
+    if (queryParams) {
+      handleSubmit(queryParams);
+    }
+  });
+
+  const handleSubmit = async (queryParams) => {
+    const [response] = await RequestApi(
+      "GET",
+      `/user/auth/google/redirect/?code=${queryParams.code}&scope=${queryParams.scope}`
+    );
+    if (response.message === "Success") {
+      console.log(response);
+      setUser(response.data);
+      setToken(response.data.token);
+    }
   };
 
-  useScript("https://accounts.google.com/gsi/client", () => {
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onGoogleSignIn,
-      auto_select: false,
-    });
-
-    window.google.accounts.id.renderButton(googleButtonRef.current, {
-      size: "medium",
-    });
-
-    // window.google.accounts.id.prompt();
-  });
   return (
     <div
       style={{
@@ -36,11 +35,11 @@ export default function GoogleCallback() {
         height: "100vh",
       }}
     >
-      {!user && <div ref={googleButtonRef}>Login</div>}
+      {!user && <div>Login</div>}
       {user && (
         <div>
-          <h1>{user.name}</h1>
-          <img src={user.picture} alt="profile" />
+          <h1>{user.firstName}</h1>
+          <img width="300" src={user.profilePhoto} alt="profile" />
           <p>{user.email}</p>
 
           <button

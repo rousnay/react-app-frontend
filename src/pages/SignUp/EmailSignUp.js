@@ -204,7 +204,7 @@ export default function EmailSignUp() {
               spacing={2}
               divider={<Divider orientation="vertical" flexItem />}
             >
-              {/* <Button
+              <Button
                 type="submit"
                 variant="contained"
                 color="themeGreen"
@@ -214,7 +214,7 @@ export default function EmailSignUp() {
                 }}
               >
                 login with Google
-              </Button> */}
+              </Button>
 
               <div id="signUpWithGoogle"></div>
 
