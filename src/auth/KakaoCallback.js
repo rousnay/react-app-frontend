@@ -1,30 +1,49 @@
-import { useState, useEffect } from "react";
-import { useQueryParams } from "../hooks/useQueryParams";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { RequestApi } from "../components/RequestApi";
 import { useToken, useUser } from "../hooks/useUserInfo";
+import getQueryParams from "../utils/getQueryParams";
 
-export default function GoogleCallback() {
-  const queryParams = useQueryParams();
-  const [user, setUser] = useUser();
-  const [token, setToken] = useToken();
+export default function KakaoCallback() {
+  const navigate = useNavigate();
+  const { code: oauthToken } = getQueryParams();
+  const [, setUser] = useUser();
+  const [, setToken] = useToken();
 
   useEffect(() => {
-    if (queryParams) {
-      handleSubmit(queryParams);
+    if (oauthToken) {
+      (async function () {
+        const [response] = await RequestApi(
+          "GET",
+          `user/auth/kakao/redirect/?code=${oauthToken}`
+        );
+        if (response.message === "Success") {
+          console.log(response);
+          setUser(response.data);
+          setToken(response.data.token);
+          navigate("/Dashboard");
+        }
+      })();
     }
-  }, []);
+  });
 
-  const handleSubmit = async (queryParams) => {
-    const [response] = await RequestApi(
-      "GET",
-      `/user/auth/google/redirect/?code=${queryParams.code}&scope=${queryParams.scope}`
-    );
-    if (response.message === "Success") {
-      console.log(response);
-      setUser(response.data);
-      setToken(response.data.token);
-    }
-  };
+  // const handleLogin = async (queryParams) => {
+  //   const [response] = await RequestApi(
+  //     "GET",
+  //     `/user/auth/kakao/redirect/?code=${oauthToken}`
+  //   );
+  //   if (response.message === "Success") {
+  //     console.log(response);
+  //     setUser(response.data);
+  //     setToken(response.data.token);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (oauthToken) {
+  //       handleLogin(oauthToken);
+  //   }
+  // });
 
   return (
     <div
@@ -35,22 +54,7 @@ export default function GoogleCallback() {
         height: "100vh",
       }}
     >
-      {!user && <div>Login</div>}
-      {user && (
-        <div>
-          <h1>{user.firstName}</h1>
-          <img width="300" src={user.profilePhoto} alt="profile" />
-          <p>{user.email}</p>
-
-          <button
-            onClick={() => {
-              setUser(false);
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      )}
+      Loading your profile...
     </div>
   );
 }

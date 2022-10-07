@@ -20,10 +20,10 @@ const fold = (arr) =>
     };
   }, {});
 
-export const useQueryParams = () => {
+export default function useQueryParams() {
   const location = useLocation();
   const currentParamsObj = new URLSearchParams(location.search);
   const params = fold([...currentParamsObj.entries()]);
 
   return params;
-};
+}

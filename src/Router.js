@@ -26,11 +26,22 @@ const TrackAction = lazy(() => import("./pages/CreateTrack/TrackAction"));
 const TrackReview = lazy(() => import("./pages/CreateTrack/TrackReview"));
 const ManageTracks = lazy(() => import("./pages/Management/Tracks"));
 const ManageComments = lazy(() => import("./pages/Management/Comments"));
-
+const loadingPlaceHolder = (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+    }}
+  >
+    Data is loading...
+  </div>
+);
 export const Router = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={loadingPlaceHolder}>
         <Routes>
           <Route path="/Home" element={<Home />} />
           <Route path="/" element={<Landing />} exact />

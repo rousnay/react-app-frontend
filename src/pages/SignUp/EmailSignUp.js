@@ -3,10 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
-// import { useQueryParams } from "../../utils/useQueryParams";
-import jwt_deocde from "jwt-decode";
-import { useScript } from "../../hooks/useScript";
-import { GOOGLE_CLIENT_ID } from "../../utils/CONSTANTS";
 
 import {
   Container,
@@ -71,28 +67,6 @@ export default function EmailSignUp() {
     } else {
       swal("Failed", response.error, "error");
     }
-  };
-
-  // Signup with Google =================
-  useScript("https://accounts.google.com/gsi/client", () => {
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onGoogleSignIn,
-      auto_select: false,
-    });
-    window.google.accounts.id.renderButton(
-      document.getElementById("signUpWithGoogle"),
-      { theme: "outline", size: "large" }
-    );
-  });
-
-  const onGoogleSignIn = (response) => {
-    let googleToken = response.credential;
-    let payload = jwt_deocde(googleToken);
-    setToken(googleToken);
-    setUser(payload);
-    localStorage.setItem("googleToken", JSON.stringify(googleToken));
-    navigate("/SignUp/OAuthSignUpForm");
   };
 
   // async function oauthSignUp(provider) {
@@ -215,8 +189,6 @@ export default function EmailSignUp() {
               >
                 login with Google
               </Button>
-
-              <div id="signUpWithGoogle"></div>
 
               <Button
                 type="submit"
