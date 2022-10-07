@@ -1,12 +1,25 @@
-import { useUser, useChannel } from "../../hooks/useUserInfo";
+import { useEffect } from "react";
+import { useToken, useUser, useChannel } from "../../hooks/useUserInfo";
+import { RequestApi } from "../../components/RequestApi";
 import { Container, Grid, Card } from "@mui/material";
 import PrivetSideBar from "../../components/PrivetSideBar";
 import PrivetHeader from "../../components/PrivetHeader";
 import UserInfo from "./UserInfo";
 
 export default function Dashboard() {
-  const [user] = useUser();
-  const [channelId] = useChannel();
+  const [user, setUser] = useUser();
+  const [token] = useToken();
+  const [channelId, setChannelId] = useChannel();
+
+  useEffect(() => {
+    (async function () {
+      const [response] = await RequestApi("GET", `user/info`, token);
+      if (response.message === "Success") {
+        setUser(response.data);
+        setChannelId(response.data?.channelId);
+      }
+    })();
+  }, [setChannelId, setUser, token]);
 
   return (
     <>

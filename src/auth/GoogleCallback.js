@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RequestApi } from "../components/RequestApi";
-import { useToken, useUser } from "../hooks/useUserInfo";
+import { useToken, useUser, useChannel } from "../hooks/useUserInfo";
 import getQueryParams from "../utils/getQueryParams";
 
 export default function GoogleCallback() {
   const navigate = useNavigate();
   const { code: oauthToken } = getQueryParams();
-  const [, setUser] = useUser();
   const [, setToken] = useToken();
+  const [, setUser] = useUser();
+  const [, setChannelId] = useChannel();
 
   useEffect(() => {
     if (oauthToken) {
@@ -21,6 +22,7 @@ export default function GoogleCallback() {
           console.log(response);
           setUser(response.data);
           setToken(response.data.token);
+          setChannelId(response.data?.channelId);
           navigate("/Dashboard");
         }
       })();

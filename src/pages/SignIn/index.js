@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useToken, useUser, useChannel } from "../../hooks/useUserInfo";
+import { API_URL } from "../../utils/CONSTANTS";
 import { RequestApi } from "../../components/RequestApi";
-import { Container, Grid, Button, TextField } from "@mui/material";
+import { useToken, useUser, useChannel } from "../../hooks/useUserInfo";
+import {
+  Container,
+  Grid,
+  Button,
+  TextField,
+  Stack,
+  Divider,
+} from "@mui/material";
 import swal from "sweetalert";
 import Logo from "../../assets/logo.svg";
 import TreadmillBg from "../../assets/treadmill-bg.svg";
@@ -120,13 +128,43 @@ export default function SignIn() {
                   Sign In
                 </Button>
               </form>
-              <p>
-                Don’t have an account?{" "}
-                <Link to="/SignUp">
-                  <span style={{ color: "var(--logoRed)" }}>Sign Up</span>
-                </Link>
-              </p>
             </div>
+            <Stack
+              style={{ marginTop: "50px", justifyContent: "center" }}
+              direction="row"
+              spacing={2}
+              divider={<Divider orientation="vertical" flexItem />}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                color="themeGreen"
+                // onClick={(e) => signUpWithOAuth(e, "google")}
+                onClick={() => {
+                  window.location.href = `${API_URL}/user/auth/google`;
+                }}
+              >
+                login with Google
+              </Button>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="themeYellow"
+                // onClick={(e) => signUpWithOAuth(e, "kakao")}
+                onClick={() => {
+                  window.location.href = `${API_URL}/user/auth/kakao`;
+                }}
+              >
+                login with Kakao
+              </Button>
+            </Stack>
+            <p>
+              Don’t have an account?{" "}
+              <Link to="/SignUp">
+                <span style={{ color: "var(--logoRed)" }}>Sign Up</span>
+              </Link>
+            </p>
           </Grid>
 
           <Grid
