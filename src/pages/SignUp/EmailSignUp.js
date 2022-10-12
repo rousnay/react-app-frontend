@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../utils/CONSTANTS";
 import { useToken, useUser } from "../../hooks/useUserInfo";
 import { RequestApi } from "../../components/RequestApi";
+import OauthPopup from "react-oauth-popup";
 
 import {
   Container,
@@ -25,6 +26,7 @@ export default function EmailSignUp() {
   const navigate = useNavigate();
   const [, setToken] = useToken();
   const [, setUser] = useUser();
+  const [externalPopup, setExternalPopup] = useState(null);
   const deviceType = "ios";
   const deviceToken = genDeviceToken;
   const [username, setUsername] = useState();
@@ -68,6 +70,105 @@ export default function EmailSignUp() {
       swal("Failed", response.error, "error");
     }
   };
+
+  // e: React.MouseEvent<HTMLAnchorElement>
+
+  const connectClick = () => {
+    const currentUrls = window.location.href;
+    console.log(currentUrls);
+
+    const widthP = 500;
+    const heightP = 400;
+    const left = window.screenX + (window.outerWidth - widthP) / 2;
+    const top = window.screenY + (window.outerHeight - heightP) / 2.5;
+    const title = `WINDOW TITLE`;
+    const url = `https://api.finutss.com/user/auth/google`;
+    const popup = window.open(
+      url,
+      title,
+      `width=${widthP},height=${heightP},left=${left},top=${top}`
+    );
+    setExternalPopup(popup);
+
+    console.log("call-00");
+  };
+
+  const onCode = (code, params) => {
+    console.log("wooooo a code", code);
+    console.log(
+      "alright! the URLSearchParams interface from the popup url",
+      params
+    );
+  };
+  const onClose = () => console.log("closed!");
+
+  useEffect(() => {
+    console.log("call-1");
+    if (!externalPopup) {
+      console.log("call-2");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      console.log("call-3");
+
+      const currentUrl = externalPopup.location.href;
+      console.log(currentUrl);
+
+      if (!externalPopup) {
+        timer && clearInterval(timer);
+        console.log("call-4");
+        return;
+      }
+      // const currentUrl = externalPopup.location.href;
+      // console.log(currentUrl);
+      // if (!currentUrl) {
+      //   console.log("call-5");
+      //   return;
+      // }
+      const searchParams = new URL(currentUrl).searchParams;
+      console.log(searchParams);
+
+      // let { code } = useParams();
+
+      const code = searchParams.get("code");
+      console.log(code);
+
+      if (code) {
+        externalPopup.close();
+        console.log(`The popup URL has URL code param = ${code}`);
+
+        if (code) {
+          (async function () {
+            const [response] = await RequestApi(
+              "GET",
+              `user/auth/google/redirect/?code=${code}`
+            );
+            if (response.message === "Success") {
+              console.log(response);
+              setUser(response.data);
+              setToken(response.data.token);
+              // setChannelId(response.data?.channelId);
+              // navigate("/Dashboard");
+            }
+          })();
+        }
+
+        // YourApi.endpoint(code).then(() => {
+        //   // change UI to show after the code was stored
+        //   console.log("done");
+        // })
+        //   .catch(() => {
+        //     // API error
+        //   })
+        //   .finally(() => {
+        //     // clear timer at the end
+        //     setExternalPopup(null);
+        //     timer && clearInterval(timer);
+        //   })
+      }
+    }, 1000);
+  }, [externalPopup, setToken, setUser]);
 
   // async function oauthSignUp(provider) {
   //   return fetch(`${API_URL}/user/auth/${provider}`, {
@@ -178,6 +279,16 @@ export default function EmailSignUp() {
               spacing={2}
               divider={<Divider orientation="vertical" flexItem />}
             >
+              <Button onClick={connectClick}>Connect</Button>
+
+              <OauthPopup
+                url="https://api.finutss.com/user/auth/google"
+                onCode={onCode}
+                onClose={onClose}
+              >
+                <div>Click me to open a Popup</div>
+              </OauthPopup>
+
               <Button
                 type="submit"
                 variant="contained"
