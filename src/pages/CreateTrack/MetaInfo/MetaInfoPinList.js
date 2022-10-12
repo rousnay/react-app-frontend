@@ -1,5 +1,5 @@
 export default function MetaInfoPinList(props) {
-  const updatedformValuesLocal =
+  const updatedFormValuesLocal =
     JSON.parse(localStorage.getItem("formValuesLocal")) ||
     props.localFormValues;
 
@@ -9,7 +9,7 @@ export default function MetaInfoPinList(props) {
         {props.data.features.map((lngLat, index) => (
           <li
             className={`pin_item ${
-              props.cuttentPinIndex === index ? "selected_pin" : ""
+              props.currentPinIndex === index ? "selected_pin" : ""
             }`}
             key={lngLat.id}
           >
@@ -17,10 +17,10 @@ export default function MetaInfoPinList(props) {
               <span> {index + 1} </span>
             </span>
 
-            {updatedformValuesLocal.findIndex((x) => x.id === lngLat.id) === -1
+            {updatedFormValuesLocal.findIndex((x) => x.id === lngLat.id) === -1
               ? `PIN ID:  ${lngLat.id}`
-              : updatedformValuesLocal[
-                  updatedformValuesLocal.findIndex((x) => x.id === lngLat.id)
+              : updatedFormValuesLocal[
+                  updatedFormValuesLocal.findIndex((x) => x.id === lngLat.id)
                 ].name}
           </li>
         ))}

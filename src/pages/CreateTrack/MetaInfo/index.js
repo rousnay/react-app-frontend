@@ -57,7 +57,8 @@ export default function MetaInfo() {
   const [geoJSONPoint, setGeoJSONPoint] = useState(initialPointCollection);
   const [centralLineCoordinate, setCentralCoordinate] = useState([0, 0]);
   const [line, setLine] = useState(initialLineString);
-
+  const initialFormValueForPins =
+    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
   /******************************************/
   //  Get Track Data from API
   /******************************************/
@@ -88,8 +89,15 @@ export default function MetaInfo() {
   const convertToPointFeatures = useCallback(async () => {
     const trackAsyncData = await getTrackInfo();
     const trackAsyncPoint = await trackAsyncData.pinPoints;
-    if (trackAsyncPoint.count === 0) return false;
-    else {
+    console.log("halse");
+    if (trackAsyncPoint.count === 0) {
+      localStorage.setItem(
+        "formValuesLocal",
+        JSON.stringify(initialFormValueForPins)
+      );
+      return false;
+    } else {
+      console.log("else");
       const trackAsyncPointArray = await trackAsyncPoint.pinPointArray;
 
       const pointFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
@@ -125,7 +133,7 @@ export default function MetaInfo() {
       };
       return pointFeatureCollection;
     }
-  }, [getTrackInfo]);
+  }, [getTrackInfo, initialFormValueForPins]);
 
   // GET CentralCoordinate ==================
   const centralCoordinate = useCallback(async () => {
@@ -202,9 +210,6 @@ export default function MetaInfo() {
   const [distanceInKm, SetDistanceInKm] = useState(0);
   const [pinFeature, setPinFeature] = useState({});
   const [selectedPinIndex, setSelectedPinIndex] = useState(-1);
-
-  const initialFormValueForPins =
-    JSON.parse(localStorage.getItem("formValuesLocal")) || initialFormValues;
 
   useEffect(() => {
     setPinFeature(JSON.stringify(geoJSONPoint));
@@ -407,7 +412,7 @@ export default function MetaInfo() {
                   <MetaInfoPinList
                     data={geoJSONPoint}
                     localFormValues={initialFormValueForPins}
-                    cuttentPinIndex={selectedPinIndex}
+                    currentPinIndex={selectedPinIndex}
                   />
                 </div>
               </Grid>
