@@ -58,6 +58,57 @@ export const CommentsStyled = styled("div")`
     }
   }
 
+  .commentPagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: end;
+    li {
+      margin: 3px;
+      border-radius: 4px;
+      &.selected {
+        background-color: rgba(0, 0, 0, 0.08);
+        a{
+          font-weight: 700;
+        }
+      }
+      &.disabled{
+        pointer-events: none;
+        border-color: #dee2e6;
+        svg{
+          color: #abb4bb;
+        }
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-sizing: border-box;
+        background-color: transparent;
+        cursor: pointer;
+        vertical-align: middle;
+        text-decoration: none;
+        font-weight: 400;
+        font-size: 0.875rem;
+        line-height: 1.43;
+        text-align: center;
+        box-sizing: border-box;
+        min-width: 32px;
+        height: 32px;
+        color: rgba(0, 0, 0, 0.87);
+        outline: 0;
+        margin: 0;
+        padding: 0;
+        border-radius: 4px;
+        background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      }
+    }
+  }
+
   .comments-summary {
     &:hover,
     &.Mui-expanded {

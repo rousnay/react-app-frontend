@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import ReactPaginate from "react-paginate";
 import {
   Stack,
   Avatar,
@@ -8,6 +9,9 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+
 import {
   TrackImage,
   PinImage,
@@ -25,6 +29,10 @@ export default function CommentParentList({ currentUser, commentsData }) {
   // Data manipulation =====================
   const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
   const [parentCommentsArray, setParentCommentsArray] = useState([]);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 6;
 
   const commentHasNoParentArray = useCallback(() => {
     const parentCommentsMultipleArrays = trackWithAllInfoArray.map(
@@ -43,17 +51,38 @@ export default function CommentParentList({ currentUser, commentsData }) {
       .sort((a, b) =>
         a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
       );
-    setParentCommentsArray(parentCommentsSortedSingleArray.reverse());
+    const theParentCommentsArray = parentCommentsSortedSingleArray.reverse();
+    setParentCommentsArray(theParentCommentsArray);
+    return theParentCommentsArray;
   }, [trackWithAllInfoArray]);
+
+  // pagination
+  const paginatedComments = useCallback(() => {
+    const allParentCommentsArray = commentHasNoParentArray();
+    const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(allParentCommentsArray.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(allParentCommentsArray.length / itemsPerPage));
+  }, [commentHasNoParentArray, itemOffset]);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset =
+      (event.selected * itemsPerPage) % parentCommentsArray.length;
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+    setItemOffset(newOffset);
+  };
 
   useEffect(() => {
     setTrackWithAllInfoArray(commentsData);
-    commentHasNoParentArray();
-  }, [commentHasNoParentArray, commentsData]);
+    paginatedComments();
+  }, [commentsData, paginatedComments]);
 
   return (
     <>
-      {parentCommentsArray.map((parentCommentItem, index) => (
+      {currentItems.map((parentCommentItem, index) => (
         <Accordion
           className="comments-accordion"
           expanded={expanded === index}
@@ -112,6 +141,18 @@ export default function CommentParentList({ currentUser, commentsData }) {
           </AccordionDetails>
         </Accordion>
       ))}
+      <Stack spacing={2}>
+        <ReactPaginate
+          className="commentPagination"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={pageCount}
+          renderOnZeroPageCount={null}
+          breakLabel="..."
+          previousLabel={<NavigateBeforeIcon color="themeBlack" />}
+          nextLabel={<NavigateNextIcon color="themeBlack" />}
+        />
+      </Stack>
     </>
   );
 }
