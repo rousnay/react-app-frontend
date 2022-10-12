@@ -88,8 +88,15 @@ export default function MetaInfo() {
   const convertToPointFeatures = useCallback(async () => {
     const trackAsyncData = await getTrackInfo();
     const trackAsyncPoint = await trackAsyncData.pinPoints;
-    if (trackAsyncPoint.count === 0) return false;
-    else {
+    console.log("halse");
+    if (trackAsyncPoint.count === 0) {
+      localStorage.setItem(
+        "formValuesLocal",
+        JSON.stringify(initialFormValueForPins)
+      );
+      return false;
+    } else {
+      console.log("else");
       const trackAsyncPointArray = await trackAsyncPoint.pinPointArray;
 
       const pointFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
