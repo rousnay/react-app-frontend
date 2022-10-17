@@ -89,15 +89,15 @@ export default function MetaInfo() {
   const convertToPointFeatures = useCallback(async () => {
     const trackAsyncData = await getTrackInfo();
     const trackAsyncPoint = await trackAsyncData.pinPoints;
-    console.log("halse");
     if (trackAsyncPoint.count === 0) {
+      console.log("not exist");
       localStorage.setItem(
         "formValuesLocal",
-        JSON.stringify(initialFormValueForPins)
+        JSON.stringify(initialFormValues)
       );
-      return false;
+      return;
     } else {
-      console.log("else");
+      console.log("exist");
       const trackAsyncPointArray = await trackAsyncPoint.pinPointArray;
 
       const pointFeatureArray = trackAsyncPointArray.map((pinPoint, index) => {
@@ -133,7 +133,7 @@ export default function MetaInfo() {
       };
       return pointFeatureCollection;
     }
-  }, [getTrackInfo, initialFormValueForPins]);
+  }, [getTrackInfo]);
 
   // GET CentralCoordinate ==================
   const centralCoordinate = useCallback(async () => {
