@@ -94,14 +94,22 @@ export function ReplyActionMenu({ commentId }) {
 }
 
 // AddReply Component=====================
-export function AddReply({ currentUser, index, parentCommentId, pinPointId }) {
+export function AddReply({
+  currentUser,
+  index,
+  parentCommentId,
+  pinPointId,
+  updateCommentList,
+}) {
   const [token] = useToken();
   const [replyList, setReplyList] = useState([]);
+  const [theReply, setTheReply] = useState("");
 
   const handleCommentInputChange = (e, index) => {
     const list = [...replyList];
     list[index] = e.target.value;
     setReplyList(list);
+    setTheReply(list[index]);
   };
 
   const submitNewComment = async (
@@ -122,9 +130,11 @@ export function AddReply({ currentUser, index, parentCommentId, pinPointId }) {
     if (response.message === "Success") {
       swal("Success", "Comment has been add", "success", {
         buttons: false,
-        timer: 2000,
+        timer: 1000,
       }).then((value) => {
-        console.log("Comment added");
+        updateCommentList();
+        setTheReply("");
+        setReplyList([]);
       });
     } else {
       swal("Oops!", response.error, "error", {
@@ -141,6 +151,7 @@ export function AddReply({ currentUser, index, parentCommentId, pinPointId }) {
         <TextareaAutosize
           aria-label="empty textarea"
           placeholder="Write a replay."
+          value={theReply}
           onChange={(e) => handleCommentInputChange(e, index)}
         />
 

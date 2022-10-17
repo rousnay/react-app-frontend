@@ -12,6 +12,7 @@ export default function CommentReplyList({
   trackArray,
   parentCommentId,
   pinPointId,
+  updateCommentList,
 }) {
   const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
   const [replyArray, setReplyArray] = useState([]);
@@ -62,6 +63,7 @@ export default function CommentReplyList({
           index={index}
           parentCommentId={parentCommentId}
           pinPointId={pinPointId}
+          updateCommentList={updateCommentList}
         />
         {currentItems.map((replayItem, index) => (
           <li key={index}>

@@ -20,7 +20,8 @@ export default function ManageComments() {
   let [query, setQuery] = useState("");
   let [sortBy, setSortBy] = useState("createdAt");
   let [orderBy, setOrderBy] = useState("");
-
+  const [isUpdated, updateState] = useState();
+  const updateCommentList = useCallback(() => updateState({}), []);
   const filteredTCRData = trackInfo
     .filter((item) => {
       return item.comments.count > 1 || item.reactions.count > 1;
@@ -68,7 +69,7 @@ export default function ManageComments() {
     (async function () {
       await getTrackInfo();
     })();
-  }, [getTrackInfo]);
+  }, [isUpdated, getTrackInfo]);
 
   // Checkpoint for channel existence ==================
   useEffect(() => {
@@ -84,7 +85,6 @@ export default function ManageComments() {
       });
     }
   }, [channelId, navigate]);
-
   return (
     <>
       <PrivetHeader loginInfo={user} />
@@ -135,6 +135,7 @@ export default function ManageComments() {
                   <CommentParentList
                     currentUser={user}
                     commentsData={filteredTCRData}
+                    updateCommentList={updateCommentList}
                   />
                 </CommentsStyled>
               )}

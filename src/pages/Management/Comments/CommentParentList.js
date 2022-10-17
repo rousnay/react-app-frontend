@@ -19,7 +19,11 @@ import {
 } from "./CommentParentListParts";
 import CommentReplyList from "./CommentReplyList";
 
-export default function CommentParentList({ currentUser, commentsData }) {
+export default function CommentParentList({
+  currentUser,
+  commentsData,
+  updateCommentList,
+}) {
   // Accordion Fn=====================
   const [expanded, setExpanded] = useState(false);
   const handleChange = (panel) => (event, isExpanded) => {
@@ -60,7 +64,6 @@ export default function CommentParentList({ currentUser, commentsData }) {
   const paginatedComments = useCallback(() => {
     const allParentCommentsArray = commentHasNoParentArray();
     const endOffset = itemOffset + itemsPerPage;
-    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
     setCurrentItems(allParentCommentsArray.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(allParentCommentsArray.length / itemsPerPage));
   }, [commentHasNoParentArray, itemOffset]);
@@ -69,9 +72,6 @@ export default function CommentParentList({ currentUser, commentsData }) {
   const handlePageClick = (event) => {
     const newOffset =
       (event.selected * itemsPerPage) % parentCommentsArray.length;
-    console.log(
-      `User requested page number ${event.selected}, which is offset ${newOffset}`
-    );
     setItemOffset(newOffset);
   };
 
@@ -137,6 +137,7 @@ export default function CommentParentList({ currentUser, commentsData }) {
               trackArray={trackWithAllInfoArray}
               parentCommentId={parentCommentItem.id}
               pinPointId={parentCommentItem.pinPointId}
+              updateCommentList={updateCommentList}
             />
           </AccordionDetails>
         </Accordion>
