@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Stack, Avatar } from "@mui/material";
+import { Stack, Avatar, Button } from "@mui/material";
 import {
   ReplyReaction,
   ReplyActionMenu,
@@ -15,6 +15,8 @@ export default function CommentReplyList({
 }) {
   const [trackWithAllInfoArray, setTrackWithAllInfoArray] = useState([]);
   const [replyArray, setReplyArray] = useState([]);
+  const [replyItem, setReplyItem] = useState(6);
+  const [currentItems, setCurrentItems] = useState([]);
 
   const allReplyArray = useCallback(() => {
     const commentReplyMultipleArrays = trackWithAllInfoArray.map(
@@ -33,7 +35,9 @@ export default function CommentReplyList({
       .sort((a, b) =>
         a.createdAt > b.createdAt ? 1 : b.createdAt > a.createdAt ? -1 : 0
       );
-    setReplyArray(commentReplySortedSingleArray.reverse());
+    const theReplyArray = commentReplySortedSingleArray.reverse();
+    setReplyArray(theReplyArray);
+    setCurrentItems(theReplyArray.slice(0, 6));
   }, [trackWithAllInfoArray, parentCommentId]);
 
   useEffect(() => {
@@ -41,6 +45,15 @@ export default function CommentReplyList({
     allReplyArray();
   }, [allReplyArray, trackArray]);
 
+  const handleLoadMore = (newItems) => {
+    setReplyItem(newItems);
+    setCurrentItems(replyArray.slice(0, newItems));
+  };
+
+  const handleHide = () => {
+    setReplyItem(6);
+    setCurrentItems(replyArray.slice(0, 6));
+  };
   return (
     <>
       <ul className="comments-list-sub">
@@ -50,8 +63,7 @@ export default function CommentReplyList({
           parentCommentId={parentCommentId}
           pinPointId={pinPointId}
         />
-
-        {replyArray.map((replayItem, index) => (
+        {currentItems.map((replayItem, index) => (
           <li key={index}>
             <Stack
               direction="row"
@@ -65,7 +77,6 @@ export default function CommentReplyList({
                 />
                 <div className="commentMeta">
                   <h4>{replayItem.user.firstName}</h4>
-                  <p>{replayItem.createdAt}</p>
                   <p>{replayItem.text}</p>
                 </div>
               </Stack>
@@ -80,6 +91,33 @@ export default function CommentReplyList({
           </li>
         ))}
       </ul>
+      {replyArray.length > 6 && replyArray.length >= replyItem ? (
+        <Button
+          sx={{ textTransform: "capitalize", fontWeight: "bold" }}
+          variant="text"
+          color="logoRed"
+          fullWidth
+          onClick={() => {
+            handleLoadMore(replyItem + 6);
+          }}
+        >
+          Show More
+        </Button>
+      ) : replyArray.length > 6 && replyArray.length <= replyItem ? (
+        <Button
+          sx={{ textTransform: "capitalize", fontWeight: "bold" }}
+          variant="text"
+          color="logoRed"
+          fullWidth
+          onClick={() => {
+            handleHide();
+          }}
+        >
+          Show less
+        </Button>
+      ) : (
+        ""
+      )}
     </>
   );
 }
