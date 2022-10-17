@@ -49,7 +49,11 @@ export function ReplyReaction({ replyId }) {
 }
 
 // ReplayActionMenu Component=====================
-export function ReplyActionMenu({ commentId }) {
+export function ReplyActionMenu({ replyId, updateCommentList }) {
+  const [token] = useToken();
+  const commentId = replyId;
+  const reportCategory = "Violent Threats";
+  const status = "invisible";
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -58,12 +62,69 @@ export function ReplyActionMenu({ commentId }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleReport = async () => {
+    const formData = JSON.stringify({
+      reportCategory,
+      commentId,
+    });
+    const [response] = await RequestApi(
+      "POST",
+      `report`,
+      token,
+      formData,
+      "JsonData"
+    );
+
+    if (response.message === "Success") {
+      swal("Success", "Report has been submitted", "success", {
+        buttons: false,
+        timer: 1000,
+      }).then((value) => {
+        console.log(replyId);
+      });
+    } else {
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+      }).then((value) => {});
+    }
+    handleClose();
+  };
+
+  const handleDelete = async () => {
+    const formData = JSON.stringify({
+      status,
+    });
+
+    const [response] = await RequestApi(
+      "PUT",
+      `comment/${replyId}`,
+      token,
+      formData,
+      "JsonData"
+    );
+
+    if (response.message === "Success") {
+      swal("Success", "Comment has been deleted", "success", {
+        buttons: false,
+        timer: 1000,
+      }).then((value) => {
+        updateCommentList();
+      });
+    } else {
+      swal("Oops!", response.error, "error", {
+        buttons: true,
+      }).then((value) => {});
+    }
+    handleClose();
+  };
+
   return (
     <>
       <IconButton
         aria-label="more"
-        id={`positioned-button-${commentId}`}
-        aria-controls={open ? `positioned-menu-${commentId}` : undefined}
+        id={`positioned-button-${replyId}`}
+        aria-controls={open ? `positioned-menu-${replyId}` : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
@@ -72,8 +133,8 @@ export function ReplyActionMenu({ commentId }) {
       </IconButton>
 
       <Menu
-        id={`positioned-menu-${commentId}`}
-        aria-labelledby={`positioned-button-${commentId}`}
+        id={`positioned-menu-${replyId}`}
+        aria-labelledby={`positioned-button-${replyId}`}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -86,8 +147,8 @@ export function ReplyActionMenu({ commentId }) {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={handleClose}>Report</MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={handleReport}>Report</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </>
   );

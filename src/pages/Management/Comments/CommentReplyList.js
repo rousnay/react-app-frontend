@@ -25,6 +25,7 @@ export default function CommentReplyList({
         return trackItem.comments?.commentArray?.filter((commentItem) => {
           return (
             commentItem.deletedAt === null &&
+            commentItem.status === "visible" &&
             commentItem.parentCommentId === parentCommentId
           );
         });
@@ -86,7 +87,10 @@ export default function CommentReplyList({
               <div className="ReplyOptions">
                 <ReplyReaction replyId={replayItem.id} />
                 <div className="optionMeta">
-                  <ReplyActionMenu replyId={replayItem.id} />
+                  <ReplyActionMenu
+                    replyId={replayItem.id}
+                    updateCommentList={updateCommentList}
+                  />
                 </div>
               </div>
             </Stack>

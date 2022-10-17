@@ -28,6 +28,7 @@ export function CommentReaction({ trackArray, parentCommentId }) {
       return trackItem.comments?.commentArray?.filter((commentItem) => {
         return (
           commentItem.deletedAt === null &&
+          commentItem.status === "visible" &&
           commentItem.parentCommentId === parentCommentId
         );
       });
