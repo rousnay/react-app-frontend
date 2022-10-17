@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useToken, useUser, useChannel } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
 import swal from "sweetalert";
-import { Container, Grid, Typography, Stack } from "@mui/material";
+import { Container, Grid, Stack } from "@mui/material";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
 import TrackOptionBar from "./TrackOptionBar";
@@ -78,10 +78,6 @@ export default function ManageTracks() {
     })();
   }, [getTrackInfo]);
 
-  useEffect(() => {
-    console.log(currentDeletedTracks);
-  }, [currentDeletedTracks]);
-
   // handle Checkbox ==================
   const handleSelectIndividual = (e) => {
     const { value, checked } = e.target;
@@ -116,6 +112,18 @@ export default function ManageTracks() {
     }
   }, [channelId, navigate]);
 
+  const loadingPlaceHolder = (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      Track list is loading...
+    </div>
+  );
   return (
     <>
       <PrivetHeader loginInfo={user} />
@@ -151,7 +159,7 @@ export default function ManageTracks() {
               }}
             >
               {loading ? (
-                <Typography>Loading...</Typography>
+                loadingPlaceHolder
               ) : (
                 <TracksStyled>
                   <TrackOptionBar

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToken, useUser, useChannel } from "../../../hooks/useUserInfo";
 import { RequestApi } from "../../../components/RequestApi";
-import { Container, Grid, Typography } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import swal from "sweetalert";
 import PrivetSideBar from "../../../components/PrivetSideBar";
 import PrivetHeader from "../../../components/PrivetHeader";
@@ -85,6 +85,19 @@ export default function ManageComments() {
       });
     }
   }, [channelId, navigate]);
+
+  const loadingPlaceHolder = (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      Comment list is loading...
+    </div>
+  );
   return (
     <>
       <PrivetHeader loginInfo={user} />
@@ -120,7 +133,7 @@ export default function ManageComments() {
               }}
             >
               {loading ? (
-                <Typography>Loading...</Typography>
+                loadingPlaceHolder
               ) : (
                 <CommentsStyled>
                   <CommentOptionBar

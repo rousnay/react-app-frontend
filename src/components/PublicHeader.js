@@ -23,7 +23,7 @@ const MenuItem = styled("li")`
   }
 `;
 
-const SigninStyles = {
+const SignInStyles = {
   border: `1px solid var(--logoRed)`,
   borderRadius: "6px",
   color: `var(--logoRed)`,
@@ -44,7 +44,7 @@ export default function PublicHeader() {
       <Container maxWidth="100%">
         <Grid container sx={{ height: "78px", alignItems: "center" }}>
           <Grid item xs={12} md={4}>
-            <Link to="/Home">
+            <Link to="/">
               <img src={Logo} alt="Logo" />
             </Link>
           </Grid>
@@ -58,7 +58,7 @@ export default function PublicHeader() {
               }}
             >
               <MenuItem>
-                <Link to="/">Landing Page</Link>
+                <Link to="/">Home</Link>
               </MenuItem>
               <MenuItem>
                 <Link to="#">Meta Tracks</Link>
@@ -73,7 +73,7 @@ export default function PublicHeader() {
                 <Link to="#">Support</Link>
               </MenuItem>
               <MenuItem>
-                <Link to="/SignIn" style={SigninStyles}>
+                <Link to="/SignIn" style={SignInStyles}>
                   SIGN IN
                 </Link>
               </MenuItem>

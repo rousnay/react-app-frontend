@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PrivateRoutes } from "./auth/PrivateRoutes";
 
-const Landing = lazy(() => import("./pages/Home/Landing"));
 const Home = lazy(() => import("./pages/Home/"));
 const SignIn = lazy(() => import("./pages/SignIn"));
 const Callback = lazy(() => import("./auth/Callback"));
@@ -43,8 +42,7 @@ export const Router = () => {
     <BrowserRouter>
       <Suspense fallback={loadingPlaceHolder}>
         <Routes>
-          <Route path="/Home" element={<Home />} />
-          <Route path="/" element={<Landing />} exact />
+          <Route path="/" element={<Home />} exact />
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/auth/Callback" element={<Callback />} />
           <Route path="auth/google/callback" element={<GoogleCallback />} />
