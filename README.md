@@ -1,4 +1,4 @@
-# FINUTSS Metatrack React App
+# React App Front-end
 
 This project is built for Finutss metatrack frontend
 
